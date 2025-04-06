@@ -1,12 +1,18 @@
-
 abstract class ProductsEvent {}
 
-class LoadProductsData extends ProductsEvent {} 
+class LoadProductsData extends ProductsEvent {}
 
+class LoadProduct extends ProductsEvent {
+  final String productName;
+
+  LoadProduct(this.productName);
+
+  List<Object> get props => [productName];
+}
 
 class LoadProductsByCategory extends ProductsEvent {
   final String category;
-  
+
   LoadProductsByCategory(this.category);
 
   List<Object> get props => [category];

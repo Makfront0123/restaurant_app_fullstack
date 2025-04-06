@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return ProductCarousel<ProductItem, ProductsBloc, ProductsState>(
       bloc: context.read<ProductsBloc>(),
       stateBuilder: (context, state) {
-         print("PRODUCT Current state: $state");
+        print("PRODUCT Current state: $state");
         if (state is ProductsLoading) {
           return const CircularProgressIndicator();
         } else if (state is ProductsLoaded) {
@@ -156,7 +156,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return HomeContainer(
         height: queryH * .5,
         width: queryW * .6,
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, '/product',
+              arguments: products[index].productName);
+        },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: Stack(

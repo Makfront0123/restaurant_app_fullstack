@@ -65,6 +65,6 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
     const BottomNavigationBarItem(
         label: 'Favorite', icon: Icon(Icons.favorite)),
     const BottomNavigationBarItem(
-        label: 'Settings', icon: Icon(Icons.settings)),
+        label: 'Profile', icon: Icon(Icons.person_outline)),
   ];
 }

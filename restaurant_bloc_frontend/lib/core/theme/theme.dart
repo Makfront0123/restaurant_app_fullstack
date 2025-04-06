@@ -43,6 +43,7 @@ class AppTheme {
             color: AppColors.textTertiary,
             fontSize: 16.0,
             fontWeight: FontWeight.w400,
+             height: 1.6,
           ),
           labelSmall: TextStyle(
             color: AppColors.secondaryColor,
@@ -74,6 +75,7 @@ class AppTheme {
           labelMedium: TextStyle(
             color: AppColors.textTertiary,
             fontSize: 14.0,
+             height: 1.6,
           )),
       brightness: Brightness.dark,
     );

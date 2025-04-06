@@ -44,7 +44,9 @@ class _ScreenEmptyState extends State<ScreenEmpty> {
                   ),
                 )),
             AuthButton(
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+              },
               text: 'Explore our Menu',
             )
           ],

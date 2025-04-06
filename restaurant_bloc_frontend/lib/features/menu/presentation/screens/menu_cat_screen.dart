@@ -35,13 +35,17 @@ class _MenuCatScreenState extends State<MenuCatScreen> {
     selectedCategory = args;
     print('Categoría seleccionada: $selectedCategory'); // Debug
     // Dispara el evento para cargar productos de esta categoría
-    context.read<ProductsBloc>().add(LoadProductsByCategory(selectedCategory??''));
+    context
+        .read<ProductsBloc>()
+        .add(LoadProductsByCategory(selectedCategory ?? ''));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const MenuAppbar(),
+        appBar: MenuAppbar(
+          title: 'Menu',
+        ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(

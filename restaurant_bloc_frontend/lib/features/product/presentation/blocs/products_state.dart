@@ -2,6 +2,7 @@ import 'package:restaurant_bloc_frontend/features/product/domain/entities/produc
 
 abstract class ProductsState {}
 
+//PRODUCTOS
 class ProductsInitial extends ProductsState {}
 
 class ProductsLoading extends ProductsState {}
@@ -9,11 +10,6 @@ class ProductsLoading extends ProductsState {}
 class ProductsLoaded extends ProductsState {
   final List<ProductItem> products;
   ProductsLoaded(this.products);
-}
-
-class ProductLoaded extends ProductsState {
-  final ProductItem product;
-  ProductLoaded(this.product);
 }
 
 class ProductsLoadedByCategory extends ProductsState {
@@ -28,6 +24,14 @@ class ProductsLoadedByCategory extends ProductsState {
   }
 
   List<Object> get props => [products];
+}
+
+///PRODUCTO
+class ProductLoading extends ProductsState {}
+
+class ProductLoaded extends ProductsState {
+  final ProductItem product;
+  ProductLoaded(this.product);
 }
 
 class ProductsError extends ProductsState {

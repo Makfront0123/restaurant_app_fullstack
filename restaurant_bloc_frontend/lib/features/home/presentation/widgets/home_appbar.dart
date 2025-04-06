@@ -31,7 +31,9 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
           ],
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.shopping_cart))
+          IconButton(onPressed: () {
+            Navigator.pushNamed(context, '/cart');
+          }, icon: const Icon(Icons.shopping_cart))
         ],
         backgroundColor: Colors.transparent,
       ),

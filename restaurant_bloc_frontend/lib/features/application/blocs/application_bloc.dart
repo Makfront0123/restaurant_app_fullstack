@@ -5,6 +5,7 @@ import 'package:restaurant_bloc_frontend/features/favorite/presentation/screens/
 import 'package:restaurant_bloc_frontend/features/home/presentation/screens/home_screen.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_screen.dart';
 import 'package:restaurant_bloc_frontend/features/order/presentation/screens/order_screen.dart';
+import 'package:restaurant_bloc_frontend/features/profile/presentation/screens/profile_screen.dart';
 
 class ApplicationBloc extends Bloc<ApplicationEvent, ApplicationState> {
   ApplicationBloc()
@@ -16,7 +17,7 @@ class ApplicationBloc extends Bloc<ApplicationEvent, ApplicationState> {
               MenuScreen(),
               OrderScreen(),
               FavoriteScreen(),
-              HomeScreen()
+              ProfileScreen(),
             ],
           ),
         ) {

@@ -6,9 +6,9 @@ import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/pro
 class MenuAppbar extends StatelessWidget implements PreferredSizeWidget {
   const MenuAppbar({
     super.key,
-    this.showTitle = false,
+    required this.title,
   });
-  final bool showTitle;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +23,15 @@ class MenuAppbar extends StatelessWidget implements PreferredSizeWidget {
             child: const Icon(Icons.arrow_back_ios_new_rounded)),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: showTitle ? const Text('Menu') : null,
+        title: Text(title),
         centerTitle: true,
-        actions: const [Icon(Icons.shopping_cart)],
+        actions: [
+          GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/cart');
+              },
+              child: Icon(Icons.shopping_cart))
+        ],
       ),
     );
   }

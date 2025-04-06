@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_bloc_frontend/core/theme/blocs/theme_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/application/blocs/application_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/favorite/presentation/blocs/favorite_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/home/data/repositories/home_repository.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_bloc.dart';
@@ -33,6 +34,9 @@ class AppProvider {
         ),
         BlocProvider(
           create: (context) => OrderBloc(),
+        ),
+        BlocProvider(
+          create: (context) => CartBloc(),
         ),
       ];
 }

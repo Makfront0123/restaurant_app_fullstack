@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_bloc_frontend/core/utils/validator_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_event.dart';
-import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/register_screen.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_body.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_button.dart';
@@ -19,15 +18,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
-
-
-  @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,9 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 10,
                   ),
                   TextButton(
-                    onPressed: () {
-                      context.read<AuthBloc>().add(LoginEvent());
-                    },
+                    onPressed: () {},
                     child: const Text(
                       'Forgot Password?',
                       style: TextStyle(fontWeight: FontWeight.bold),
@@ -84,10 +72,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 60),
                   AuthButton(
-
-                     onTap: () {
+                    onTap: () {
                       context.read<AuthBloc>().add(LoginEvent());
-                      print('clicked');
                     },
                     text: 'Sign In',
                   ),
@@ -106,11 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
               style: Theme.of(context).textTheme.labelSmall,
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const RegisterScreen()),
-                  );
+                  Navigator.pushNamed(context, '/signup');
                 },
             ),
           ])),

@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:restaurant_bloc_frontend/core/utils/validator_auth.dart';
-import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/login_screen.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_body.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_button.dart';
@@ -83,11 +82,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               style: Theme.of(context).textTheme.labelSmall,
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LoginScreen()),
-                  );
+                  // En el botón/ruta de SignUp:
+                  Navigator.pushReplacementNamed(context, '/login');
                 },
             ),
           ])),

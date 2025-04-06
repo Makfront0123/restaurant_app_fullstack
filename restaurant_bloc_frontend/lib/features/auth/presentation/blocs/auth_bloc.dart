@@ -3,16 +3,16 @@ import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_e
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(AuthInitial()) {
+  AuthBloc() : super(AuthState()) {
     on<LoginEvent>(_onLogin);
     on<LogoutEvent>(_onLogout);
   }
 
   Future<void> _onLogin(LoginEvent event, Emitter<AuthState> emit) async {
-    emit(Authenticated());
+    emit(AuthState(isLogged: true));
   }
 
   Future<void> _onLogout(LogoutEvent event, Emitter<AuthState> emit) async {
-    emit(Unauthenticated());
+    emit(AuthState(isLogged: false));
   }
 }

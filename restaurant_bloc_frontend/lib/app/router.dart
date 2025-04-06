@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/login_screen.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/register_screen.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_wrapper.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_cat_screen.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_screen.dart';
@@ -20,5 +21,6 @@ class AppRoutes {
     login: (context) => const LoginScreen(),
     menuCat: (context) => const MenuCatScreen(),
     menu: (context) => const MenuScreen(),
+    signup:(context)=>const RegisterScreen()
   };
 }

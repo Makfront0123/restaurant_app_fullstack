@@ -9,35 +9,24 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   ProductsBloc(this._productRepository) : super(ProductsInitial()) {
     on<LoadProductsData>(_onLoadProductsData);
     on<LoadProductsByCategory>(_onLoadProductsByCategory);
-    on<LoadProduct>(_onLoadProduct);
-  }
-
-  Future<void> _onLoadProduct(LoadProduct event, Emitter<ProductsState> emit) async {
-    emit(ProductsLoading());
-    try {
-      final product = await _productRepository.getProduct(event.productName);
-      emit(ProductLoaded(product));
-    } catch (e) {
-      emit(ProductsError('Error loading product: $e'));
-    }
   }
 
   Future<void> _onLoadProductsData(
     LoadProductsData event,
     Emitter<ProductsState> emit,
   ) async {
-    emit(ProductsLoading()); // Indica que se están cargando los datos
+    emit(ProductsLoading()); 
     try {
       final products = await _productRepository.getAllProducts();
       if (products.isEmpty) {
-        emit(ProductsError('Error al cargar: No hay productos')); // Fallo
+        emit(ProductsError('Error al cargar: No hay productos')); 
       } else {
         emit(ProductsLoaded(
           products,
-        )); // Éxito
+        )); 
       }
     } catch (e) {
-      emit(ProductsError(e.toString())); // Manejo de errores
+      emit(ProductsError(e.toString())); 
     }
   }
 

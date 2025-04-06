@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_event.dart';
+import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_event.dart';
 
 class MenuAppbar extends StatelessWidget implements PreferredSizeWidget {
   const MenuAppbar({
@@ -17,9 +17,7 @@ class MenuAppbar extends StatelessWidget implements PreferredSizeWidget {
       child: AppBar(
         leading: GestureDetector(
             onTap: () {
-              context
-                  .read<HomeBloc>()
-                  .add(LoadHomeData()); // Recargar productos
+              context.read<ProductsBloc>().add(LoadProductsData());
               Navigator.pop(context);
             },
             child: const Icon(Icons.arrow_back_ios_new_rounded)),

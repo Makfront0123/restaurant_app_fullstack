@@ -6,6 +6,7 @@ import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/menu
 import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/search_input.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_event.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_state.dart';
 
 class MenuCatScreen extends StatefulWidget {
@@ -16,6 +17,27 @@ class MenuCatScreen extends StatefulWidget {
 }
 
 class _MenuCatScreenState extends State<MenuCatScreen> {
+  late String? selectedCategory; // Almacena la categoría seleccionada
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Recibe el argumento (categoría seleccionada)
+    final args = ModalRoute.of(context)?.settings.arguments as String?;
+
+    if (args == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pop(context); // Vuelve si no hay categoría
+      });
+      return;
+    }
+
+    selectedCategory = args;
+    print('Categoría seleccionada: $selectedCategory'); // Debug
+    // Dispara el evento para cargar productos de esta categoría
+    context.read<ProductsBloc>().add(LoadProductsByCategory(selectedCategory??''));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +62,7 @@ class _MenuCatScreenState extends State<MenuCatScreen> {
         print("PRODUCT Current state: $state");
         if (state is ProductsLoading) {
           return const CircularProgressIndicator();
-        } else if (state is ProductsLoaded) {
+        } else if (state is ProductsLoadedByCategory) {
           return _buildProductList(context, state.products);
         }
         return const Text("Error");

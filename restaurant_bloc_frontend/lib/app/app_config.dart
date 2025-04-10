@@ -6,10 +6,12 @@ import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_b
 import 'package:restaurant_bloc_frontend/features/favorite/presentation/blocs/favorite_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/home/data/repositories/home_repository.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_screen.dart';
 import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/product/data/repositories/product_repository.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_event.dart';
+import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_bloc.dart';
 
 class AppProvider {
   static get allproviders => [
@@ -37,6 +39,10 @@ class AppProvider {
         ),
         BlocProvider(
           create: (context) => CartBloc(),
+        ),
+        BlocProvider(
+          create: (context) => SearchBloc(HomeRepository()),
+          child: const MenuScreen(),
         ),
       ];
 }

@@ -6,7 +6,11 @@ import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_s
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_container.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/product_carousel.dart';
+import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/category_list.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/search_input.dart';
+import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_event.dart';
+import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_state.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
@@ -18,19 +22,67 @@ class MenuScreen extends StatefulWidget {
 class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocBuilder<SearchBloc, SearchState>(builder: (context, state) {
+      return Scaffold(
         appBar: const HomeAppbar(),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: [
-                const SearchInput(),
-                _buildMenuCarousel(context),
-              ],
+        body: _buildMenuContent(context, state),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            if (state is SearchHideCategoryList) {
+              context.read<SearchBloc>().add(SearchShowCategoryList());
+            } else if (state is SearchShowCategoryList) {
+              context.read<SearchBloc>().add(SearchHideCategoryList());
+            }
+          },
+          child: const Icon(Icons.filter_list),
+        ),
+      );
+    });
+  }
+
+  SizedBox _buildMenuContent(BuildContext context, SearchState state) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * .8,
+      height: MediaQuery.of(context).size.height,
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  const SearchInput(),
+                  _buildMenuCarousel(context),
+                ],
+              ),
             ),
           ),
-        ));
+          if (state is SearchCategoryListVisibleState)
+            _buildSidebarCategory(context),
+        ],
+      ),
+    );
+  }
+
+  Positioned _buildSidebarCategory(BuildContext context) {
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: GestureDetector(
+        onTap: () {
+          context.read<SearchBloc>().add(SearchShowCategoryList());
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 60),
+          child: Container(
+            color: Theme.of(context).primaryColor,
+            child: const CategoryList(),
+          ),
+        ),
+      ),
+    );
   }
 
   ProductCarousel<CategoryItem, HomeBloc, HomeState> _buildMenuCarousel(

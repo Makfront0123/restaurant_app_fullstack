@@ -12,8 +12,6 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        print("STATE $state",);
-        print(state.isLogged);
         if (state.isLogged) {
           return const ApplicationScreen();
         }

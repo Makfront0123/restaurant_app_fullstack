@@ -1,6 +1,6 @@
 class AuthState {
-  final isLogged;
-  const AuthState({this.isLogged=false});
+  final bool isLogged;
+  const AuthState({this.isLogged = false});
 }
 
 

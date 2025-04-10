@@ -1,10 +1,21 @@
-abstract class MenuEvent {}
+class MenuEvent {}
 
-class LoadMenuLoad extends MenuEvent {}
+class LoadMenuData extends MenuEvent {}
 
-class FilterProductByCategory extends MenuEvent {
-  final String categoryId;
-  FilterProductByCategory(this.categoryId);
+class LoadMenuDataSuccess extends MenuEvent {
+  final List<String> menu;
+
+  LoadMenuDataSuccess(this.menu);
 }
 
-class ClearProductFilter extends MenuEvent {}
+class LoadMenuDataFailure extends MenuEvent {
+  final String message;
+
+  LoadMenuDataFailure(this.message);
+}
+
+class MenuCategoryEvent extends MenuEvent {
+  final String category;
+
+  MenuCategoryEvent(this.category);
+}

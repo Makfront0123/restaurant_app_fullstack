@@ -7,20 +7,24 @@ class MenuAppbar extends StatelessWidget implements PreferredSizeWidget {
   const MenuAppbar({
     super.key,
     required this.title,
+    this.showIcon = true,
   });
   final String title;
+  final bool showIcon;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: AppBar(
-        leading: GestureDetector(
-            onTap: () {
-              context.read<ProductsBloc>().add(LoadProductsData());
-              Navigator.pop(context);
-            },
-            child: const Icon(Icons.arrow_back_ios_new_rounded)),
+        leading: showIcon
+            ? GestureDetector(
+                onTap: () {
+                  context.read<ProductsBloc>().add(LoadProductsData());
+                  Navigator.pop(context);
+                },
+                child: const Icon(Icons.arrow_back_ios_new_rounded))
+            : const SizedBox(),
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(title),
@@ -30,7 +34,7 @@ class MenuAppbar extends StatelessWidget implements PreferredSizeWidget {
               onTap: () {
                 Navigator.pushNamed(context, '/cart');
               },
-              child: Icon(Icons.shopping_cart))
+              child: const Icon(Icons.shopping_cart))
         ],
       ),
     );

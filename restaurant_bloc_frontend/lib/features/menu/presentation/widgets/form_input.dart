@@ -1,4 +1,8 @@
+/*
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_event.dart';
 
 class FormInput extends StatelessWidget {
   const FormInput({
@@ -13,6 +17,9 @@ class FormInput extends StatelessWidget {
     return Expanded(
       child: TextFormField(
         controller: searchController,
+        onChanged: (value) {
+          context.read<SearchBloc>().add(SearchCategoryEvent(value));
+        },
         decoration: InputDecoration(
             labelText: 'Search',
             hintText: 'Search',
@@ -41,3 +48,5 @@ class FormInput extends StatelessWidget {
     );
   }
 }
+
+ */

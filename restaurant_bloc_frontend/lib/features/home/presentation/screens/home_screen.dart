@@ -60,7 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return ProductCarousel<CategoryItem, HomeBloc, HomeState>(
       bloc: context.read<HomeBloc>(),
       stateBuilder: (context, state) {
-        print("CATEGORY Current state: $state");
         if (state is HomeLoading) {
           return const CircularProgressIndicator();
         } else if (state is HomeLoaded) {
@@ -76,7 +75,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return ProductCarousel<ProductItem, ProductsBloc, ProductsState>(
       bloc: context.read<ProductsBloc>(),
       stateBuilder: (context, state) {
-        print("PRODUCT Current state: $state");
         if (state is ProductsLoading) {
           return const CircularProgressIndicator();
         } else if (state is ProductsLoaded) {

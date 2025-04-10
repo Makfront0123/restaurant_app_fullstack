@@ -33,8 +33,6 @@ class _MenuCatScreenState extends State<MenuCatScreen> {
     }
 
     selectedCategory = args;
-    print('Categoría seleccionada: $selectedCategory'); // Debug
-    // Dispara el evento para cargar productos de esta categoría
     context
         .read<ProductsBloc>()
         .add(LoadProductsByCategory(selectedCategory ?? ''));
@@ -43,7 +41,7 @@ class _MenuCatScreenState extends State<MenuCatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: MenuAppbar(
+        appBar: const MenuAppbar(
           title: 'Menu',
         ),
         body: Padding(
@@ -63,7 +61,6 @@ class _MenuCatScreenState extends State<MenuCatScreen> {
     return ProductCarousel<ProductItem, ProductsBloc, ProductsState>(
       bloc: context.read<ProductsBloc>(),
       stateBuilder: (context, state) {
-        print("PRODUCT Current state: $state");
         if (state is ProductsLoading) {
           return const CircularProgressIndicator();
         } else if (state is ProductsLoadedByCategory) {

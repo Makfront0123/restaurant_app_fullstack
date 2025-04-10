@@ -34,7 +34,9 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MenuAppbar(title: '',),
+      appBar: const MenuAppbar(
+        title: '',
+      ),
       body: BlocBuilder<ProductsBloc, ProductsState>(builder: (context, state) {
         if (state is ProductLoaded) {
           return _buildProductDetails(state);
@@ -58,7 +60,7 @@ class _ProductScreenState extends State<ProductScreen> {
           height: MediaQuery.of(context).size.height * .45,
           child: Image.asset(state.product.image),
         ),
-        SizedBox(height: 30),
+        const SizedBox(height: 30),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
@@ -78,16 +80,16 @@ class _ProductScreenState extends State<ProductScreen> {
                   )
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
                 description,
                 style: Theme.of(context).textTheme.labelMedium,
               ),
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
               ItemCount(
                 itemPrice: product.productPrice,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               AuthButton(
                 onTap: () {},
                 text: 'Add to Cart',

@@ -25,14 +25,14 @@ class _ItemCountState extends State<ItemCount> {
             ),
             Row(
               children: [
-                Icon(Icons.remove),
-                SizedBox(width: 10),
+                const Icon(Icons.remove),
+                const SizedBox(width: 10),
                 Text(
                   '1',
                   style: Theme.of(context).textTheme.labelSmall,
                 ),
-                SizedBox(width: 10),
-                Icon(Icons.add),
+                const SizedBox(width: 10),
+                const Icon(Icons.add),
               ],
             )
           ],

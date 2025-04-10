@@ -17,7 +17,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MenuAppbar(
+      appBar: const MenuAppbar(
         title: 'Cart',
       ),
       body: BlocBuilder<CartBloc, CartState>(
@@ -25,7 +25,7 @@ class _CartScreenState extends State<CartScreen> {
           if (state.isCart) {
             return const Center(child: Text('Cart'));
           }
-          return ScreenEmpty(
+          return const ScreenEmpty(
             emptyImage: Vectors.favorite,
             title: 'Your cart is empty',
           );

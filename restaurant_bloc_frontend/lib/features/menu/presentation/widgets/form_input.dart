@@ -20,7 +20,6 @@ class FormInput extends StatelessWidget {
           context.read<SearchBloc>().add(SearchQueryChanged(value));
         },
         decoration: InputDecoration(
-            labelText: 'Search',
             hintText: 'Search',
             constraints: const BoxConstraints(maxWidth: 100),
             labelStyle: Theme.of(context).textTheme.labelMedium,

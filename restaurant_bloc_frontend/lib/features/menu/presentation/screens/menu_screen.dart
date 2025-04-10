@@ -42,7 +42,7 @@ class _MenuScreenState extends State<MenuScreen> {
 
   SizedBox _buildMenuContent(BuildContext context, SearchState state) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width * .8,
+      width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       child: Stack(
         children: [
@@ -50,6 +50,7 @@ class _MenuScreenState extends State<MenuScreen> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SearchInput(),
                   _buildMenuCarousel(context),

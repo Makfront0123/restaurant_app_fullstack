@@ -121,6 +121,12 @@ class ProductCarouselContent extends StatelessWidget {
                   context.read<CartBloc>().add(
                         AddProductToCart(product: product),
                       );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        backgroundColor: Colors.green,
+                        duration: const Duration(seconds: 1),
+                        content: Text('${product.productName} add from cart')),
+                  );
                 },
                 icon: const Icon(Icons.add_circle),
               ),

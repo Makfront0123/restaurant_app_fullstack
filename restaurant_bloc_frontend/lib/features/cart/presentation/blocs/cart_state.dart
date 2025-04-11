@@ -11,3 +11,21 @@ class CartUpdatedState extends CartState {
 
   bool get isEmpty => productsInCart.isEmpty;
 }
+
+class CartIncrementdState extends CartState {
+  final ProductItem product;
+
+  CartIncrementdState({required this.product});
+}
+
+class CartDecrementdState extends CartState {
+  final ProductItem product;
+
+  CartDecrementdState({required this.product});
+}
+
+class CartRemoveState extends CartState {
+  final ProductItem product;
+
+  CartRemoveState({required this.product});
+}

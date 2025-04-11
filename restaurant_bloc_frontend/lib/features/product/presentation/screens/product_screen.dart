@@ -61,13 +61,20 @@ class ProductScreen extends StatelessWidget {
                 Text(description,
                     style: Theme.of(context).textTheme.labelMedium),
                 const SizedBox(height: 50),
-                ItemProductCount(itemPrice: product.productPrice),
+                ItemProductCount(product: product),
                 const SizedBox(height: 10),
                 AuthButton(
                     onTap: () {
                       context
                           .read<CartBloc>()
                           .add(AddProductToCart(product: product));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            backgroundColor: Colors.green,
+                            duration: const Duration(seconds: 1),
+                            content:
+                                Text('${product.productName} add from cart')),
+                      );
                     },
                     text: 'Add to Cart')
               ],

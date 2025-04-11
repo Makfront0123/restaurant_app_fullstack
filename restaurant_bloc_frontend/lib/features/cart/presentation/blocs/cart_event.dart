@@ -15,3 +15,13 @@ class RemoveProductFromCart extends CartEvent {
 
   RemoveProductFromCart({required this.product});
 }
+
+class IncrementProductCount extends CartEvent {
+  final ProductItem product;
+  IncrementProductCount({required this.product});
+}
+
+class DecrementProductCount extends CartEvent {
+  final ProductItem product;
+  DecrementProductCount({required this.product});
+}

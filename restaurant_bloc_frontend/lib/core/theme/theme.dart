@@ -5,54 +5,54 @@ import 'package:restaurant_bloc_frontend/core/theme/app_colors.dart';
 class AppTheme {
   static ThemeData lightTheme() {
     return ThemeData(
-      brightness: Brightness.light,
-      primaryColorLight: AppColors.secondaryColor,
-      textTheme: const TextTheme(
-          headlineSmall: TextStyle(
-            color: AppColors.textColorLight,
-            fontSize: 20.0,
-          ),
-          headlineMedium: TextStyle(
-            color: AppColors.textColorLight,
-            fontSize: 24.0,
-            fontWeight: FontWeight.bold,
-          ),
-          headlineLarge: TextStyle(
-            color: AppColors.textColorLight,
-            fontSize: 28.0,
-            fontWeight: FontWeight.bold,
-          ),
-          bodyLarge: TextStyle(
-            color: AppColors.textColorLight,
-            fontSize: 16.0,
-          ),
-          bodyMedium: TextStyle(
-            color: AppColors.textColorLight,
-            fontSize: 14.0,
-          ),
-          bodySmall: TextStyle(
-            color: AppColors.textColorLight,
-            fontSize: 12.0,
-          ),
-          labelLarge: TextStyle(
-            color: AppColors.textTertiary,
-            fontSize: 18.0,
-            fontWeight: FontWeight.w400,
-          ),
-          labelMedium: TextStyle(
-            color: AppColors.textTertiary,
-            fontSize: 16.0,
-            fontWeight: FontWeight.w400,
-             height: 1.6,
-          ),
-          labelSmall: TextStyle(
-            color: AppColors.secondaryColor,
-            fontSize: 14.0,
-            fontWeight: FontWeight.bold,
-          )),
-      scaffoldBackgroundColor: AppColors.backgroundLight,
-      primaryColor: AppColors.backgroundSecondary,
-    );
+        brightness: Brightness.light,
+        primaryColorLight: AppColors.secondaryColor,
+        textTheme: const TextTheme(
+            headlineSmall: TextStyle(
+              color: AppColors.textColorLight,
+              fontSize: 20.0,
+            ),
+            headlineMedium: TextStyle(
+              color: AppColors.textColorLight,
+              fontSize: 24.0,
+              fontWeight: FontWeight.bold,
+            ),
+            headlineLarge: TextStyle(
+              color: AppColors.textColorLight,
+              fontSize: 28.0,
+              fontWeight: FontWeight.bold,
+            ),
+            bodyLarge: TextStyle(
+              color: AppColors.textColorLight,
+              fontSize: 16.0,
+            ),
+            bodyMedium: TextStyle(
+              color: AppColors.textColorLight,
+              fontSize: 14.0,
+            ),
+            bodySmall: TextStyle(
+              color: AppColors.textColorLight,
+              fontSize: 12.0,
+            ),
+            labelLarge: TextStyle(
+              color: AppColors.textTertiary,
+              fontSize: 18.0,
+              fontWeight: FontWeight.w400,
+            ),
+            labelMedium: TextStyle(
+              color: AppColors.textTertiary,
+              fontSize: 16.0,
+              fontWeight: FontWeight.w400,
+              height: 1.6,
+            ),
+            labelSmall: TextStyle(
+              color: AppColors.secondaryColor,
+              fontSize: 14.0,
+              fontWeight: FontWeight.bold,
+            )),
+        scaffoldBackgroundColor: AppColors.backgroundLight,
+        primaryColor: AppColors.backgroundSecondary,
+        shadowColor: AppColors.secondaryVariant);
   }
 
   static ThemeData darkTheme() {
@@ -75,7 +75,7 @@ class AppTheme {
           labelMedium: TextStyle(
             color: AppColors.textTertiary,
             fontSize: 14.0,
-             height: 1.6,
+            height: 1.6,
           )),
       brightness: Brightness.dark,
     );

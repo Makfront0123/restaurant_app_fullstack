@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_button.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_container.dart';
+import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_event.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/menu_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
-import 'package:restaurant_bloc_frontend/features/product/presentation/widgets/item_count.dart';
+import 'package:restaurant_bloc_frontend/features/product/presentation/widgets/item_product_count.dart';
 
 class ProductScreen extends StatelessWidget {
   const ProductScreen({super.key});
@@ -58,9 +61,15 @@ class ProductScreen extends StatelessWidget {
                 Text(description,
                     style: Theme.of(context).textTheme.labelMedium),
                 const SizedBox(height: 50),
-                ItemCount(itemPrice: product.productPrice),
+                ItemProductCount(itemPrice: product.productPrice),
                 const SizedBox(height: 10),
-                AuthButton(onTap: () {}, text: 'Add to Cart')
+                AuthButton(
+                    onTap: () {
+                      context
+                          .read<CartBloc>()
+                          .add(AddProductToCart(product: product));
+                    },
+                    text: 'Add to Cart')
               ],
             ),
           ),

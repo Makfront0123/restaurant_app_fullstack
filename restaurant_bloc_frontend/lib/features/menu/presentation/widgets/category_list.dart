@@ -34,9 +34,15 @@ class CategoryList extends StatelessWidget {
         itemCount: categories.length,
         itemBuilder: (context, index) {
           final category = categories[index];
-          return ListTile(
-            leading: Image.asset(category.image),
-            title: Text(category.title),
+          return GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, '/menuCat',
+                  arguments: categories[index].title);
+            },
+            child: ListTile(
+              leading: Image.asset(category.image),
+              title: Text(category.title),
+            ),
           );
         },
       ),

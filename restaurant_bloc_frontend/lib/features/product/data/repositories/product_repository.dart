@@ -12,9 +12,14 @@ class ProductsRepository {
         .toList();
   }
 
-  Future<ProductItem> getProduct(String productName) async {
-    return _dummyProducts
-        .firstWhere((product) => product.productName == productName);
+  ProductItem getProduct(String name) {
+    final product = _dummyProducts.firstWhere(
+      (p) => p.productName.toLowerCase() == name.toLowerCase(),
+      orElse: () {
+        throw Exception('No se encontró el producto');
+      },
+    );
+    return product;
   }
 
   List<ProductItem> get _dummyProducts => [

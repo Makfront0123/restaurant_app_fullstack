@@ -48,6 +48,8 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     emit(ProductLoading());
     try {
       final product = await _productRepository.getProduct(event.productName);
+      print("Buscando producto: ${event.productName}");
+
       emit(ProductLoaded(product));
     } catch (e) {
       emit(ProductsError('Error loading product: $e'));

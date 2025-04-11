@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_event.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_container.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/product_carousel.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/menu_appbar.dart';
@@ -8,6 +10,7 @@ import 'package:restaurant_bloc_frontend/features/product/domain/entities/produc
 import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_event.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_state.dart';
+import 'package:restaurant_bloc_frontend/features/product/presentation/widgets/product_carousel_content.dart';
 
 class MenuCatScreen extends StatefulWidget {
   const MenuCatScreen({super.key});
@@ -50,7 +53,13 @@ class _MenuCatScreenState extends State<MenuCatScreen> {
             children: [
               const SearchInput(),
               const SizedBox(height: 70),
-              _buildCatMenuCarousel(context),
+              ProductCarouselContent(
+                stateFilter: (state) =>
+                    state is ProductsLoadedByCategory ? state : null,
+                productExtractor: (state) =>
+                    (state as ProductsLoadedByCategory).products,
+                isVertical: true, // Porque querés lista vertical
+              )
             ],
           ),
         ));
@@ -80,18 +89,21 @@ class _MenuCatScreenState extends State<MenuCatScreen> {
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),
         itemCount: products.length,
-        itemBuilder: (context, index) => _buildCategoryCard(products, index),
+        itemBuilder: (context, index) => _buildProductCard(products, index),
       ),
     );
   }
 
-  Widget _buildCategoryCard(List<ProductItem> products, int index) {
+  Widget _buildProductCard(List<ProductItem> products, int index) {
     final queryW = MediaQuery.of(context).size.width;
     final queryH = MediaQuery.of(context).size.height;
     return HomeContainer(
         height: queryH * .3,
         width: queryW * .6,
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, '/product',
+              arguments: products[index].productName);
+        },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: Stack(
@@ -129,7 +141,12 @@ class _MenuCatScreenState extends State<MenuCatScreen> {
                   bottom: -10,
                   right: 0,
                   child: IconButton(
-                      onPressed: () {}, icon: const Icon(Icons.add_circle))),
+                      onPressed: () {
+                        context.read<CartBloc>().add(AddProductToCart(
+                              product: products[index],
+                            ));
+                      },
+                      icon: const Icon(Icons.add_circle))),
             ],
           ),
         ));

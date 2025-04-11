@@ -9,9 +9,8 @@ import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/product_carousel.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/review_carousel.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/title_button.dart';
-import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
-import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_state.dart';
+import 'package:restaurant_bloc_frontend/features/product/presentation/widgets/product_carousel_content.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -44,7 +43,10 @@ class _HomeScreenState extends State<HomeScreen> {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
           ),
-          _buildProductCarousel(context),
+          ProductCarouselContent(
+            stateFilter: (state) => state is ProductsLoaded ? state : null,
+            productExtractor: (state) => (state as ProductsLoaded).products,
+          ),
           TitleButton(
             context: context,
             title: 'Our Happy Clients Say',
@@ -64,21 +66,6 @@ class _HomeScreenState extends State<HomeScreen> {
           return const CircularProgressIndicator();
         } else if (state is HomeLoaded) {
           return _buildCategoryList(context, state.categories);
-        }
-        return const Text("Error");
-      },
-    );
-  }
-
-  ProductCarousel<ProductItem, ProductsBloc, ProductsState>
-      _buildProductCarousel(BuildContext context) {
-    return ProductCarousel<ProductItem, ProductsBloc, ProductsState>(
-      bloc: context.read<ProductsBloc>(),
-      stateBuilder: (context, state) {
-        if (state is ProductsLoading) {
-          return const CircularProgressIndicator();
-        } else if (state is ProductsLoaded) {
-          return _buildProductsList(context, state.products);
         }
         return const Text("Error");
       },
@@ -126,73 +113,5 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ]),
     );
-  }
-
-  Widget _buildProductsList(BuildContext context, List<ProductItem> products) {
-    return SizedBox(
-      height: 230,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: products.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 20),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-        itemBuilder: (context, index) {
-          return _buildProductsCard(products, index);
-        },
-      ),
-    );
-  }
-
-  Widget _buildProductsCard(List<ProductItem> products, int index) {
-    final queryW = MediaQuery.of(context).size.width;
-    final queryH = MediaQuery.of(context).size.height;
-    return HomeContainer(
-        height: queryH * .5,
-        width: queryW * .6,
-        onTap: () {
-          Navigator.pushNamed(context, '/product',
-              arguments: products[index].productName);
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              Image.asset(
-                products[index].image,
-                height: 130,
-              ),
-              Positioned(
-                  bottom: 0,
-                  left: 20,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(products[index].productName),
-                      Row(
-                        children: [
-                          Text("\$${products[index].productPrice}"),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text("${products[index].productWeight}gr"),
-                        ],
-                      ),
-                    ],
-                  )),
-              Positioned(
-                  top: -15,
-                  right: -5,
-                  child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.favorite_border_outlined))),
-              Positioned(
-                  bottom: -10,
-                  right: 0,
-                  child: IconButton(
-                      onPressed: () {}, icon: const Icon(Icons.add_circle))),
-            ],
-          ),
-        ));
   }
 }

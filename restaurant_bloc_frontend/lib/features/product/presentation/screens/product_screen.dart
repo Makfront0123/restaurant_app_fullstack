@@ -4,6 +4,7 @@ import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_container.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_event.dart';
+import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_state.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/menu_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/widgets/item_product_count.dart';
@@ -54,29 +55,45 @@ class ProductScreen extends StatelessWidget {
                     Text(
                       "${product.kcal}-${product.productWeight}gr",
                       style: Theme.of(context).textTheme.bodyLarge,
-                    )
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
                 Text(description,
                     style: Theme.of(context).textTheme.labelMedium),
                 const SizedBox(height: 50),
-                ItemProductCount(product: product),
+                BlocBuilder<CartBloc, CartState>(
+                  builder: (context, state) {
+                    ProductItem updatedProduct =
+                        product.copyWith(productCount: 0);
+
+                    if (state is CartUpdatedState) {
+                      final foundProduct = state.productsInCart.firstWhere(
+                        (p) => p.productName == product.productName,
+                        orElse: () => updatedProduct,
+                      );
+                      updatedProduct = foundProduct;
+                    }
+
+                    return ItemProductCount(product: updatedProduct);
+                  },
+                ),
                 const SizedBox(height: 10),
                 AuthButton(
-                    onTap: () {
-                      context
-                          .read<CartBloc>()
-                          .add(AddProductToCart(product: product));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            backgroundColor: Colors.green,
-                            duration: const Duration(seconds: 1),
-                            content:
-                                Text('${product.productName} add from cart')),
-                      );
-                    },
-                    text: 'Add to Cart')
+                  onTap: () {
+                    context
+                        .read<CartBloc>()
+                        .add(AddProductToCart(product: product));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: Colors.green,
+                        duration: const Duration(seconds: 1),
+                        content: Text('${product.productName} added to cart'),
+                      ),
+                    );
+                  },
+                  text: 'Add to Cart',
+                ),
               ],
             ),
           ),

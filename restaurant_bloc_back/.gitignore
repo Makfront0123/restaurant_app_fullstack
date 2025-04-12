@@ -1,0 +1,60 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Environment variables
+.env
+.env.*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Editor folders/files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Coverage directory (si usas pruebas)
+coverage/
+
+# Build output (si usas TypeScript o compilas algo)
+dist/
+build/
+
+# Optional npm cache directory
+.npm/
+
+# Optional eslint cache
+.eslintcache
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Docker files (si no los usas o los generas)
+docker-compose.override.yml
+
+# Nodemon logs (si aplica)
+*.pid
+
+# Ignore test snapshots
+__snapshots__/
+
+# Swagger generated docs
+swagger.json
+swagger.yaml

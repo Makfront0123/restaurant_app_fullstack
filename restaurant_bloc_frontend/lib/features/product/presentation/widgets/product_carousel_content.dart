@@ -34,6 +34,7 @@ class ProductCarouselContent extends StatelessWidget {
           final products = state is ProductsLoaded
               ? state.products
               : (state as ProductsLoadedByCategory).products;
+          print(products);
           return _buildProductList(context, products);
         }
 

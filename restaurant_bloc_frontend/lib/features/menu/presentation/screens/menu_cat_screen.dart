@@ -17,7 +17,7 @@ class _MenuCatScreenState extends State<MenuCatScreen> {
   @override
   Widget build(BuildContext context) {
     final category = ModalRoute.of(context)?.settings.arguments as String?;
-
+    print(category);
     if (category == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pop(context);

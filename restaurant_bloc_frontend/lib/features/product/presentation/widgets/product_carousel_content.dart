@@ -10,62 +10,49 @@ import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/pro
 
 class ProductCarouselContent extends StatelessWidget {
   final ProductsState? Function(ProductsState) stateFilter;
-
   final List<ProductItem> Function(ProductsState) productExtractor;
-  final double containerHeight;
+  final double? containerHeight;
   final bool isVertical;
 
   const ProductCarouselContent({
     super.key,
     required this.stateFilter,
     required this.productExtractor,
-    this.containerHeight = 230,
+    this.containerHeight,
     this.isVertical = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return ProductCarousel<ProductItem, ProductsBloc, ProductsState>(
-        bloc: context.read<ProductsBloc>(),
-        stateBuilder: (context, state) {
-          if (state is ProductsLoading) {
-            return const CircularProgressIndicator();
-          } else if (state is ProductsLoaded) {
-            final products = state.products;
-            return _buildHorizontalList(context, products);
-          } else if (state is ProductsLoadedByCategory) {
-            final products = state.products;
-            return _buildVerticalList(context, products);
-          }
+      bloc: context.read<ProductsBloc>(),
+      stateBuilder: (context, state) {
+        if (state is ProductsLoading) {
+          return const CircularProgressIndicator();
+        } else if (state is ProductsLoaded ||
+            state is ProductsLoadedByCategory) {
+          final products = state is ProductsLoaded
+              ? state.products
+              : (state as ProductsLoadedByCategory).products;
+          return _buildProductList(context, products);
+        }
 
-          return const Text("Error");
-        });
-  }
-
-  Widget _buildHorizontalList(
-      BuildContext context, List<ProductItem> products) {
-    return SizedBox(
-      height: containerHeight,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: products.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 20),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-        itemBuilder: (context, index) {
-          return _buildCard(context, products[index]);
-        },
-      ),
+        return const Text("Error");
+      },
     );
   }
 
-  Widget _buildVerticalList(BuildContext context, List<ProductItem> products) {
-    return Expanded(
+  Widget _buildProductList(BuildContext context, List<ProductItem> products) {
+    return SizedBox(
+      height: containerHeight ?? MediaQuery.of(context).size.height,
       child: ListView.separated(
+        scrollDirection: isVertical ? Axis.vertical : Axis.horizontal,
         itemCount: products.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 20),
+        separatorBuilder: (_, __) =>
+            isVertical ? const SizedBox(height: 20) : const SizedBox(width: 20),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
         itemBuilder: (context, index) {
-          return _buildCard(context, products[index], isVertical: true);
+          return _buildCard(context, products[index], isVertical: isVertical);
         },
       ),
     );
@@ -125,7 +112,7 @@ class ProductCarouselContent extends StatelessWidget {
                     SnackBar(
                         backgroundColor: Colors.green,
                         duration: const Duration(seconds: 1),
-                        content: Text('${product.productName} add from cart')),
+                        content: Text('${product.productName} added to cart')),
                   );
                 },
                 icon: const Icon(Icons.add_circle),

@@ -8,9 +8,11 @@ class MenuAppbar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     required this.title,
     this.showIcon = true,
+    this.showAction = true,
   });
   final String title;
   final bool showIcon;
+  final bool showAction;
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +32,13 @@ class MenuAppbar extends StatelessWidget implements PreferredSizeWidget {
         title: Text(title),
         centerTitle: true,
         actions: [
-          GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/cart');
-              },
-              child: const Icon(Icons.shopping_cart))
+          showAction
+              ? GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/cart');
+                  },
+                  child: const Icon(Icons.shopping_cart))
+              : const SizedBox()
         ],
       ),
     );

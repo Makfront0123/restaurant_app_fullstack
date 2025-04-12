@@ -3,6 +3,7 @@ import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/logi
 import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/register_screen.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_wrapper.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/screens/cart_screen.dart';
+import 'package:restaurant_bloc_frontend/features/checkout/presentation/screens/checkout_screen.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_cat_screen.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_screen.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/screens/product_screen.dart';
@@ -18,6 +19,7 @@ class AppRoutes {
   static const String menuCat = '/menuCat';
   static const String menu = '/menu';
   static const String product = '/product';
+  static const String checkout = '/checkout';
 
   static Map<String, WidgetBuilder> routes = {
     wrapper: (context) => const AuthWrapper(),
@@ -26,6 +28,7 @@ class AppRoutes {
     menu: (context) => const MenuScreen(),
     signup: (context) => const RegisterScreen(),
     product: (context) => const ProductScreen(),
-    cart: (context) => const CartScreen()
+    cart: (context) => const CartScreen(),
+    checkout: (context) => const CheckoutScreen()
   };
 }

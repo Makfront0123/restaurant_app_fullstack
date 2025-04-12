@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_bloc_frontend/app/router.dart';
 import 'package:restaurant_bloc_frontend/core/constants/vectors.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_button.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_container.dart';
@@ -65,7 +66,9 @@ class _CartScreenState extends State<CartScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: AuthButton(
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.checkout);
+              },
               text: 'Checkout',
             ),
           ),

@@ -13,7 +13,7 @@ export const authRegister = asyncHandler(async (req, res) => {
         if (!confirmPassword) return res.status(400).json({ message: "Confirm Password is required" });
         if (password !== confirmPassword) return res.status(400).json({ message: "Password and Confirm Password must match" });
 
-        const userExists = await Auth.findOne({ email });
+        const userExists = await Auth.get({ email });
         if (userExists) return res.status(404).json({
             message: "User already exists"
         })
@@ -123,8 +123,14 @@ export const authForgotPassword = asyncHandler(async (req, res) => {
         const resetToken = crypto.randomBytes(32).toString('hex');
         const resetExpires = Date.now() + 10 * 60 * 1000;
 
+        if (user.resetPasswordToken !== token || user.resetPasswordExpires < Date.now()) {
+            return res.status(400).json({ message: "Invalid or expired token" });
+        }
+
+        user.password = await bcrypt.hash(newPassword, 12);
+
         user.resetPasswordToken = resetToken;
-        user.resetPasswordExpires = resetTokenExpires;
+        user.resetPasswordExpires = resetExpires;
         await user.save();
 
         const resetUrl = `restaurantapp://reset-password?token=${resetToken}&email=${email}`;
@@ -148,15 +154,15 @@ export const authForgotPassword = asyncHandler(async (req, res) => {
 })
 
 export const authResetPassword = asyncHandler(async (req, res) => {
-    const { token, password, newPassword, confirmPassword } = req.body;
+    const { token, password, newPassword,email } = req.body;
     const user = await Auth.findOne({
         email,
-        resetPasswordToken: token,
-        resetPasswordExpires: { $gt: Date.now() }
+        
     })
+    console.log(user);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (newPassword !== confirmPassword) return res.status(400).json({ message: "Passwords do not match" });
+    if (newPassword !== password) return res.status(400).json({ message: "Passwords do not match" });
 
     user.password = newPassword;
     user.resetPasswordToken = undefined;

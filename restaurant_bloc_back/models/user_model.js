@@ -1,6 +1,6 @@
-
+import mongoose from "mongoose";
 // models/user_model.js
-const UserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     name: String,
     email: String,
     password: String,
@@ -10,3 +10,6 @@ const UserSchema = new mongoose.Schema({
     cart: [{ item: { type: mongoose.Schema.Types.ObjectId, ref: 'Products' }, quantity: Number }],
     role: { type: String, enum: ['customer', 'admin'], default: 'customer' }
 });
+
+
+export default mongoose.model('User', userSchema);

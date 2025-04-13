@@ -1,0 +1,4 @@
+ignoredBuiltDependencies:
+  - aws-sdk
+  - bcrypt
+  - protobufjs

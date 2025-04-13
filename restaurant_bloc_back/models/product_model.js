@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const productSchema = new mongoose.Schema({
     name: {
@@ -19,9 +19,28 @@ const productSchema = new mongoose.Schema({
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Categories',
-        required: true,
+        ref: 'Category',
+        required: false,
     },
-})
+    dateAdded: {
+        type: Date,
+        default: Date.now,
+    },
+    reviews: [
+        {
+            author: {
+                type: String,
+                required: true
+            },
 
-export default mongoose.model('Products', productSchema);
+            comment: {
+                type: String,
+                required: true
+            }
+        }
+    ]
+
+});
+
+ 
+export default mongoose.model('Product', productSchema);

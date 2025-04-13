@@ -1,6 +1,6 @@
 import User from "../models/user_model.js"
 
-export default authMiddleware =async (req,res,next) => { 
+export const authMiddleware =async (req,res,next) => { 
     const token = req.cookies.token || req.header('Authorization')?.replace('Bearer ', '')
     if(!token){
         return res.status(401).json({

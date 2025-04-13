@@ -34,6 +34,20 @@ const authSchema = new mongoose.Schema({
     imageUser: {
         type: String,
         default: ''
+    },
+    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+    cart: [
+        {
+            item: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+            quantity: Number
+        }
+    ],
+
+
+    role: {
+        type: String,
+        enum: ['customer', 'admin'],
+        default: 'customer'
     }
 
 })

@@ -13,7 +13,7 @@ export const authRegister = asyncHandler(async (req, res) => {
         if (!confirmPassword) return res.status(400).json({ message: "Confirm Password is required" });
         if (password !== confirmPassword) return res.status(400).json({ message: "Password and Confirm Password must match" });
 
-        const userExists = await Auth.get({ email });
+        const userExists = await Auth.findOne({ email });
         if (userExists) return res.status(404).json({
             message: "User already exists"
         })

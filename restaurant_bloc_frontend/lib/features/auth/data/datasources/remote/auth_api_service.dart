@@ -72,4 +72,15 @@ class AuthApiService {
       return e;
     }
   }
+
+  Future<dynamic> getCurrentUser(String token) async {
+    try {
+      final response = await _dio.get('/api/v1/user/current', data: {
+        'token': token,
+      });
+      return response.data;
+    } catch (e) {
+      return e;
+    }
+  }
 }

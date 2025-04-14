@@ -73,7 +73,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 60),
                   AuthButton(
                     onTap: () {
-                      context.read<AuthBloc>().add(LoginEvent());
+                      context.read<AuthBloc>().add(const LoginEvent(
+                            email: 'test@email.com',
+                            password: '123456',
+                          ));
                     },
                     text: 'Sign In',
                   ),

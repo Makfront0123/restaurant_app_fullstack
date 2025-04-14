@@ -8,7 +8,7 @@ class ProductModel extends Equatable {
   final double price;
   final int quantity;
   final bool isFavorite;
-  final String? category; // puede ser ID de categoría o null
+  final String? category;
   final DateTime? dateAdded;
   final List<Review> reviews;
 

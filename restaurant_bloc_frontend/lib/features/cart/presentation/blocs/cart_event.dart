@@ -5,23 +5,23 @@ abstract class CartEvent {}
 class CartLoaded extends CartEvent {}
 
 class AddProductToCart extends CartEvent {
-  final ProductItem product;
+  final Product product;
 
   AddProductToCart({required this.product});
 }
 
 class RemoveProductFromCart extends CartEvent {
-  final ProductItem product;
+  final Product product;
 
   RemoveProductFromCart({required this.product});
 }
 
 class IncrementProductCount extends CartEvent {
-  final ProductItem product;
+  final Product product;
   IncrementProductCount({required this.product});
 }
 
 class DecrementProductCount extends CartEvent {
-  final ProductItem product;
+  final Product product;
   DecrementProductCount({required this.product});
 }

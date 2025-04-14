@@ -6,7 +6,7 @@ import 'package:restaurant_bloc_frontend/features/product/domain/entities/produc
 
 class ItemCount extends StatelessWidget {
   final Axis direction;
-  final ProductItem product;
+  final Product product;
 
   const ItemCount({
     super.key,

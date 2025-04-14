@@ -14,7 +14,7 @@ class ProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final product = ModalRoute.of(context)?.settings.arguments as ProductItem?;
+    final product = ModalRoute.of(context)?.settings.arguments as Product?;
 
     if (product == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -64,8 +64,7 @@ class ProductScreen extends StatelessWidget {
                 const SizedBox(height: 50),
                 BlocBuilder<CartBloc, CartState>(
                   builder: (context, state) {
-                    ProductItem updatedProduct =
-                        product.copyWith(productCount: 0);
+                    Product updatedProduct = product.copyWith(productCount: 0);
 
                     if (state is CartUpdatedState) {
                       final foundProduct = state.productsInCart.firstWhere(

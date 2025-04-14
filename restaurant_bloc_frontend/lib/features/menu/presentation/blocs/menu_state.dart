@@ -9,8 +9,8 @@ class MenuLoading extends MenuState {}
 
 class MenuLoaded extends MenuState {
   final List<CategoryItem> categories;
-  final List<ProductItem> allProducts;
-  final List<ProductItem> filteredProducts;
+  final List<Product> allProducts;
+  final List<Product> filteredProducts;
   final String? currentCategoryFilter;
 
   MenuLoaded({
@@ -21,7 +21,7 @@ class MenuLoaded extends MenuState {
   });
 
   MenuLoaded copyWith({
-    List<ProductItem>? filteredProducts,
+    List<Product>? filteredProducts,
     String? currentCategoryFilter,
   }) {
     return MenuLoaded(

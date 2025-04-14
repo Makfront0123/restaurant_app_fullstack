@@ -10,7 +10,7 @@ import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/pro
 
 class ProductCarouselContent extends StatelessWidget {
   final ProductsState? Function(ProductsState) stateFilter;
-  final List<ProductItem> Function(ProductsState) productExtractor;
+  final List<Product> Function(ProductsState) productExtractor;
   final double? containerHeight;
   final bool isVertical;
 
@@ -24,7 +24,7 @@ class ProductCarouselContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProductCarousel<ProductItem, ProductsBloc, ProductsState>(
+    return ProductCarousel<Product, ProductsBloc, ProductsState>(
       bloc: context.read<ProductsBloc>(),
       stateBuilder: (context, state) {
         if (state is ProductsLoading) {
@@ -43,7 +43,7 @@ class ProductCarouselContent extends StatelessWidget {
     );
   }
 
-  Widget _buildProductList(BuildContext context, List<ProductItem> products) {
+  Widget _buildProductList(BuildContext context, List<Product> products) {
     return SizedBox(
       height: containerHeight ?? MediaQuery.of(context).size.height,
       child: ListView.separated(
@@ -59,7 +59,7 @@ class ProductCarouselContent extends StatelessWidget {
     );
   }
 
-  Widget _buildCard(BuildContext context, ProductItem product,
+  Widget _buildCard(BuildContext context, Product product,
       {bool isVertical = false}) {
     final queryW = MediaQuery.of(context).size.width;
     final queryH = MediaQuery.of(context).size.height;

@@ -1,4 +1,4 @@
-class ProductItem {
+class Product {
   final String image;
   final String productName;
   final double productPrice;
@@ -7,7 +7,7 @@ class ProductItem {
   final int kcal;
   int productCount;
   final String productDescription;
-  ProductItem({
+  Product({
     this.productCount = 1,
     required this.productDescription,
     required this.kcal,
@@ -23,8 +23,8 @@ class ProductItem {
     return 'ProductItem(name: $productName, price: $productPrice, count: $productCount)';
   }
 
-  ProductItem copyWith({int? productCount}) {
-    return ProductItem(
+  Product copyWith({int? productCount}) {
+    return Product(
       category: category,
       productName: productName,
       productDescription: productDescription,

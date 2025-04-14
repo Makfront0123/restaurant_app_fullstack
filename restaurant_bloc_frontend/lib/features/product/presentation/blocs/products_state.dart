@@ -8,16 +8,16 @@ class ProductsInitial extends ProductsState {}
 class ProductsLoading extends ProductsState {}
 
 class ProductsLoaded extends ProductsState {
-  final List<ProductItem> products;
+  final List<Product> products;
   ProductsLoaded(this.products);
 }
 
 class ProductsLoadedByCategory extends ProductsState {
-  final List<ProductItem> products;
+  final List<Product> products;
   ProductsLoadedByCategory({
     required this.products,
   });
-  ProductsLoadedByCategory copyWith({List<ProductItem>? products}) {
+  ProductsLoadedByCategory copyWith({List<Product>? products}) {
     return ProductsLoadedByCategory(
       products: products ?? this.products,
     );
@@ -30,7 +30,7 @@ class ProductsLoadedByCategory extends ProductsState {
 class ProductLoading extends ProductsState {}
 
 class ProductLoaded extends ProductsState {
-  final ProductItem product;
+  final Product product;
   ProductLoaded(this.product);
 }
 

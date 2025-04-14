@@ -4,7 +4,7 @@ import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_s
 import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
-  final List<ProductItem> _productsInCart = [];
+  final List<Product> _productsInCart = [];
 
   CartBloc() : super(CartInitial()) {
     on<AddProductToCart>(_onAddProduct);

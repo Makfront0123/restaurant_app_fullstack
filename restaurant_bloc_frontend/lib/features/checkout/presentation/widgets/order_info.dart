@@ -75,7 +75,7 @@ class OrderInfo extends StatelessWidget {
     );
   }
 
-  Container _buildOrderSummary(BuildContext context, List<ProductItem> products,
+  Container _buildOrderSummary(BuildContext context, List<Product> products,
       double subtotal, double deliveryFee, double total) {
     return Container(
       constraints: const BoxConstraints(
@@ -109,7 +109,7 @@ class OrderInfo extends StatelessWidget {
     );
   }
 
-  Widget _buildProductRow(ProductItem product) {
+  Widget _buildProductRow(Product product) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(

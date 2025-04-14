@@ -5,7 +5,7 @@ abstract class CartState {}
 class CartInitial extends CartState {}
 
 class CartUpdatedState extends CartState {
-  final List<ProductItem> productsInCart;
+  final List<Product> productsInCart;
 
   CartUpdatedState({required this.productsInCart});
 
@@ -13,19 +13,19 @@ class CartUpdatedState extends CartState {
 }
 
 class CartIncrementdState extends CartState {
-  final ProductItem product;
+  final Product product;
 
   CartIncrementdState({required this.product});
 }
 
 class CartDecrementdState extends CartState {
-  final ProductItem product;
+  final Product product;
 
   CartDecrementdState({required this.product});
 }
 
 class CartRemoveState extends CartState {
-  final ProductItem product;
+  final Product product;
 
   CartRemoveState({required this.product});
 }

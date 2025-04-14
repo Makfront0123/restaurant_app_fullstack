@@ -45,7 +45,7 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildCartList(List<ProductItem> products) {
+  Widget _buildCartList(List<Product> products) {
     return SingleChildScrollView(
       padding: const EdgeInsets.only(bottom: 30),
       child: Column(
@@ -77,7 +77,7 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildCartItem(ProductItem product) {
+  Widget _buildCartItem(Product product) {
     return Dismissible(
       key: Key(product.productName), // Usa un identificador único
       direction: DismissDirection.endToStart,

@@ -5,7 +5,7 @@ import 'package:restaurant_bloc_frontend/features/product/presentation/widgets/i
 
 class ItemProductCount extends StatefulWidget {
   const ItemProductCount({super.key, required this.product});
-  final ProductItem product;
+  final Product product;
   @override
   State<ItemProductCount> createState() => _ItemProductCountState();
 }

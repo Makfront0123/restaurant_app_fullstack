@@ -6,7 +6,7 @@ class GetAllProducts {
 
   GetAllProducts(this.repository);
 
-  Future<List<Product>> call() {
-    return repository.getAllProducts();
+  Future<List<Product>> call() async {
+    return await repository.getAllProducts();
   }
 }

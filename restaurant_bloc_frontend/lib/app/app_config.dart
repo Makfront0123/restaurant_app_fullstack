@@ -11,6 +11,13 @@ import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_b
 import 'package:restaurant_bloc_frontend/features/favorite/presentation/blocs/favorite_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/home/data/repositories/home_repository.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/menu/data/datasources/remote/category_api_services.dart';
+import 'package:restaurant_bloc_frontend/features/menu/data/repositories/category_repository_impl.dart';
+import 'package:restaurant_bloc_frontend/features/menu/domain/repositories/category_repository.dart';
+import 'package:restaurant_bloc_frontend/features/menu/domain/usecases/get_all_categories.dart';
+import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_blocs.dart';
+import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_event.dart';
+import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_state.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_screen.dart';
 import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/product/data/datasources/remote/product_api_services.dart';
@@ -25,9 +32,10 @@ import 'package:restaurant_bloc_frontend/features/product/domain/usecases/get_pr
 
 class AppProvider {
   static get allproviders => [
+        /// Networking
         RepositoryProvider(create: (_) => Dio()),
 
-        // Auth
+        /// Auth
         RepositoryProvider(
           create: (context) => AuthApiService(context.read<Dio>()),
         ),
@@ -41,7 +49,6 @@ class AppProvider {
         RepositoryProvider(
           create: (context) => LogoutUser(context.read<AuthRepositoryImpl>()),
         ),
-
         BlocProvider(
           create: (context) => AuthBloc(
             loginUser: context.read<LoginUser>(),
@@ -49,24 +56,16 @@ class AppProvider {
           ),
         ),
 
-        //Productos
-
+        /// Productos
         RepositoryProvider(
-          create: (context) => ProductApiServices(context.read<Dio>()),
+          create: (context) =>
+              ProductApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
         ),
-        RepositoryProvider(
+        RepositoryProvider<ProductRepository>(
           create: (context) => ProductRepositoryImpl(
             context.read<ProductApiServices>(),
           ),
         ),
-        RepositoryProvider(
-          create: (context) => LoginUser(context.read<AuthRepositoryImpl>()),
-        ),
-        RepositoryProvider(
-          create: (context) => LogoutUser(context.read<AuthRepositoryImpl>()),
-        ),
-
-        // Inyección de use cases de productos
         RepositoryProvider(
           create: (context) =>
               GetAllProducts(context.read<ProductRepository>()),
@@ -78,8 +77,6 @@ class AppProvider {
           create: (context) =>
               GetProductsByCategory(context.read<ProductRepository>()),
         ),
-
-        // Bloc de productos con todos los use cases
         BlocProvider(
           create: (context) => ProductsBloc(
             getAllProducts: context.read<GetAllProducts>(),
@@ -88,13 +85,33 @@ class AppProvider {
           )..add(LoadProductsData()),
         ),
 
-        // General
+        //Category
+        RepositoryProvider(
+          create: (context) =>
+              CategoryApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
+        ),
+        RepositoryProvider<CategoryRepository>(
+          create: (context) => CategoryRepositoryImpl(
+            context.read<CategoryApiServices>(),
+          ),
+        ),
+
+        RepositoryProvider(
+          create: (context) =>
+              GetAllCategories(context.read<CategoryRepository>()),
+        ),
+        BlocProvider(
+          create: (context) => MenuBloc(
+            getAllCategories: context.read<GetAllCategories>(),
+          )..add(LoadCategories()),
+        ),
+
+        /// General
         BlocProvider(create: (_) => ApplicationBloc()),
         BlocProvider(create: (_) => ThemeBloc()),
 
-        // Home y Productos
+        /// Home y relacionados
         RepositoryProvider(create: (_) => HomeRepository()),
-
         BlocProvider(
           create: (context) => HomeBloc(context.read<HomeRepository>()),
         ),
@@ -102,10 +119,10 @@ class AppProvider {
         BlocProvider(create: (_) => OrderBloc()),
         BlocProvider(create: (_) => CartBloc()),
 
-        // Bloc de búsqueda
+        /// Búsqueda
         BlocProvider(
           create: (context) => SearchBloc(context.read<HomeRepository>()),
-          child: const MenuScreen(),
+          child: const MenuScreen(), // Esto no va acá realmente (ver abajo)
         ),
       ];
 }

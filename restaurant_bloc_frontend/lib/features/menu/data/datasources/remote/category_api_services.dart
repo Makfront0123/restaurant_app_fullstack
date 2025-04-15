@@ -2,8 +2,10 @@ import 'package:dio/dio.dart';
 
 class CategoryApiServices {
   final Dio _dio;
+  final String baseUrl;
 
-  CategoryApiServices(this._dio);
+  CategoryApiServices(this._dio, this.baseUrl);
+
   Future<dynamic> createCategory(
       String name, String description, String image) async {
     try {
@@ -38,7 +40,7 @@ class CategoryApiServices {
 
   Future<dynamic> getAllCategory() async {
     try {
-      final response = await _dio.get('/api/v1/category/all-category');
+      final response = await _dio.get('$baseUrl/api/v1/all-category');
       return response.data;
     } catch (e) {
       return e;

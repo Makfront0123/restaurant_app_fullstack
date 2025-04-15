@@ -32,8 +32,6 @@ class _CartScreenState extends State<CartScreen> {
           if (state is CartUpdatedState) {
             final products = state.productsInCart;
 
-            print(products);
-
             return _buildCartList(products);
           }
           return const ScreenEmpty(

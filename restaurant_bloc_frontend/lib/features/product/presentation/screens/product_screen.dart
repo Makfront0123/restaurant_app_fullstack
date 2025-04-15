@@ -26,6 +26,7 @@ class ProductScreen extends StatelessWidget {
     }
 
     final description = product.productDescription.substring(0, 150);
+    const String baseUrl = 'http://10.0.2.2:3000/';
 
     return Scaffold(
       appBar: const MenuAppbar(title: 'Product'),
@@ -37,7 +38,7 @@ class ProductScreen extends StatelessWidget {
             padding: const EdgeInsets.all(40),
             width: double.infinity,
             height: MediaQuery.of(context).size.height * .45,
-            child: Image.asset(product.image),
+            child: Image.network('$baseUrl${product.image}'),
           ),
           const SizedBox(height: 30),
           Padding(

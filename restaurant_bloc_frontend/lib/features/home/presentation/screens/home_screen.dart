@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/home/domain/entities/category_item.dart';
-import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_state.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_carousel.dart';
-import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_container.dart';
-import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/product_carousel.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/review_carousel.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/title_button.dart';
+import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_state.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_state.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/widgets/category_carousel_content.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/widgets/product_carousel_content.dart';
@@ -36,8 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
           TitleButton(context: context, title: 'We offer'),
           CategoryCarouselContent(
             isVertical: false,
-            stateFilter: (state) => state is HomeLoaded ? state : null,
-            categoryExtractor: (state) => (state as HomeLoaded).categories,
+            stateFilter: (state) => state is MenuLoaded ? state : null,
+            categoryExtractor: (state) => (state as MenuLoaded).categories,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 11),
@@ -58,68 +53,6 @@ class _HomeScreenState extends State<HomeScreen> {
           const ReviewCarousel()
         ],
       ),
-    );
-  }
-
-  Widget _buildOfferCarousel(BuildContext context) {
-    return SizedBox(
-      height: 130, // o cualquier altura que se ajuste bien a tu diseño
-      child: ProductCarousel<CategoryItem, HomeBloc, HomeState>(
-        bloc: context.read<HomeBloc>(),
-        stateBuilder: (context, state) {
-          print('STATE IN CAROUSEL: $state');
-          if (state is HomeLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is HomeLoaded) {
-            return _buildCategoryList(context, state.categories);
-          }
-          return const Text("Error");
-        },
-      ),
-    );
-  }
-
-  Widget _buildCategoryList(
-      BuildContext context, List<CategoryItem> categories) {
-    return SizedBox(
-      height: 110,
-      width: double.infinity,
-      child: ListView.separated(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 20),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-        itemBuilder: (context, index) {
-          return _buildCategoryCard(
-            index,
-            categories,
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildCategoryCard(int index, List<CategoryItem> categories) {
-    return HomeContainer(
-      height: 100,
-      width: 100,
-      onTap: () {
-        Navigator.pushNamed(context, '/menuCat',
-            arguments: categories[index].title);
-      },
-      child: Stack(children: [
-        Positioned.fill(
-          top: -50,
-          right: 0,
-          child: Image.asset(categories[index].image),
-        ),
-        Positioned(
-          bottom: 7,
-          left: 7,
-          child: Text(categories[index].title),
-        ),
-      ]),
     );
   }
 }

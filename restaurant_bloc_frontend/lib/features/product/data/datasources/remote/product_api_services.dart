@@ -2,8 +2,9 @@ import 'package:dio/dio.dart';
 
 class ProductApiServices {
   final Dio _dio;
+  final String baseUrl;
 
-  ProductApiServices(this._dio);
+  ProductApiServices(this._dio, this.baseUrl);
 
   Future<dynamic> createProduct(String name, String description, String price,
       String image, String category) async {
@@ -58,7 +59,7 @@ class ProductApiServices {
 
   Future<dynamic> getAllProducts() async {
     try {
-      final response = await _dio.get('/api/v1/product/all-products');
+      final response = await _dio.get("$baseUrl/api/v1/all-products");
       return response.data;
     } catch (e) {
       return e;

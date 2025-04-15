@@ -1,14 +1,20 @@
 import 'package:restaurant_bloc_frontend/core/constants/images.dart';
 import 'package:restaurant_bloc_frontend/features/product/data/datasources/remote/product_api_services.dart';
+import 'package:restaurant_bloc_frontend/features/product/data/models/product_model.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/repositories/product_repository.dart';
 
 class ProductRepositoryImpl implements ProductRepository {
-  ProductRepositoryImpl(ProductApiServices read);
+  final ProductApiServices read;
+  ProductRepositoryImpl(this.read);
 
   @override
   Future<List<Product>> getAllProducts() async {
-    return [];
+    final response = await read.getAllProducts();
+
+    return (response['data'] as List)
+        .map((e) => ProductModel.fromJson(e).toProduct())
+        .toList();
   }
 
   @override

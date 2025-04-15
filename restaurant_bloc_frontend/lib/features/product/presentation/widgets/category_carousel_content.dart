@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/home/domain/entities/category_item.dart';
-import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_state.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/product_carousel.dart';
+import 'package:restaurant_bloc_frontend/features/menu/domain/entities/category_item.dart';
+import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_blocs.dart';
+import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_state.dart';
 
 class CategoryCarouselContent extends StatelessWidget {
-  final HomeState? Function(HomeState) stateFilter;
-  final List<CategoryItem> Function(HomeState) categoryExtractor;
+  final MenuState? Function(MenuState) stateFilter;
+  final List<Category> Function(MenuState) categoryExtractor;
   final double containerHeight;
   final bool isVertical;
 
@@ -21,43 +21,46 @@ class CategoryCarouselContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProductCarousel<CategoryItem, HomeBloc, HomeState>(
-      bloc: context.read<HomeBloc>(),
+    return ProductCarousel<Category, MenuBloc, MenuState>(
+      bloc: context.read<MenuBloc>(),
       stateBuilder: (context, state) {
-        print('STATE IN CAROUSEL: $state');
-        if (state is HomeLoading) {
+        if (state is MenuLoading) {
           return const Center(child: CircularProgressIndicator());
-        } else if (state is HomeLoaded) {
-          return _buildCategoryList(context, state.categories);
+        } else if (state is MenuLoaded) {
+          final categories = state.categories;
+          print('categories: $categories');
+          return _buildCategoryList(context, categories);
         }
         return const Text("Error");
       },
     );
   }
 
-  Widget _buildCategoryList(BuildContext context, List<CategoryItem> products) {
+  Widget _buildCategoryList(BuildContext context, List<Category> categories) {
     return SizedBox(
       height: containerHeight,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        itemCount: products.length,
+        itemCount: categories.length,
         separatorBuilder: (_, __) => const SizedBox(width: 20),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
         itemBuilder: (context, index) {
-          return _buildCategoryCard(context, products[index]);
+          return _buildCategoryCard(context, categories[index]);
         },
       ),
     );
   }
 
-  Widget _buildCategoryCard(BuildContext context, CategoryItem category) {
+  Widget _buildCategoryCard(BuildContext context, Category category) {
+    const String baseUrl = 'http://10.0.2.2:3000/';
+
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, '/menuCat', arguments: category.title);
       },
       child: Column(
         children: [
-          Image.asset(category.image, height: 70),
+          Image.network('$baseUrl${category.image}', height: 70),
           Text(category.title),
         ],
       ),

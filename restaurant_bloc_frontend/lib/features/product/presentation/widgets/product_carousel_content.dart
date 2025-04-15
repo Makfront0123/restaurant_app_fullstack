@@ -34,7 +34,7 @@ class ProductCarouselContent extends StatelessWidget {
           final products = state is ProductsLoaded
               ? state.products
               : (state as ProductsLoadedByCategory).products;
-          print(products);
+
           return _buildProductList(context, products);
         }
 
@@ -44,6 +44,17 @@ class ProductCarouselContent extends StatelessWidget {
   }
 
   Widget _buildProductList(BuildContext context, List<Product> products) {
+    if (products.isEmpty) {
+      return SizedBox(
+        height: containerHeight ?? MediaQuery.of(context).size.height,
+        child: const Center(
+          child: Text(
+            'No hay productos disponibles 😔',
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+        ),
+      );
+    }
     return SizedBox(
       height: containerHeight ?? MediaQuery.of(context).size.height,
       child: ListView.separated(
@@ -64,6 +75,7 @@ class ProductCarouselContent extends StatelessWidget {
     final queryW = MediaQuery.of(context).size.width;
     final queryH = MediaQuery.of(context).size.height;
     final height = isVertical ? queryH * .3 : queryH * .5;
+    const String baseUrl = 'http://10.0.2.2:3000/';
 
     return HomeContainer(
       height: height,
@@ -76,7 +88,7 @@ class ProductCarouselContent extends StatelessWidget {
         child: Stack(
           alignment: Alignment.topCenter,
           children: [
-            Image.asset(product.image, height: 130),
+            Image.network('$baseUrl${product.image}', height: 130),
             Positioned(
               bottom: 0,
               left: 20,

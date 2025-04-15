@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
 
 class ProductModel extends Equatable {
   final String id;
@@ -6,7 +7,7 @@ class ProductModel extends Equatable {
   final String description;
   final String image;
   final double price;
-  final int quantity;
+  final int weight;
   final bool isFavorite;
   final String? category;
   final DateTime? dateAdded;
@@ -18,7 +19,7 @@ class ProductModel extends Equatable {
     required this.description,
     required this.image,
     required this.price,
-    required this.quantity,
+    required this.weight,
     required this.isFavorite,
     this.category,
     this.dateAdded,
@@ -32,7 +33,7 @@ class ProductModel extends Equatable {
         description,
         image,
         price,
-        quantity,
+        weight,
         isFavorite,
         category,
         dateAdded,
@@ -46,7 +47,7 @@ class ProductModel extends Equatable {
       description: json['description'] ?? '',
       image: json['image'] ?? '',
       price: (json['price'] ?? 0).toDouble(),
-      quantity: json['quantity'] ?? 0,
+      weight: json['productWeight'] ?? 0,
       isFavorite: json['isFavorite'] ?? false,
       category: json['category'],
       dateAdded:
@@ -63,12 +64,24 @@ class ProductModel extends Equatable {
         'description': description,
         'image': image,
         'price': price,
-        'quantity': quantity,
+        'quantity': weight,
         'isFavorite': isFavorite,
         'category': category,
         'dateAdded': dateAdded?.toIso8601String(),
         'reviews': reviews.map((r) => r.toJson()).toList(),
       };
+
+  Product toProduct() {
+    return Product(
+      image: image,
+      productName: name,
+      productPrice: price,
+      productWeight: weight, // asumimos que quantity representa el peso
+      category: category ?? 'Unknown',
+      kcal: 140, // si no lo recibís del backend, un valor por defecto
+      productDescription: description,
+    );
+  }
 }
 
 class Review extends Equatable {

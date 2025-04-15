@@ -3,10 +3,26 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import connectDB from './db/connect.js';
 import fs from 'fs';
+import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+
 dotenv.config();
 
 const app = express();
 
+app.use(cors(
+    {
+        origin: 'http://10.0.2.2:3000',
+        credentials: true
+    },
+));
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())

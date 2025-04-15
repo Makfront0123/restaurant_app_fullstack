@@ -70,7 +70,12 @@ export const deleteCategory = asyncHandler(async (req, res) => {
 export const getAllCategory = asyncHandler(async (req, res) => {
     try {
         const categories = await Category.find();
-        res.status(200).json(categories);
+        res.status(200).json(
+            {
+                message: "Categories found",
+                data: categories
+            }
+        );
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",

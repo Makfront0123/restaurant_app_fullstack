@@ -22,6 +22,10 @@ const productSchema = new mongoose.Schema({
         ref: 'Category',
         required: false,
     },
+    productWeight: {
+        type: Number,
+        required: true,
+    },
     dateAdded: {
         type: Date,
         default: Date.now,

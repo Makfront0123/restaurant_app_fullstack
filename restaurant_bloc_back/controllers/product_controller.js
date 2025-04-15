@@ -1,7 +1,7 @@
 import Product from '../models/product_model.js';
 import asyncHandler from 'express-async-handler';
 export const productCreate = asyncHandler(async (req, res) => {
-    const { name, description, price, image, category } = req.body;
+    const { name, description, price, image, category, productWeight } = req.body;
 
     try {
         if (!name) return res.status(404).json('Name is required');
@@ -9,6 +9,7 @@ export const productCreate = asyncHandler(async (req, res) => {
         if (!price) return res.status(404).json('Price is required');
         if (!image) return res.status(404).json('Image is required');
         if (!category) return res.status(404).json('Category is required');
+        if (!productWeight) return res.status(404).json('Product Weight is required');
 
 
         const newProduct = new Product({
@@ -16,7 +17,8 @@ export const productCreate = asyncHandler(async (req, res) => {
             description,
             price,
             image,
-            category
+            category,
+            productWeight
         })
 
         await newProduct.save()
@@ -65,7 +67,7 @@ export const productDelete = asyncHandler(async (req, res) => {
 
 })
 export const productEdit = asyncHandler(async (req, res) => {
-    const { id} = req.params
+    const { id } = req.params
     const { name, description, price, image, category } = req.body
     try {
         const product = await Product.findByIdAndUpdate(id, {

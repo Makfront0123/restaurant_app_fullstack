@@ -1,9 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_bloc_frontend/core/utils/validator_auth.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_event.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_body.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_button.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_formfield.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -16,6 +20,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final usernameController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
+  void _onRegister() {
+    if (formKey.currentState!.validate()) {
+      context.read<AuthBloc>().add(RegisterEvent(
+            name: usernameController.text,
+            email: emailController.text,
+            password: passwordController.text,
+            confirmPassword: confirmPasswordController.text,
+          ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
@@ -42,33 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           const SizedBox(
             height: 30,
           ),
-          Form(
-              key: formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  buildUsernameField(),
-                  const SizedBox(
-                    height: 14,
-                  ),
-                  buildEmailField(),
-                  const SizedBox(
-                    height: 14,
-                  ),
-                  buildPasswordField(),
-                  const SizedBox(
-                    height: 14,
-                  ),
-                  buildConfirmPasswordField(),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  AuthButton(
-                    onTap: () {},
-                    text: 'Sign Up',
-                  ),
-                ],
-              )),
+          _buildRegisterForm(formKey),
           const SizedBox(
             height: 30,
           ),
@@ -92,127 +84,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  buildUsernameField() {
-    return TextFormField(
-      controller: usernameController,
-      decoration: InputDecoration(
-          labelText: 'Enter your username',
-          hintText: 'Enter your username',
-          labelStyle: Theme.of(context).textTheme.labelMedium,
-          filled: true,
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide.none,
-          ),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.only(left: 5, right: 8),
-            child: Container(
-                height: 40,
-                width: 50,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColorLight,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.person,
-                  color: Colors.white,
-                )),
-          )),
-      validator: (value) => Validators.validateEmail(value),
-      keyboardType: TextInputType.emailAddress,
-    );
-  }
-
-  buildEmailField() {
-    return TextFormField(
-      controller: emailController,
-      decoration: InputDecoration(
-          labelText: 'Enter your email',
-          hintText: 'Enter your email',
-          labelStyle: Theme.of(context).textTheme.labelMedium,
-          filled: true,
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide.none,
-          ),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.only(left: 5, right: 8),
-            child: Container(
-                height: 40,
-                width: 50,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColorLight,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.email,
-                  color: Colors.white,
-                )),
-          )),
-      validator: (value) => Validators.validateEmail(value),
-      keyboardType: TextInputType.emailAddress,
-    );
-  }
-
-  buildPasswordField() {
-    return TextFormField(
-      controller: passwordController,
-      decoration: InputDecoration(
-          labelText: 'Enter your password',
-          hintText: 'Enter your password',
-          labelStyle: Theme.of(context).textTheme.labelMedium,
-          filled: true,
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide.none,
-          ),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.only(left: 5, right: 8),
-            child: Container(
-                height: 40,
-                width: 50,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColorLight,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.key_rounded,
-                  color: Colors.white,
-                )),
-          )),
-      validator: (value) => Validators.validateEmail(value),
-      keyboardType: TextInputType.emailAddress,
-    );
-  }
-
-  buildConfirmPasswordField() {
-    return TextFormField(
-      controller: passwordController,
-      decoration: InputDecoration(
-          labelText: 'Confirm your password',
-          hintText: 'Confirm your password',
-          labelStyle: Theme.of(context).textTheme.labelMedium,
-          filled: true,
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide.none,
-          ),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.only(left: 5, right: 8),
-            child: Container(
-                height: 40,
-                width: 50,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColorLight,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.key_rounded,
-                  color: Colors.white,
-                )),
-          )),
-      validator: (value) => Validators.validateEmail(value),
-      keyboardType: TextInputType.emailAddress,
-    );
+  Widget _buildRegisterForm(formKey) {
+    return Form(
+        key: formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            AuthFormfield(
+                controller: usernameController,
+                label: "Enter your username",
+                icon: Icons.person),
+            const SizedBox(
+              height: 14,
+            ),
+            AuthFormfield(
+                controller: emailController,
+                label: "Enter your email",
+                icon: Icons.email),
+            const SizedBox(
+              height: 14,
+            ),
+            AuthFormfield(
+                controller: passwordController,
+                label: "Enter your password",
+                icon: Icons.key_rounded,
+                validator: (value) => Validators.validatePassword(value)),
+            const SizedBox(
+              height: 14,
+            ),
+            AuthFormfield(
+                controller: confirmPasswordController,
+                label: "Confirm your password",
+                icon: Icons.key_rounded,
+                validator: (value) => Validators.validatePassword(value)),
+            const SizedBox(
+              height: 40,
+            ),
+            AuthButton(
+              onTap: _onRegister,
+              text: 'Sign Up',
+            ),
+          ],
+        ));
   }
 }

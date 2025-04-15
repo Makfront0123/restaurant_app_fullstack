@@ -28,7 +28,6 @@ class CategoryCarouselContent extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         } else if (state is MenuLoaded) {
           final categories = state.categories;
-          print('categories: $categories');
           return _buildCategoryList(context, categories);
         }
         return const Text("Error");

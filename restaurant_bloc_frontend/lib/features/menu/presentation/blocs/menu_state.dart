@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:restaurant_bloc_frontend/features/home/domain/entities/category_item.dart';
 import 'package:restaurant_bloc_frontend/features/menu/domain/entities/category_item.dart';
-import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
 
 class MenuState extends Equatable {
   const MenuState();

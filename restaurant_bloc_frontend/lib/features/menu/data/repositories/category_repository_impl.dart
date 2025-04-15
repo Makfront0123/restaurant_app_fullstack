@@ -8,7 +8,6 @@ class CategoryRepositoryImpl implements CategoryRepository {
   @override
   Future<List<Category>> getCategories() async {
     final response = await read.getAllCategory();
-    print("getAllCategories response: $response");
     return (response['data'] as List)
         .map((e) => Category(title: e['name'], image: e['image']))
         .toList();

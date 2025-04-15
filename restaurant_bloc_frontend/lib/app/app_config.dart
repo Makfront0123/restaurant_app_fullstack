@@ -17,7 +17,6 @@ import 'package:restaurant_bloc_frontend/features/menu/domain/repositories/categ
 import 'package:restaurant_bloc_frontend/features/menu/domain/usecases/get_all_categories.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_blocs.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_event.dart';
-import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_state.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_screen.dart';
 import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/product/data/datasources/remote/product_api_services.dart';
@@ -37,7 +36,8 @@ class AppProvider {
 
         /// Auth
         RepositoryProvider(
-          create: (context) => AuthApiService(context.read<Dio>()),
+          create: (context) =>
+              AuthApiService(context.read<Dio>(), 'http://10.0.2.2:3000'),
         ),
         RepositoryProvider(
           create: (context) =>

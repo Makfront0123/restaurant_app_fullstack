@@ -1,14 +1,16 @@
 import 'package:dio/dio.dart';
+import 'package:restaurant_bloc_frontend/features/auth/data/models/user_model.dart';
 
 class AuthApiService {
   final Dio _dio;
+  final String baseUrl;
 
-  AuthApiService(this._dio);
+  AuthApiService(this._dio, this.baseUrl);
 
   Future<dynamic> register(String name, String email, String password,
       String confirmPassword) async {
     try {
-      final response = await _dio.post('/api/v1/register', data: {
+      final response = await _dio.post('$baseUrl/api/v1/register', data: {
         'name': name,
         'email': email,
         'password': password,
@@ -20,13 +22,21 @@ class AuthApiService {
     }
   }
 
-  Future<dynamic> login(String email, String password) async {
+  Future<UserModel> login(String email, String password) async {
     try {
-      final response = await _dio
-          .post('/api/v1/login', data: {'email': email, 'password': password});
-      return response.data;
+      final response = await _dio.post('$baseUrl/api/v1/login', data: {
+        'email': email,
+        'password': password,
+      });
+
+      final userData = response.data['user'];
+      final user = UserModel.fromJson(userData);
+      return user;
+    } on DioException catch (e) {
+      final message = _extractErrorMessage(e);
+      return Future.error(message);
     } catch (e) {
-      return e;
+      throw Exception('Unexpected error: $e');
     }
   }
 
@@ -81,6 +91,23 @@ class AuthApiService {
       return response.data;
     } catch (e) {
       return e;
+    }
+  }
+
+  String _extractErrorMessage(DioException e) {
+    try {
+      final data = e.response?.data;
+
+      if (data is Map<String, dynamic>) {
+        final message = data['message'];
+        if (message is String) return message;
+      }
+
+      if (data is String) return data;
+
+      return e.message ?? 'Login failed';
+    } catch (_) {
+      return 'Login failed';
     }
   }
 }

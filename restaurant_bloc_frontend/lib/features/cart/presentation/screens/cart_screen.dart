@@ -76,6 +76,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _buildCartItem(Product product) {
+    const String baseUrl = 'http://10.0.2.2:3000/';
     return Dismissible(
       key: Key(product.productName), // Usa un identificador único
       direction: DismissDirection.endToStart,
@@ -104,7 +105,7 @@ class _CartScreenState extends State<CartScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset(product.image, height: 90),
+              Image.network('$baseUrl${product.image}', height: 90),
               const SizedBox(width: 20),
               Expanded(
                 child: Column(

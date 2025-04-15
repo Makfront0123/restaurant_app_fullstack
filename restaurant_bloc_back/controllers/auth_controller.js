@@ -63,7 +63,7 @@ export const authLogin = asyncHandler(async (req, res) => {
     if (!password) return res.status(400).json({ message: "Password is required" });
     try {
         const user = await Auth.findOne({ email });
-        if (!user) return res.status(404).json({ message: "User not found" });
+        if (!user) return res.status(404).json({ message: "Invalid email or password" });
         const isMatch = await user.matchPassword(password);
         if (!isMatch) return res.status(400).json({ message: "Password is incorrect" });
         const accountVerified = user.accountVerified;

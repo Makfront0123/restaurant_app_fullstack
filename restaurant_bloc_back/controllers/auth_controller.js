@@ -3,6 +3,7 @@ import Auth from '../models/auth_model.js';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import sendEmail from '../utils/send_email.js';
+ 
 
 export const authRegister = asyncHandler(async (req, res) => {
     try {
@@ -77,7 +78,7 @@ export const authLogin = asyncHandler(async (req, res) => {
 
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None', });
 
-        res.json({ message: 'Logged in successfully',data: user });
+        res.json({ message: 'Logged in successfully', data: user });
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",
@@ -151,12 +152,6 @@ export const authForgotPassword = asyncHandler(async (req, res) => {
         const resetToken = crypto.randomBytes(32).toString('hex');
         const resetExpires = Date.now() + 10 * 60 * 1000;
 
-        if (user.resetPasswordToken !== token || user.resetPasswordExpires < Date.now()) {
-            return res.status(400).json({ message: "Invalid or expired token" });
-        }
-
-        user.password = await bcrypt.hash(newPassword, 12);
-
         user.resetPasswordToken = resetToken;
         user.resetPasswordExpires = resetExpires;
         await user.save();
@@ -171,7 +166,13 @@ export const authForgotPassword = asyncHandler(async (req, res) => {
             text: `Click on the link to reset your password: ${resetUrl}`
         });
 
-        res.status(200).json({ message: 'Password reset email sent' });
+        res.status(200).json({
+            message: 'Password reset email sent',
+            data: {
+                resetToken,
+                resetExpires
+            }
+        });
 
     } catch (error) {
         res.status(500).json({
@@ -180,22 +181,25 @@ export const authForgotPassword = asyncHandler(async (req, res) => {
         })
     }
 })
-
 export const authResetPassword = asyncHandler(async (req, res) => {
-    const { token, password, newPassword,email } = req.body;
+    const { token, email, newPassword, confirmPassword } = req.body;
+
     const user = await Auth.findOne({
         email,
-        
-    })
-    console.log(user);
-    if (!user) return res.status(404).json({ message: "User not found" });
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() }
+    });
 
-    if (newPassword !== password) return res.status(400).json({ message: "Passwords do not match" });
+    if (!user) return res.status(400).json({ message: "Invalid or expired token" });
 
-    user.password = newPassword;
+    if (newPassword !== confirmPassword) {
+        return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    user.password = newPassword;  
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     await user.save();
 
     res.status(200).json({ message: "Password reset successfully" });
-})
+});

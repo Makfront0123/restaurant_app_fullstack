@@ -19,16 +19,20 @@ const authSchema = new mongoose.Schema({
         default: false
     },
     otp: {
-        type: String
+        type: String,
+        default: null
     },
     otpExpires: {
-        type: Date
+        type: Date,
+        default: null
     },
     resetPasswordToken: {
-        type: String
+        type: String,
+        default: null
     },
     resetPasswordExpires: {
-        type: Date
+        type: Date,
+        default: null
     }
     ,
     imageUser: {

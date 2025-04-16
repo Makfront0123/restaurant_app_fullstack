@@ -77,7 +77,7 @@ export const authLogin = asyncHandler(async (req, res) => {
 
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None', });
 
-        res.json({ message: 'Logged in successfully' });
+        res.json({ message: 'Logged in successfully',data: user });
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",
@@ -106,6 +106,34 @@ export const authVerify = asyncHandler(async (req, res) => {
         await user.save();
 
         res.status(200).json({ message: "Account verified successfully" });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error
+        })
+    }
+})
+
+export const authResendOtp = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await Auth.findOne({ email });
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const otp = crypto.randomInt(100000, 999999).toString();
+        const otpExpires = Date.now() + 10 * 60 * 1000;
+
+        user.otp = otp;
+        user.otpExpires = otpExpires;
+        await user.save();
+
+        await sendEmail({
+            to: email,
+            subject: 'Verify your account',
+            text: `Enter the OTP sent to your email to verify your account, ${otp}`
+        })
+
+        res.status(200).json({ message: "OTP sent successfully" });
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",

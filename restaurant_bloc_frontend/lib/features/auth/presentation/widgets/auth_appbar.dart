@@ -6,7 +6,9 @@ class AuthAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: const Icon(Icons.arrow_back_ios_new_rounded),
+      leading: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: const Icon(Icons.arrow_back_ios_new_rounded)),
       backgroundColor: Colors.transparent,
       elevation: 0,
     );

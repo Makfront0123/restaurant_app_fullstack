@@ -28,7 +28,7 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> routes = {
     verify: (context) => const VerifyScreen(),
-    splash: (context) => const SplashScreen(),
+    splash: (context) => SplashScreen(),
     application: (context) => const ApplicationScreen(),
     wrapper: (context) => const AuthWrapper(),
     login: (context) => const LoginScreen(),

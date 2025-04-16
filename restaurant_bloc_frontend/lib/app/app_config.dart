@@ -30,6 +30,7 @@ import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/sear
 import 'package:restaurant_bloc_frontend/features/product/domain/usecases/get_all_products.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/usecases/get_product.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/usecases/get_products_category.dart';
+import 'package:restaurant_bloc_frontend/features/splash/presentation/blocs/splash_bloc.dart';
 
 class AppProvider {
   static get allproviders => [
@@ -134,5 +135,8 @@ class AppProvider {
           create: (context) => SearchBloc(context.read<HomeRepository>()),
           child: const MenuScreen(), // Esto no va acá realmente (ver abajo)
         ),
+
+        //SPLASH
+        BlocProvider(create: (_) => SplashBloc()),
       ];
 }

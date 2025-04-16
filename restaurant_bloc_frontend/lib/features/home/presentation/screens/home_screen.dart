@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_carousel.dart';
+import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_drawer.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/review_carousel.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/title_button.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_state.dart';
@@ -18,7 +19,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: const HomeAppbar(), body: _buildHomeBody(context));
+    return Scaffold(
+      appBar: const HomeAppbar(),
+      body: _buildHomeBody(context),
+      drawer: const HomeDrawer(),
+    );
   }
 
   Widget _buildHomeBody(BuildContext context) {

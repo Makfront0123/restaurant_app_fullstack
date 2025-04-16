@@ -1,13 +1,12 @@
 import 'package:restaurant_bloc_frontend/features/auth/domain/entities/user.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/repositories/auth_repository.dart';
 
-class RegisterUser {
+class VerifyOtpUser {
   final AuthRepository repository;
 
-  RegisterUser(this.repository);
+  VerifyOtpUser(this.repository);
 
-  Future<User> call(
-      String name, String email, String password, String confirmPassword) {
-    return repository.register(name, email, password, confirmPassword);
+  Future<void> call(String otp, String email) {
+    return repository.verify(email, otp);
   }
 }

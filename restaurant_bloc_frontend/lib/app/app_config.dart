@@ -6,6 +6,8 @@ import 'package:restaurant_bloc_frontend/features/auth/data/datasources/remote/a
 import 'package:restaurant_bloc_frontend/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/login_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/logout_auth.dart';
+import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/register_auth.dart';
+import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/verify_otp_user.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/favorite/presentation/blocs/favorite_bloc.dart';
@@ -44,6 +46,12 @@ class AppProvider {
               AuthRepositoryImpl(context.read<AuthApiService>()),
         ),
         RepositoryProvider(
+            create: (context) =>
+                VerifyOtpUser(context.read<AuthRepositoryImpl>())),
+        RepositoryProvider(
+            create: (context) =>
+                RegisterUser(context.read<AuthRepositoryImpl>())),
+        RepositoryProvider(
           create: (context) => LoginUser(context.read<AuthRepositoryImpl>()),
         ),
         RepositoryProvider(
@@ -51,6 +59,8 @@ class AppProvider {
         ),
         BlocProvider(
           create: (context) => AuthBloc(
+            verifyOtp: context.read<VerifyOtpUser>(),
+            registerUser: context.read<RegisterUser>(),
             loginUser: context.read<LoginUser>(),
             logoutUser: context.read<LogoutUser>(),
           ),

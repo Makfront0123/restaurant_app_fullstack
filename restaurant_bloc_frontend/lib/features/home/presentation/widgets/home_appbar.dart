@@ -17,9 +17,14 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
         leading: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CircleAvatar(
-              backgroundImage: AssetImage(Images.user),
-              radius: 20,
+            GestureDetector(
+              onTap: () {
+                Scaffold.of(context).openDrawer();
+              },
+              child: const CircleAvatar(
+                backgroundImage: AssetImage(Images.user),
+                radius: 20,
+              ),
             ),
             const SizedBox(
               width: 20,
@@ -31,9 +36,11 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
           ],
         ),
         actions: [
-          IconButton(onPressed: () {
-            Navigator.pushNamed(context, '/cart');
-          }, icon: const Icon(Icons.shopping_cart))
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/cart');
+              },
+              icon: const Icon(Icons.shopping_cart))
         ],
         backgroundColor: Colors.transparent,
       ),

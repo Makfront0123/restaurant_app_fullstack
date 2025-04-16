@@ -7,7 +7,7 @@ class AuthApiService {
 
   AuthApiService(this._dio, this.baseUrl);
 
-  Future<dynamic> register(String name, String email, String password,
+  Future<UserModel> register(String name, String email, String password,
       String confirmPassword) async {
     try {
       final response = await _dio.post('$baseUrl/api/v1/register', data: {
@@ -16,9 +16,15 @@ class AuthApiService {
         'password': password,
         'confirmPassword': confirmPassword
       });
-      return response.data;
+
+      final userData = response.data['data'];
+      final user = UserModel.fromJson(userData);
+      return user;
+    } on DioException catch (e) {
+      final message = _extractErrorMessage(e);
+      return Future.error(message);
     } catch (e) {
-      return e;
+      throw Exception('Unexpected error: $e');
     }
   }
 
@@ -29,7 +35,7 @@ class AuthApiService {
         'password': password,
       });
 
-      final userData = response.data['user'];
+      final userData = response.data['data'];
       final user = UserModel.fromJson(userData);
       return user;
     } on DioException catch (e) {
@@ -49,13 +55,18 @@ class AuthApiService {
     }
   }
 
-  Future<dynamic> verify(String email, String otp) async {
+  Future<String> verify(String email, String otp) async {
     try {
-      final response =
-          await _dio.post('/api/v1/verify', data: {'email': email, 'otp': otp});
-      return response.data;
+      final response = await _dio
+          .post('$baseUrl/api/v1/verify', data: {'email': email, 'otp': otp});
+
+      final message = response.data['message'];
+      return message;
+    } on DioException catch (e) {
+      final message = _extractErrorMessage(e);
+      return Future.error(message);
     } catch (e) {
-      return e;
+      throw Exception('Unexpected error: $e');
     }
   }
 

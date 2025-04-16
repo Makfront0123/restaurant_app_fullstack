@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_bloc_frontend/core/utils/validator_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_event.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_state.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_body.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_button.dart';
@@ -36,13 +37,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state.error != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.error!),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
 
-    return Scaffold(
-      appBar: const AuthAppBar(),
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: AuthBody(
-        child: buildRegisterLocal(formKey),
+          if (state.isRegister) {
+            // Navegar y limpiar estado
+            Navigator.pushNamed(
+              context,
+              '/verify',
+              arguments: state.user?.email, // o emailController.text
+            );
+            context.read<AuthBloc>().add(ResetAuthState()); // Limpiar flag
+          }
+
+          if (state.isLogged) {
+            Navigator.pushReplacementNamed(context, '/home');
+          }
+        },
+        child: Scaffold(
+          appBar: const AuthAppBar(),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          body: AuthBody(
+            child: buildRegisterLocal(formKey),
+          ),
+        ),
       ),
     );
   }
@@ -86,45 +114,55 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _buildRegisterForm(formKey) {
     return Form(
-        key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            AuthFormfield(
-                controller: usernameController,
-                label: "Enter your username",
-                icon: Icons.person),
-            const SizedBox(
-              height: 14,
-            ),
-            AuthFormfield(
-                controller: emailController,
-                label: "Enter your email",
-                icon: Icons.email),
-            const SizedBox(
-              height: 14,
-            ),
-            AuthFormfield(
-                controller: passwordController,
-                label: "Enter your password",
-                icon: Icons.key_rounded,
-                validator: (value) => Validators.validatePassword(value)),
-            const SizedBox(
-              height: 14,
-            ),
-            AuthFormfield(
-                controller: confirmPasswordController,
-                label: "Confirm your password",
-                icon: Icons.key_rounded,
-                validator: (value) => Validators.validatePassword(value)),
-            const SizedBox(
-              height: 40,
-            ),
-            AuthButton(
-              onTap: _onRegister,
-              text: 'Sign Up',
-            ),
-          ],
-        ));
+      key: formKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          AuthFormfield(
+            controller: usernameController,
+            label: "Enter your username",
+            icon: Icons.person,
+            validator: (value) => Validators.validateUsername(value),
+          ),
+          const SizedBox(height: 14),
+          AuthFormfield(
+            controller: emailController,
+            label: "Enter your email",
+            icon: Icons.email,
+            validator: (value) => Validators.validateEmail(value),
+          ),
+          const SizedBox(height: 14),
+          AuthFormfield(
+            controller: passwordController,
+            label: "Enter your password",
+            icon: Icons.key_rounded,
+            validator: (value) => Validators.validatePassword(value),
+            obscureText: true,
+          ),
+          const SizedBox(height: 14),
+          AuthFormfield(
+            controller: confirmPasswordController,
+            label: "Confirm your password",
+            icon: Icons.key_rounded,
+            obscureText: true,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please confirm your password';
+              }
+              if (value != passwordController.text) {
+                return 'Passwords do not match';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 40),
+          AuthButton(
+            onTap: _onRegister,
+            text: 'Sign Up',
+          ),
+        ],
+      ),
+    );
   }
 }

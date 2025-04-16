@@ -7,6 +7,8 @@ abstract class AuthEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+class ResetAuthState extends AuthEvent {}
+
 class LoginEvent extends AuthEvent {
   final String email;
   final String password;
@@ -15,6 +17,14 @@ class LoginEvent extends AuthEvent {
 
   @override
   List<Object?> get props => [email, password];
+}
+
+class VerifyOtpEvent extends AuthEvent {
+  final String otp;
+  final String email;
+  const VerifyOtpEvent({required this.otp, required this.email});
+  @override
+  List<Object?> get props => [otp, email];
 }
 
 class RegisterEvent extends AuthEvent {

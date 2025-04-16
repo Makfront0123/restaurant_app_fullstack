@@ -14,19 +14,26 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<User> register(String name, String email, String password,
+      String confirmPassword) async {
+    final userModel =
+        await authApiService.register(name, email, password, confirmPassword);
+    return userModel;
+  }
+
+  @override
   Future<void> logout() async {
     return await authApiService.logout();
   }
 
   @override
-  Future<User> getCurrentUser(String token) async {
-    return await authApiService.getCurrentUser(token);
+  Future<String> verify(String email, String otp) async {
+    final message = await authApiService.verify(email, otp);
+    return message;
   }
 
   @override
-  Future<User> register(String name, String email, String password) async {
-    final userModel =
-        await authApiService.register(name, email, password, password);
-    return userModel;
+  Future<User> getCurrentUser(String token) async {
+    return await authApiService.getCurrentUser(token);
   }
 }

@@ -8,8 +8,10 @@ class AuthState extends Equatable {
   final bool isRegister;
   final bool isVerify;
   final User? user;
+  final bool isForgot;
 
   const AuthState({
+    this.isForgot = false,
     this.isLogged = false,
     this.isLoading = false,
     this.isRegister = false,
@@ -24,12 +26,14 @@ class AuthState extends Equatable {
     String? error,
     bool? isRegister,
     bool? isVerify,
+    bool? isForgot,
     User? user,
   }) {
     return AuthState(
       isLogged: isLogged ?? this.isLogged,
       isLoading: isLoading ?? this.isLoading,
       isRegister: isRegister ?? this.isRegister,
+      isForgot: isForgot ?? this.isForgot,
       isVerify: isVerify ?? this.isVerify,
       error: error,
       user: user ?? this.user,

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
 class AuthAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const AuthAppBar({super.key});
+  final String? title;
+  const AuthAppBar({super.key, this.title});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      title: title != null ? Text(title!) : null,
+      centerTitle: true,
       leading: GestureDetector(
           onTap: () => Navigator.pop(context),
           child: const Icon(Icons.arrow_back_ios_new_rounded)),

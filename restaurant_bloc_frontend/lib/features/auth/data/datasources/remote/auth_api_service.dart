@@ -73,8 +73,8 @@ class AuthApiService {
 
   Future<dynamic> forgotPassword(String email) async {
     try {
-      final response =
-          await _dio.post('/api/v1/forgot-password', data: {'email': email});
+      final response = await _dio
+          .post('$baseUrl/api/v1/forgot-password', data: {'email': email});
       return response.data;
     } catch (e) {
       return e;

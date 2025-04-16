@@ -4,6 +4,7 @@ import 'package:restaurant_bloc_frontend/core/theme/blocs/theme_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/application/blocs/application_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/auth/data/datasources/remote/auth_api_service.dart';
 import 'package:restaurant_bloc_frontend/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/forgot_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/login_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/logout_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/register_auth.dart';
@@ -51,6 +52,9 @@ class AppProvider {
                 VerifyOtpUser(context.read<AuthRepositoryImpl>())),
         RepositoryProvider(
             create: (context) =>
+                ForgotAuth(context.read<AuthRepositoryImpl>())),
+        RepositoryProvider(
+            create: (context) =>
                 RegisterUser(context.read<AuthRepositoryImpl>())),
         RepositoryProvider(
           create: (context) => LoginUser(context.read<AuthRepositoryImpl>()),
@@ -60,12 +64,16 @@ class AppProvider {
         ),
         BlocProvider(
           create: (context) => AuthBloc(
+            forgotPassword: context.read<ForgotAuth>(),
             verifyOtp: context.read<VerifyOtpUser>(),
             registerUser: context.read<RegisterUser>(),
             loginUser: context.read<LoginUser>(),
             logoutUser: context.read<LogoutUser>(),
           ),
         ),
+
+        //SPLASH
+        BlocProvider(create: (_) => SplashBloc()),
 
         /// Productos
         RepositoryProvider(
@@ -135,8 +143,5 @@ class AppProvider {
           create: (context) => SearchBloc(context.read<HomeRepository>()),
           child: const MenuScreen(), // Esto no va acá realmente (ver abajo)
         ),
-
-        //SPLASH
-        BlocProvider(create: (_) => SplashBloc()),
       ];
 }

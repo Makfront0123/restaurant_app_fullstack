@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_bloc_frontend/features/application/presentation/screen/application_screen.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/forgot_screen.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/login_screen.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/register_screen.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/verify_screen.dart';
@@ -25,11 +26,13 @@ class AppRoutes {
   static const String product = '/product';
   static const String checkout = '/checkout';
   static const String verify = '/verify';
+  static const String forgot = '/forgot';
 
   static Map<String, WidgetBuilder> routes = {
     verify: (context) => const VerifyScreen(),
-    splash: (context) => SplashScreen(),
+    splash: (context) => const SplashScreen(),
     application: (context) => const ApplicationScreen(),
+    forgot: (context) => const ForgotScreen(),
     wrapper: (context) => const AuthWrapper(),
     login: (context) => const LoginScreen(),
     menuCat: (context) => const MenuCatScreen(),

@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/forgot_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/login_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/logout_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/register_auth.dart';
@@ -11,8 +12,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUser _loginUser;
   final RegisterUser _registerUser;
   final VerifyOtpUser _verifyOtp;
+  final ForgotAuth _forgotPassword;
 
   AuthBloc({
+    required ForgotAuth forgotPassword,
     required LoginUser loginUser,
     required LogoutUser logoutUser,
     required RegisterUser registerUser,
@@ -21,12 +24,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _loginUser = loginUser,
         _registerUser = registerUser,
         _verifyOtp = verifyOtp,
+        _forgotPassword = forgotPassword,
         super(const AuthState()) {
     on<LoginEvent>(_onLogin);
     on<LogoutEvent>(_onLogout);
     on<RegisterEvent>(_onRegister);
     on<ResetAuthState>(_onReset);
     on<VerifyOtpEvent>(_onVerifyOtp);
+    on<ForgotEvent>(_onForgot);
   }
 
   Future<void> _onLogin(LoginEvent event, Emitter<AuthState> emit) async {
@@ -85,6 +90,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(state.copyWith(isLogged: false, user: null, error: null));
     } catch (e) {
       emit(state.copyWith(error: e.toString()));
+    }
+  }
+
+  Future<void> _onForgot(ForgotEvent event, Emitter<AuthState> emit) async {
+    try {
+      emit(state.copyWith(isLoading: true, error: null));
+      await _forgotPassword(event.email);
+
+      emit(state.copyWith(isLoading: false, error: null));
+    } catch (e) {
+      emit(state.copyWith(isLoading: false, error: e.toString()));
     }
   }
 }

@@ -33,6 +33,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<void> forgotPassword(String email) async {
+    return await authApiService.forgotPassword(email);
+  }
+
+  @override
   Future<User> getCurrentUser(String token) async {
     return await authApiService.getCurrentUser(token);
   }

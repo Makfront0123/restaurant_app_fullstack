@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Restaurant App Bloc',
-          initialRoute: AppRoutes.wrapper,
+          initialRoute: AppRoutes.splash,
           routes: AppRoutes.routes,
           theme: state.themeData,
         );

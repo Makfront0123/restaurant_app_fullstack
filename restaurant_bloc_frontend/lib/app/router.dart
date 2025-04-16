@@ -9,6 +9,7 @@ import 'package:restaurant_bloc_frontend/features/checkout/presentation/screens/
 import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_cat_screen.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_screen.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/screens/product_screen.dart';
+import 'package:restaurant_bloc_frontend/features/splash/presentation/screens/splash_screen.dart';
 
 class AppRoutes {
   static const String wrapper = '/';
@@ -19,6 +20,7 @@ class AppRoutes {
   static const String order = '/order';
   static const String profile = '/profile';
   static const String menuCat = '/menuCat';
+  static const String splash = '/splash';
   static const String menu = '/menu';
   static const String product = '/product';
   static const String checkout = '/checkout';
@@ -26,6 +28,7 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> routes = {
     verify: (context) => const VerifyScreen(),
+    splash: (context) => const SplashScreen(),
     application: (context) => const ApplicationScreen(),
     wrapper: (context) => const AuthWrapper(),
     login: (context) => const LoginScreen(),

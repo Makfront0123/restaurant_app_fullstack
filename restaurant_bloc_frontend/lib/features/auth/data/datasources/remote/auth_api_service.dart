@@ -48,8 +48,9 @@ class AuthApiService {
 
   Future<dynamic> logout() async {
     try {
-      final response = await _dio.post('/api/v1/logout');
-      return response.data;
+      final response = await _dio.post('$baseUrl/api/v1/logout');
+      final message = response.data['message'];
+      return message;
     } catch (e) {
       return e;
     }

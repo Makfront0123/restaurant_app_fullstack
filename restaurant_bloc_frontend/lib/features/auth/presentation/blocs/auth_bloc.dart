@@ -83,7 +83,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       await _logoutUser();
       emit(state.copyWith(isLogged: false, user: null, error: null));
-      print('Logout Success');
     } catch (e) {
       emit(state.copyWith(error: e.toString()));
     }

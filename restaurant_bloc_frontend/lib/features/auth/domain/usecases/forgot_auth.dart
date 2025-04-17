@@ -5,7 +5,7 @@ class ForgotAuth {
 
   ForgotAuth(this.repository);
 
-  Future<void> call(String email) {
+  Future<Map<String, dynamic>> call(String email) {
     return repository.forgotPassword(email);
   }
 }

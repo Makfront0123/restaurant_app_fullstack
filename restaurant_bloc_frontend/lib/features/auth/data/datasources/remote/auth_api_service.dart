@@ -71,27 +71,53 @@ class AuthApiService {
     }
   }
 
-  Future<dynamic> forgotPassword(String email) async {
+  Future<Map<String, dynamic>> forgotPassword(String email) async {
     try {
-      final response = await _dio
-          .post('$baseUrl/api/v1/forgot-password', data: {'email': email});
+      final response = await _dio.post(
+        '$baseUrl/api/v1/forgot-password',
+        data: {'email': email},
+      );
+
       return response.data;
+    } on DioException catch (e) {
+      final message = _extractErrorMessage(e);
+
+      return Future.error(message);
     } catch (e) {
-      return e;
+      return Future.error('Unexpected error');
     }
   }
 
-  Future<dynamic> resetPassword(
-      String token, String password, String newPassword) async {
+  Future<Map<String, dynamic>> verifyForgot(String email, String otp) async {
     try {
-      final response = await _dio.post('/api/v1/reset-password', data: {
+      final response = await _dio.post('$baseUrl/api/v1/verify-forgot',
+          data: {'email': email, 'otp': otp});
+      return response.data;
+    } on DioException catch (e) {
+      final message = _extractErrorMessage(e);
+
+      return Future.error(message);
+    } catch (e) {
+      return Future.error('Unexpected error');
+    }
+  }
+
+  Future<Map<String, dynamic>> resetPassword(
+      String email, String token, String password, String newPassword) async {
+    try {
+      final response = await _dio.post('$baseUrl/api/v1/reset-password', data: {
+        'email': email,
         'token': token,
         'password': password,
         'newPassword': newPassword
       });
       return response.data;
+    } on DioException catch (e) {
+      final message = _extractErrorMessage(e);
+
+      return Future.error(message);
     } catch (e) {
-      return e;
+      return Future.error('Unexpected error');
     }
   }
 

@@ -8,8 +8,11 @@ import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/forgot_au
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/login_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/logout_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/register_auth.dart';
+import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/reset_auth.dart';
+import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/verify_forgot.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/verify_otp_user.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/forgot_screen.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/favorite/presentation/blocs/favorite_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/home/data/repositories/home_repository.dart';
@@ -48,8 +51,13 @@ class AppProvider {
               AuthRepositoryImpl(context.read<AuthApiService>()),
         ),
         RepositoryProvider(
+            create: (context) => ResetAuth(context.read<AuthRepositoryImpl>())),
+        RepositoryProvider(
             create: (context) =>
-                VerifyOtpUser(context.read<AuthRepositoryImpl>())),
+                VerifyAccount(context.read<AuthRepositoryImpl>())),
+        RepositoryProvider(
+            create: (context) =>
+                VerifyForgot(context.read<AuthRepositoryImpl>())),
         RepositoryProvider(
             create: (context) =>
                 ForgotAuth(context.read<AuthRepositoryImpl>())),
@@ -64,12 +72,15 @@ class AppProvider {
         ),
         BlocProvider(
           create: (context) => AuthBloc(
+            verifyForgot: context.read<VerifyForgot>(),
+            resetPassword: context.read<ResetAuth>(),
             forgotPassword: context.read<ForgotAuth>(),
-            verifyOtp: context.read<VerifyOtpUser>(),
+            verifyOtp: context.read<VerifyAccount>(),
             registerUser: context.read<RegisterUser>(),
             loginUser: context.read<LoginUser>(),
             logoutUser: context.read<LogoutUser>(),
           ),
+          child: const ForgotScreen(),
         ),
 
         //SPLASH

@@ -3,6 +3,8 @@ import 'package:restaurant_bloc_frontend/features/application/presentation/scree
 import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/forgot_screen.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/login_screen.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/register_screen.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/reset_screen.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/verify_forgot_screen.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/verify_screen.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_wrapper.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/screens/cart_screen.dart';
@@ -27,9 +29,13 @@ class AppRoutes {
   static const String checkout = '/checkout';
   static const String verify = '/verify';
   static const String forgot = '/forgot';
+  static const String reset = '/reset';
+  static const String verifyForgot = '/verifyForgot';
 
   static Map<String, WidgetBuilder> routes = {
+    verifyForgot: (context) => const VerifyForgotScreen(),
     verify: (context) => const VerifyScreen(),
+    reset: (context) => const ResetScreen(),
     splash: (context) => const SplashScreen(),
     application: (context) => const ApplicationScreen(),
     forgot: (context) => const ForgotScreen(),

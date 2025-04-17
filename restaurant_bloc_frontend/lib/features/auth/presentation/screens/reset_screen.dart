@@ -8,16 +8,16 @@ import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_container.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_formfield.dart';
 
-class ForgotScreen extends StatefulWidget {
-  const ForgotScreen({super.key});
+class ResetScreen extends StatefulWidget {
+  const ResetScreen({super.key});
 
   @override
-  State<ForgotScreen> createState() => _ForgotScreenState();
+  State<ResetScreen> createState() => _ResetScreenState();
 }
 
-class _ForgotScreenState extends State<ForgotScreen> {
-  final emailController = TextEditingController();
-
+class _ResetScreenState extends State<ResetScreen> {
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width * .9;
@@ -25,10 +25,10 @@ class _ForgotScreenState extends State<ForgotScreen> {
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state.isForgot && state.forgotSuccess) {
+        if (state.isReset) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message ?? 'Email sent'),
+              content: Text(state.message!),
               backgroundColor: Colors.green,
             ),
           );
@@ -36,7 +36,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
           Future.delayed(const Duration(milliseconds: 500), () {
             if (mounted) {
               // ignore: use_build_context_synchronously
-              Navigator.pushReplacementNamed(context, '/verifyForgot');
+              Navigator.pushReplacementNamed(context, '/login');
             }
           });
         } else if (state.error != null) {
@@ -49,39 +49,50 @@ class _ForgotScreenState extends State<ForgotScreen> {
         }
       },
       child: Scaffold(
-        appBar: const AuthAppBar(
-          title: 'Forgot Password',
-        ),
+        appBar: const AuthAppBar(title: 'Reset Password'),
         body: AuthContainer(
           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
           padding: const EdgeInsets.all(20),
           width: width,
-          height: height * 0.3,
+          height: height * 0.4,
           child: Column(
             children: [
               Text(
                 style: Theme.of(context).textTheme.labelLarge,
-                'Please enter your email address. You will receive a link to create a new password via email.',
+                'Enter your new password below.',
               ),
               const SizedBox(height: 20),
               AuthFormfield(
-                controller: emailController,
-                label: 'Enter your email',
-                icon: Icons.email,
+                controller: passwordController,
+                label: 'Enter your new password',
+                icon: Icons.lock,
               ),
               const SizedBox(height: 20),
-              AuthButton(
-                text: 'Send Link',
-                onTap: () {
-                  context
-                      .read<AuthBloc>()
-                      .add(ForgotEvent(email: emailController.text));
-                },
+              AuthFormfield(
+                controller: confirmPasswordController,
+                label: 'Confirm your new password',
+                icon: Icons.lock,
               ),
+              const SizedBox(height: 30),
+              AuthButton(text: 'Reset Password', onTap: _onReset),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _onReset() {
+    final state = context.read<AuthBloc>().state;
+    final email = state.user?.email;
+    final token = state.token;
+    context.read<AuthBloc>().add(
+          ResetPasswordEvent(
+            token: token ?? '',
+            email: email ?? '',
+            password: passwordController.text,
+            newPassword: confirmPasswordController.text,
+          ),
+        );
   }
 }

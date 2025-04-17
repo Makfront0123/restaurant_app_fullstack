@@ -17,7 +17,7 @@ class AuthApiService {
         'confirmPassword': confirmPassword
       });
 
-      final userData = response.data['data'];
+      final userData = response.data['data']['user'];
       final user = UserModel.fromJson(userData);
       return user;
     } on DioException catch (e) {
@@ -146,6 +146,22 @@ class AuthApiService {
       return e.message ?? 'Login failed';
     } catch (_) {
       return 'Login failed';
+    }
+  }
+
+  Future<Map<String, dynamic>> resendOtp(String email) async {
+    try {
+      final response = await _dio.post('$baseUrl/api/v1/resend-otp', data: {
+        'email': email,
+      });
+
+      return response.data;
+    } on DioException catch (e) {
+      final message = _extractErrorMessage(e);
+
+      return Future.error(message);
+    } catch (e) {
+      return Future.error('Unexpected error');
     }
   }
 }

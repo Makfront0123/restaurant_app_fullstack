@@ -40,6 +40,14 @@ class _LoginScreenState extends State<LoginScreen> {
           if (state.isLogged) {
             Navigator.pushReplacementNamed(context, '/application');
           }
+          if (state.error != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.error!),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
         },
         child: Scaffold(
           appBar: const AuthAppBar(),

@@ -14,8 +14,12 @@ class AuthState extends Equatable {
   final String? message;
   final bool isReset;
   final bool isVerifyForgot;
+  final bool isVerifyOtp;
+  final bool isResendOtp;
 
   const AuthState({
+    this.isResendOtp = false,
+    this.isVerifyOtp = false,
     this.token,
     this.isForgot = false,
     this.isVerifyForgot = false,
@@ -31,6 +35,7 @@ class AuthState extends Equatable {
   });
 
   AuthState copyWith({
+    bool? isVerifyOtp,
     bool? isLogged,
     bool? isLoading,
     String? error,
@@ -43,9 +48,12 @@ class AuthState extends Equatable {
     String? token,
     bool? forgotSuccess,
     String? message,
+    bool? isResendOtp,
   }) {
     return AuthState(
+      isVerifyOtp: isVerifyOtp ?? this.isVerifyOtp,
       isLogged: isLogged ?? this.isLogged,
+      isResendOtp: isResendOtp ?? this.isResendOtp,
       isLoading: isLoading ?? this.isLoading,
       isRegister: isRegister ?? this.isRegister,
       isReset: isReset ?? this.isReset,
@@ -64,7 +72,9 @@ class AuthState extends Equatable {
   List<Object?> get props => [
         isLogged,
         isLoading,
+        isResendOtp,
         error,
+        isVerifyOtp,
         user,
         isRegister,
         isVerify,

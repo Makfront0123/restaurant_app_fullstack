@@ -41,6 +41,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
+          print(
+              "LISTENER USER: ${state.user}, isRegister: ${state.isRegister}, error: ${state.error}");
           if (state.error != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -51,17 +53,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
           }
 
           if (state.isRegister) {
-            // Navegar y limpiar estado
-            Navigator.pushNamed(
-              context,
-              '/verify',
-              arguments: state.user?.email, // o emailController.text
-            );
-            context.read<AuthBloc>().add(ResetAuthState()); // Limpiar flag
-          }
+            final email = state.user?.email;
+            print('EMAIL PARA NAVEGAR: $email');
 
-          if (state.isLogged) {
-            Navigator.pushReplacementNamed(context, '/home');
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('OTP sent to your email.'),
+                backgroundColor: Colors.green,
+              ),
+            );
+
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted) return;
+              Navigator.pushNamed(
+                context,
+                '/verify',
+                arguments: email,
+              );
+            });
           }
         },
         child: Scaffold(
@@ -102,7 +111,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               style: Theme.of(context).textTheme.labelSmall,
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  // En el botón/ruta de SignUp:
                   Navigator.pushReplacementNamed(context, '/login');
                 },
             ),

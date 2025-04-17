@@ -74,6 +74,15 @@ class LogoutEvent extends AuthEvent {
   const LogoutEvent();
 }
 
+class ResendOtpEvent extends AuthEvent {
+  final String email;
+
+  const ResendOtpEvent({required this.email});
+
+  @override
+  List<Object?> get props => [email];
+}
+
 class VerifyForgotEvent extends AuthEvent {
   final String email;
   final String otp;

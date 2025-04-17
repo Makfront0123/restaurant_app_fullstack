@@ -25,6 +25,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
+        print('LISTENER FORGOT: ${state.isForgot}, ${state.forgotSuccess}');
         if (state.isForgot && state.forgotSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

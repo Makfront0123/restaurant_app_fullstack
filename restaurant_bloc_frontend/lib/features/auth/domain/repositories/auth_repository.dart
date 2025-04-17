@@ -5,6 +5,7 @@ abstract class AuthRepository {
   Future<String> verify(String email, String otp);
   Future<Map<String, dynamic>> forgotPassword(String email);
   Future<Map<String, dynamic>> verifyForgot(String email, String otp);
+  Future<Map<String, dynamic>> resendOtp(String email);
   Future<Map<String, dynamic>> resetPassword(
       String email, String token, String password, String newPassword);
   Future<void> logout();

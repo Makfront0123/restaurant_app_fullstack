@@ -8,6 +8,7 @@ import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/forgot_au
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/login_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/logout_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/register_auth.dart';
+import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/resend_otp_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/reset_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/verify_forgot.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/verify_otp_user.dart';
@@ -51,6 +52,8 @@ class AppProvider {
               AuthRepositoryImpl(context.read<AuthApiService>()),
         ),
         RepositoryProvider(
+            create: (context) => ResendOtp(context.read<AuthRepositoryImpl>())),
+        RepositoryProvider(
             create: (context) => ResetAuth(context.read<AuthRepositoryImpl>())),
         RepositoryProvider(
             create: (context) =>
@@ -72,6 +75,7 @@ class AppProvider {
         ),
         BlocProvider(
           create: (context) => AuthBloc(
+            resendOtp: context.read<ResendOtp>(),
             verifyForgot: context.read<VerifyForgot>(),
             resetPassword: context.read<ResetAuth>(),
             forgotPassword: context.read<ForgotAuth>(),

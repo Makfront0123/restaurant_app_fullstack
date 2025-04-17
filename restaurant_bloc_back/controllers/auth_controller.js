@@ -25,7 +25,7 @@ export const authRegister = asyncHandler(async (req, res) => {
         const otp = crypto.randomInt(100000, 999999).toString();
         const otpExpires = Date.now() + 10 * 60 * 1000;
 
-        const newUser = new Auth({
+        const user = new Auth({
             name,
             email,
             password,
@@ -33,7 +33,7 @@ export const authRegister = asyncHandler(async (req, res) => {
             otpExpires
         })
 
-        await newUser.save();
+        await user.save();
 
         await sendEmail({
             to: email,
@@ -43,7 +43,9 @@ export const authRegister = asyncHandler(async (req, res) => {
 
         res.status(201).json({
             message: "User created successfully. OTP sent to email.",
-            data: newUser
+            data: {
+                user
+            }
         });
 
     } catch (error) {

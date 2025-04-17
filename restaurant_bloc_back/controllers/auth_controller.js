@@ -3,7 +3,7 @@ import Auth from '../models/auth_model.js';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import sendEmail from '../utils/send_email.js';
- 
+
 
 export const authRegister = asyncHandler(async (req, res) => {
     try {
@@ -115,6 +115,36 @@ export const authVerify = asyncHandler(async (req, res) => {
     }
 })
 
+export const verifyForgotOtp = asyncHandler(async (req, res) => {
+    const { email, otp } = req.body;
+
+    const user = await Auth.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (user.otp !== otp || user.otpExpires < Date.now()) {
+        return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    // Invalida el OTP
+    user.otp = null;
+    user.otpExpires = null;
+
+    // Genera un token seguro para resetear la contraseña
+    const resetToken = crypto.randomInt(100, 999).toString();
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 10 * 60 * 1000;
+
+    await user.save();
+
+    res.status(200).json({
+        message: "OTP verified. Use this token to reset password.",
+        data: {
+            token: resetToken,
+            user
+        }
+    });
+});
+
 export const authResendOtp = asyncHandler(async (req, res) => {
     const { email } = req.body;
     try {
@@ -143,32 +173,31 @@ export const authResendOtp = asyncHandler(async (req, res) => {
     }
 })
 
+
 export const authForgotPassword = asyncHandler(async (req, res) => {
     const { email } = req.body;
     try {
+        if (!email) return res.status(400).json({ message: "Email is required" });
         const user = await Auth.findOne({ email });
         if (!user) return res.status(404).json({ message: "User not found" });
 
-        const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetToken = crypto.randomInt(100, 999).toString();
         const resetExpires = Date.now() + 10 * 60 * 1000;
 
-        user.resetPasswordToken = resetToken;
-        user.resetPasswordExpires = resetExpires;
+        user.otp = resetToken;
+        user.otpExpires = resetExpires;
         await user.save();
-
-        const resetUrl = `restaurantapp://reset-password?token=${resetToken}&email=${email}`;
-
-
 
         await sendEmail({
             to: email,
             subject: 'Password Reset',
-            text: `Click on the link to reset your password: ${resetUrl}`
+            text: `Copy this otp: ${resetToken}`
         });
 
         res.status(200).json({
             message: 'Password reset email sent',
             data: {
+                user,
                 resetToken,
                 resetExpires
             }
@@ -181,25 +210,28 @@ export const authForgotPassword = asyncHandler(async (req, res) => {
         })
     }
 })
-export const authResetPassword = asyncHandler(async (req, res) => {
-    const { token, email, newPassword, confirmPassword } = req.body;
+
+
+export const resetPassword = asyncHandler(async (req, res) => {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+        return res.status(400).json({ message: "Token and new password are required" });
+    }
 
     const user = await Auth.findOne({
-        email,
         resetPasswordToken: token,
         resetPasswordExpires: { $gt: Date.now() }
     });
 
-    if (!user) return res.status(400).json({ message: "Invalid or expired token" });
-
-    if (newPassword !== confirmPassword) {
-        return res.status(400).json({ message: "Passwords do not match" });
+    if (!user) {
+        return res.status(400).json({ message: "Invalid or expired token" });
     }
 
-    user.password = newPassword;  
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
+    user.password = newPassword;
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
     await user.save();
 
-    res.status(200).json({ message: "Password reset successfully" });
+    res.status(200).json({ message: "Password successfully reset" });
 });

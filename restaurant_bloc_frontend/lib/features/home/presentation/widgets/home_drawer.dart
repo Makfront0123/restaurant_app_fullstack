@@ -14,7 +14,7 @@ class HomeDrawer extends StatelessWidget {
       builder: (context, state) {
         return BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
-            if (!state.isLogged) {
+            if (state is AuthUnauthenticated) {
               Navigator.pushReplacementNamed(context, '/login');
             }
           },
@@ -41,14 +41,20 @@ class HomeDrawer extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      state.user?.name ?? 'No Name',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    Text(
-                      state.user?.email ?? 'No Email',
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
+                    if (state is Authenticated)
+                      Text(
+                        state.user.name,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      )
+                    else
+                      const Text('No Name'),
+                    if (state is Authenticated)
+                      Text(
+                        state.user.email,
+                        style: Theme.of(context).textTheme.labelSmall,
+                      )
+                    else
+                      const Text('No Email'),
                   ],
                 ),
               ],

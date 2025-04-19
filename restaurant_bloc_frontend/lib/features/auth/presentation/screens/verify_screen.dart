@@ -29,53 +29,54 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
   void _onVerify() {
     final state = context.read<AuthBloc>().state;
-    final email = state.user?.email;
+    String email = '';
+
+    if (state is AuthRegistrationSuccess) {
+      email = state.user.email;
+    }
+
+    print('Email in _onVerify: $email'); // <- DEPURACIÓN
+
     final otp = _controllers.map((e) => e.text).join();
-    context.read<AuthBloc>().add(VerifyOtpEvent(otp: otp, email: email ?? ''));
+    context.read<AuthBloc>().add(VerifyOtpEvent(otp: otp, email: email));
   }
 
   void _resendOtp() {
     final state = context.read<AuthBloc>().state;
-    final email = state.user?.email;
-    context.read<AuthBloc>().add(ResendOtpEvent(
-          email: email ?? '',
-        ));
+    String email = '';
+
+    if (state is AuthRegistrationSuccess) {
+      email = state.user.email;
+    }
+
+    print('Email in _resendOtp: $email'); // <- DEPURACIÓN
+
+    context.read<AuthBloc>().add(ResendOtpEvent(email: email));
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = context.read<AuthBloc>().state;
+    if (state is AuthRegistrationSuccess) {
+      print('Email in build: ${state.user.email}'); // <- DEPURACIÓN
+    }
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        print('LISTENER VERIFY: ${state.isResendOtp}');
-        if (state.error != null) {
+        print('AuthBloc state in VerifyScreen: $state');
+        // Manejar errores
+        if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.error!),
+              content: Text(state.message),
               backgroundColor: Colors.red,
             ),
           );
         }
-
-        if (state.isResendOtp) {
+        // Si la verificación del OTP fue exitosa
+        if (state is AuthOtpVerified) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message!),
-              backgroundColor: Colors.green,
-            ),
-          );
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted) return;
-            Navigator.pushNamed(
-              context,
-              '/verify',
-            );
-          });
-        }
-
-        if (state.isVerify) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message!),
+              content: Text(state.message),
               backgroundColor: Colors.green,
             ),
           );
@@ -93,7 +94,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                "Enter the 6-digit code sent to your email",
+                "Enter the 6-digit code sent", // Mostrar el email recibido
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),
@@ -140,7 +141,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
     );
   }
 }
-
 
 
 /*

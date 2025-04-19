@@ -12,13 +12,13 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (!state.isLogged) {
+        if (state is AuthUnauthenticated) {
           Navigator.pushReplacementNamed(context, '/login');
         }
       },
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
-          if (state.isLogged) {
+          if (state is Authenticated) {
             return const ApplicationScreen();
           }
           return const LoginScreen();

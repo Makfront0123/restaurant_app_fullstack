@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_bloc_frontend/core/utils/validator_auth.dart';
+import 'package:restaurant_bloc_frontend/features/application/presentation/widgets/load_screen.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_event.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_state.dart';
@@ -34,28 +35,38 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(), // Oculta el teclado
-      child: BlocListener<AuthBloc, AuthState>(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state.isLogged) {
+          if (state is Authenticated) {
             Navigator.pushReplacementNamed(context, '/application');
           }
-          if (state.error != null) {
+          if (state is AuthVerificationSuccess) {
+            Navigator.pushReplacementNamed(context, '/verify');
+          }
+          if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.error!),
+                content: Text(state.message),
                 backgroundColor: Colors.red,
               ),
             );
+            context.read<AuthBloc>().add(ResetAuthState());
           }
         },
-        child: Scaffold(
-          appBar: const AuthAppBar(),
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          body: AuthBody(
-            child: buildLoginLocal(),
-          ),
-        ),
+        builder: (context, state) {
+          final isLoading = state is AuthLoading;
+          return LoadScreen(
+            isLoading: isLoading,
+            child: Scaffold(
+              appBar: const AuthAppBar(),
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              body: AuthBody(
+                child: buildLoginLocal(),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

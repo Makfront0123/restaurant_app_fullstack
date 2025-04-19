@@ -5,6 +5,7 @@ import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/login_aut
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/logout_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/register_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/resend_otp_auth.dart';
+import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/resend_otp_forgot.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/reset_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/verify_forgot.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/verify_otp_user.dart';
@@ -20,12 +21,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final ResetAuth _resetPassword;
   final VerifyForgot _verifyForgot;
   final ResendOtp _resendOtp;
+  final ResendOtpForgot _resendOtpForgot;
 
   AuthBloc({
     required ResendOtp resendOtp,
     required ForgotAuth forgotPassword,
     required LoginUser loginUser,
     required LogoutUser logoutUser,
+    required ResendOtpForgot resendOtpForgot,
     required VerifyForgot verifyForgot,
     required RegisterUser registerUser,
     required VerifyAccount verifyOtp,
@@ -37,197 +40,133 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _verifyForgot = verifyForgot,
         _resendOtp = resendOtp,
         _forgotPassword = forgotPassword,
+        _resendOtpForgot = resendOtpForgot,
         _resetPassword = resetPassword,
-        super(const AuthState()) {
+        super(AuthInitial()) {
     on<LoginEvent>(_onLogin);
     on<LogoutEvent>(_onLogout);
     on<RegisterEvent>(_onRegister);
-    on<ResetAuthState>(_onReset);
+    on<ResetAuthState>((_, emit) => emit(AuthInitial()));
     on<VerifyOtpEvent>(_onVerifyOtp);
     on<ForgotEvent>(_onForgot);
     on<ResetPasswordEvent>(_onResetPassword);
     on<VerifyForgotEvent>(_onVerifyForgot);
     on<ResendOtpEvent>(_onResendOtp);
-  }
-  Future<void> _onVerifyForgot(
-      VerifyForgotEvent event, Emitter<AuthState> emit) async {
-    try {
-      final res = await _verifyForgot(event.otp, event.email);
-
-      final user = UserModel.fromJson(res['data']['user']);
-      final token = res['data']['token'];
-
-      emit(state.copyWith(
-        isLoading: false,
-        isVerifyForgot: true,
-        error: null,
-        user: user,
-        token: token,
-        message: res['message'],
-      ));
-    } catch (e) {
-      emit(state.copyWith(
-          isLogged: false, isLoading: false, error: e.toString()));
-    }
+    on<ResendOtpForgotEvent>(_onResendOtpForgot);
   }
 
   Future<void> _onLogin(LoginEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
     try {
-      emit(state.copyWith(
-        isLogged: false,
-        isLoading: true,
-        error: null,
-      ));
       final user = await _loginUser(event.email, event.password);
-      emit(state.copyWith(
-          isLogged: true,
-          isLoading: false,
-          error: null,
-          user: user,
-          isVerify: user.accountVerified));
+      if (user.accountVerified) {
+        emit(Authenticated(user: user));
+      } else {
+        emit(AuthVerificationSuccess());
+      }
     } catch (e) {
-      emit(state.copyWith(
-          isLogged: false, isLoading: false, error: e.toString()));
+      emit(AuthError(e.toString()));
     }
   }
 
   Future<void> _onRegister(RegisterEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    print('RegisterEvent received'); // Verifica si se recibe el evento
     try {
-      ///emit(state.copyWith(isLogged: false, isLoading: true, error: null));
       final user = await _registerUser(
-          event.name, event.email, event.password, event.confirmPassword);
-      emit(state.copyWith(
-          isRegister: true, isLoading: false, error: null, user: user));
-    } catch (e) {
-      emit(state.copyWith(
-          isLogged: false, isLoading: false, error: e.toString()));
-    }
-  }
-
-  void _onReset(ResetAuthState event, Emitter<AuthState> emit) {
-    emit(state.copyWith(
-      isRegister: false,
-      isForgot: false,
-      forgotSuccess: false,
-      error: null,
-    ));
-  }
-
-  Future<void> _onResetPassword(
-      ResetPasswordEvent event, Emitter<AuthState> emit) async {
-    try {
-      final response = await _resetPassword(
+        event.name,
         event.email,
-        event.token,
         event.password,
-        event.newPassword,
+        event.confirmPassword,
       );
-
-      final message =
-          response['message'] as String? ?? 'Unexpected error occurred';
-
-      emit(state.copyWith(
-        isLoading: false,
-        isReset: true,
-        error: null,
-        message: message,
-      ));
+      print('Registration successful: ${user.email}'); // Confirmación adicional
+      emit(AuthRegistrationSuccess(user));
     } catch (e) {
-      emit(state.copyWith(
-          isLogged: false, isLoading: false, error: e.toString()));
+      print('Error during registration: $e'); // Verifica si hay algún error
+      emit(AuthError(e.toString()));
     }
   }
 
   Future<void> _onVerifyOtp(
       VerifyOtpEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
     try {
-      emit(state.copyWith(isLoading: true, error: null));
-      await _verifyOtp(event.otp, event.email);
-      emit(state.copyWith(
-          isLoading: false, error: null, isVerify: true, isLogged: false));
+      final message = await _verifyOtp(event.otp, event.email);
+      emit(AuthOtpVerified(message));
     } catch (e) {
-      emit(state.copyWith(
-          isLogged: false, isLoading: false, error: e.toString()));
+      emit(AuthError(e.toString()));
+    }
+  }
+
+  Future<void> _onForgot(ForgotEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    try {
+      final res = await _forgotPassword(event.email);
+      emit(AuthForgotSuccess(res['message']));
+      emit(AuthForgotPasswordOtpSent(event.email));
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
+  }
+
+  Future<void> _onVerifyForgot(
+      VerifyForgotEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    try {
+      final res = await _verifyForgot(event.otp, event.email);
+
+      final token = res['data']['token'];
+      emit(AuthOtpVerifiedForReset(
+        email: event.email,
+        token: token,
+      ));
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
+  }
+
+  Future<void> _onResetPassword(
+      ResetPasswordEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    try {
+      final response = await _resetPassword(
+          event.email, event.token, event.password, event.newPassword);
+      emit(AuthResetPasswordSuccess(response['message']));
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
+  }
+
+  Future<void> _onResendOtp(
+      ResendOtpEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    try {
+      final res = await _resendOtp(event.email);
+      emit(
+          AuthVerificationSuccess()); // O crea AuthOtpResent(message) si quieres mostrar feedback
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
+  }
+
+  Future<void> _onResendOtpForgot(
+      ResendOtpForgotEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    try {
+      final res = await _resendOtpForgot(event.email);
+
+      emit(AuthForgotPasswordOtpSent(event.email));
+    } catch (e) {
+      emit(AuthError(e.toString()));
     }
   }
 
   Future<void> _onLogout(LogoutEvent event, Emitter<AuthState> emit) async {
     try {
       await _logoutUser();
-      emit(state.copyWith(isLogged: false, user: null, error: null));
+      emit(AuthUnauthenticated());
     } catch (e) {
-      emit(state.copyWith(error: e.toString()));
-    }
-  }
-
-  Future<void> _onForgot(ForgotEvent event, Emitter<AuthState> emit) async {
-    try {
-      final res = await _forgotPassword(event.email);
-
-      final user = UserModel.fromJson(res['data']['user']);
-
-      emit(state.copyWith(
-        isLoading: false,
-        isForgot: true,
-        forgotSuccess: true,
-        error: null,
-        message: res['message'],
-        user: user,
-      ));
-    } catch (e) {
-      emit(state.copyWith(
-        error: e.toString(),
-        isLoading: false,
-      ));
-    }
-  }
-
-  Future<void> _onResendOtp(
-      ResendOtpEvent event, Emitter<AuthState> emit) async {
-    try {
-      final response = await _resendOtp(event.email);
-
-      final message =
-          response['message'] as String? ?? 'Unexpected error occurred';
-
-      emit(state.copyWith(
-        isLoading: false,
-        isResendOtp: true,
-        error: null,
-        message: message,
-      ));
-    } catch (e) {
-      emit(state.copyWith(
-        isLogged: false,
-        isLoading: false,
-        error: e.toString(),
-      ));
+      emit(AuthError(e.toString()));
     }
   }
 }
-/*
-
-  Future<void> _onForgot(ForgotEvent event, Emitter<AuthState> emit) async {
-    try {
-      final response = await _forgotPassword(event.email);
-
-      final message =
-          response['message'] as String? ?? 'Unexpected error occurred';
-
-      emit(state.copyWith(
-        isLoading: false,
-        isForgot: true,
-        forgotSuccess: true,
-        error: null,
-        message: message,
-      ));
-    } catch (e) {
-      emit(state.copyWith(
-        isLoading: false,
-        isForgot: true,
-        forgotSuccess: false,
-        error: e.toString(),
-      ));
-    }
-  }
- */

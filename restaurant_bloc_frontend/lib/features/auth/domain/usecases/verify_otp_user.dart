@@ -5,7 +5,7 @@ class VerifyAccount {
 
   VerifyAccount(this.repository);
 
-  Future<void> call(String otp, String email) {
+  Future<String> call(String otp, String email) {
     return repository.verify(email, otp);
   }
 }

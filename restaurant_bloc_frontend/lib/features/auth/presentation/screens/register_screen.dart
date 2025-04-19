@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_bloc_frontend/core/utils/validator_auth.dart';
+import 'package:restaurant_bloc_frontend/features/application/presentation/widgets/load_screen.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_event.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_state.dart';
@@ -39,47 +40,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: BlocListener<AuthBloc, AuthState>(
+      child: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
-          print(
-              "LISTENER USER: ${state.user}, isRegister: ${state.isRegister}, error: ${state.error}");
-          if (state.error != null) {
+          if (state is AuthRegistrationSuccess) {
+            final email = state.user.email;
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('OTP sent to your email.'),
+              backgroundColor: Colors.green,
+            ));
+            Navigator.pushNamed(context, '/verify', arguments: email);
+          }
+          if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.error!),
+                content: Text(state.message),
                 backgroundColor: Colors.red,
               ),
             );
-          }
-
-          if (state.isRegister) {
-            final email = state.user?.email;
-            print('EMAIL PARA NAVEGAR: $email');
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('OTP sent to your email.'),
-                backgroundColor: Colors.green,
-              ),
-            );
-
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (!mounted) return;
-              Navigator.pushNamed(
-                context,
-                '/verify',
-                arguments: email,
-              );
-            });
+            context.read<AuthBloc>().add(ResetAuthState());
           }
         },
-        child: Scaffold(
-          appBar: const AuthAppBar(),
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          body: AuthBody(
-            child: buildRegisterLocal(formKey),
-          ),
-        ),
+        builder: (context, state) {
+          final isLoading = state is AuthLoading;
+          return LoadScreen(
+            isLoading: isLoading,
+            child: Scaffold(
+              appBar: const AuthAppBar(),
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              body: AuthBody(
+                child: buildRegisterLocal(formKey),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

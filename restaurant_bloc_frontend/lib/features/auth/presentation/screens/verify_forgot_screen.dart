@@ -27,13 +27,20 @@ class _VerifyForgotScreenState extends State<VerifyForgotScreen> {
     super.dispose();
   }
 
-  void _onVerify() {
-    final state = context.read<AuthBloc>().state;
-    final email = state.user?.email;
+  late String? email;
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args != null && args is String) {
+      email = args;
+    }
+  }
+
+  void _onVerify() {
     final otp = _controllers.map((c) => c.text).join();
-    if (email == null || otp.length != 3) {
-      // Mostrar error o retornar
+    if (otp.length != 3) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Please enter the 3-digit code."),
@@ -44,33 +51,47 @@ class _VerifyForgotScreenState extends State<VerifyForgotScreen> {
     }
 
     context.read<AuthBloc>().add(VerifyForgotEvent(
-          email: email,
+          email: email ?? '',
           otp: otp,
         ));
   }
 
   void _resendOtp() {
-    // Enviar nuevo OTP o realizar el reenvío
-    final otp = _controllers.map((e) => e.text).join();
-    context.read<AuthBloc>().add(VerifyForgotEvent(
-          email: "pusugu03@gmail.com",
-          otp: otp,
-        ));
+    final state = context.read<AuthBloc>().state;
+    String email = '';
+
+    if (state is AuthForgotPasswordOtpSent) {
+      email = state.email;
+    }
+
+    print('Email in _resendOtp: $email'); // <- DEPURACIÓN
+
+    if (email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Missing email. Please try again."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    context.read<AuthBloc>().add(ResendOtpForgotEvent(email: email));
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state.error != null) {
+        if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.error!),
+              content: Text(state.message),
               backgroundColor: Colors.red,
             ),
           );
         }
-        if (state.isVerifyForgot) {
+        if (state is AuthOtpVerifiedForReset) {
           Navigator.pushReplacementNamed(context, '/reset');
         }
       },

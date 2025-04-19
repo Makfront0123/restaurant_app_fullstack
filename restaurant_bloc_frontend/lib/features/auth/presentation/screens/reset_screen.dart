@@ -25,10 +25,10 @@ class _ResetScreenState extends State<ResetScreen> {
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state.isReset) {
+        if (state is AuthResetPasswordSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message!),
+              content: Text(state.message),
               backgroundColor: Colors.green,
             ),
           );
@@ -39,10 +39,10 @@ class _ResetScreenState extends State<ResetScreen> {
               Navigator.pushReplacementNamed(context, '/login');
             }
           });
-        } else if (state.error != null) {
+        } else if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.error!),
+              content: Text(state.message),
               backgroundColor: Colors.red,
             ),
           );
@@ -84,12 +84,28 @@ class _ResetScreenState extends State<ResetScreen> {
 
   void _onReset() {
     final state = context.read<AuthBloc>().state;
-    final email = state.user?.email;
-    final token = state.token;
+    String? email;
+    String? token;
+
+    if (state is AuthOtpVerifiedForReset) {
+      email = state.email;
+      token = state.token;
+    }
+
+    if (email == null || token == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid state. Please repeat the process.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     context.read<AuthBloc>().add(
           ResetPasswordEvent(
-            token: token ?? '',
-            email: email ?? '',
+            token: token,
+            email: email,
             password: passwordController.text,
             newPassword: confirmPasswordController.text,
           ),

@@ -27,6 +27,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Map<String, dynamic>> resendForgotPasswordOtp(String email) async {
+    return await authApiService.resendForgotPasswordOtp(email);
+  }
+
+  @override
   Future<void> logout() async {
     return await authApiService.logout();
   }

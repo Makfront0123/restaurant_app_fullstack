@@ -25,28 +25,30 @@ class _ForgotScreenState extends State<ForgotScreen> {
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        print('LISTENER FORGOT: ${state.isForgot}, ${state.forgotSuccess}');
-        if (state.isForgot && state.forgotSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message ?? 'Email sent'),
-              backgroundColor: Colors.green,
-            ),
-          );
-
+        if (state is AuthForgotSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(state.message),
+            backgroundColor: Colors.green,
+          ));
           Future.delayed(const Duration(milliseconds: 500), () {
             if (mounted) {
-              // ignore: use_build_context_synchronously
-              Navigator.pushReplacementNamed(context, '/verifyForgot');
+              Navigator.pushReplacementNamed(
+                // ignore: use_build_context_synchronously
+                context,
+                '/verifyForgot',
+                arguments: emailController.text,
+              );
             }
           });
-        } else if (state.error != null) {
+        }
+        if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.error!),
+              content: Text(state.message),
               backgroundColor: Colors.red,
             ),
           );
+          context.read<AuthBloc>().add(ResetAuthState());
         }
       },
       child: Scaffold(

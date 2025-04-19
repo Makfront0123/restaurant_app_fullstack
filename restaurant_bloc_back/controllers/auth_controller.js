@@ -175,6 +175,31 @@ export const authResendOtp = asyncHandler(async (req, res) => {
     }
 })
 
+// 3 dígitos, recuperación de contraseña
+export const resendForgotPasswordOtp = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    try {
+      const user = await Auth.findOne({ email });
+      if (!user) return res.status(404).json({ message: "User not found" });
+  
+      const otp = crypto.randomInt(100, 999).toString(); // 3 dígitos
+      user.otp = otp;
+      user.otpExpires = Date.now() + 10 * 60 * 1000;
+  
+      await user.save();
+  
+      await sendEmail({
+        to: email,
+        subject: 'Reset your password',
+        text: `Enter this OTP to reset your password: ${otp}`,
+      });
+  
+      res.status(200).json({ message: "Password reset OTP resent successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error", error });
+    }
+  });
+  
 
 export const authForgotPassword = asyncHandler(async (req, res) => {
     const { email } = req.body;

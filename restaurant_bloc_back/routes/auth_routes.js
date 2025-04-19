@@ -1,5 +1,5 @@
 import express from 'express';
-import { authRegister, authLogin, authLogout,verifyForgotOtp, authVerify, authForgotPassword, resetPassword, authResendOtp } from '../controllers/auth_controller.js';
+import { authRegister, authLogin, authLogout,verifyForgotOtp,resendForgotPasswordOtp, authVerify, authForgotPassword, resetPassword, authResendOtp } from '../controllers/auth_controller.js';
 
 const router = express.Router();
 
@@ -8,6 +8,7 @@ router.post('/login', authLogin)
 router.get('/logout', authLogout)
 router.post('/verify', authVerify)
 router.post('/resend-otp', authResendOtp)
+router.post('/resend-forgot-otp', resendForgotPasswordOtp)
 router.post('/forgot-password', authForgotPassword)
 router.post('/reset-password', resetPassword)
 router.post('/verify-forgot', verifyForgotOtp)

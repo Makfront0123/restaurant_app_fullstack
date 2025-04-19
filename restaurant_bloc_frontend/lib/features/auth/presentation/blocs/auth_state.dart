@@ -43,7 +43,8 @@ class AuthForgotPasswordSent extends AuthState {
 
 class AuthForgotSuccess extends AuthState {
   final String message;
-  const AuthForgotSuccess(this.message);
+  final String email;
+  const AuthForgotSuccess(this.message, this.email);
 
   @override
   List<Object?> get props => [message];

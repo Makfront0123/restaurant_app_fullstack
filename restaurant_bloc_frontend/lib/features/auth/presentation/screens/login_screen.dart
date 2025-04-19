@@ -53,6 +53,14 @@ class _LoginScreenState extends State<LoginScreen> {
             );
             context.read<AuthBloc>().add(ResetAuthState());
           }
+          if (state is AuthResetPasswordSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
         },
         builder: (context, state) {
           final isLoading = state is AuthLoading;

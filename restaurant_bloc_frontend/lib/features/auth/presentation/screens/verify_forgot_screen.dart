@@ -57,16 +57,7 @@ class _VerifyForgotScreenState extends State<VerifyForgotScreen> {
   }
 
   void _resendOtp() {
-    final state = context.read<AuthBloc>().state;
-    String email = '';
-
-    if (state is AuthForgotPasswordOtpSent) {
-      email = state.email;
-    }
-
-    print('Email in _resendOtp: $email'); // <- DEPURACIÓN
-
-    if (email.isEmpty) {
+    if (email == null || email!.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Missing email. Please try again."),
@@ -76,13 +67,14 @@ class _VerifyForgotScreenState extends State<VerifyForgotScreen> {
       return;
     }
 
-    context.read<AuthBloc>().add(ResendOtpForgotEvent(email: email));
+    context.read<AuthBloc>().add(ResendOtpForgotEvent(email: email!));
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
+        print('Auth Forgot , state: $state');
         if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -93,6 +85,14 @@ class _VerifyForgotScreenState extends State<VerifyForgotScreen> {
         }
         if (state is AuthOtpVerifiedForReset) {
           Navigator.pushReplacementNamed(context, '/reset');
+        }
+        if (state is AuthForgotPasswordOtpSent) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("OTP resent to your email."),
+              backgroundColor: Colors.green,
+            ),
+          );
         }
       },
       child: Scaffold(

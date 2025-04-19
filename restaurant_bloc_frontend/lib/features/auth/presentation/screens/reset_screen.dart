@@ -26,13 +26,6 @@ class _ResetScreenState extends State<ResetScreen> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthResetPasswordSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.green,
-            ),
-          );
-
           Future.delayed(const Duration(milliseconds: 500), () {
             if (mounted) {
               // ignore: use_build_context_synchronously

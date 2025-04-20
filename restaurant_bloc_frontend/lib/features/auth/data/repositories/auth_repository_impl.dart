@@ -14,6 +14,12 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<User> loginWithToken(String token) async {
+    final userModel = await authApiService.getCurrentUser(token);
+    return userModel;
+  }
+
+  @override
   Future<User> register(String name, String email, String password,
       String confirmPassword) async {
     final userModel =

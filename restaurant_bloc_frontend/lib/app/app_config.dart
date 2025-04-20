@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_bloc_frontend/core/theme/blocs/theme_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/application/blocs/application_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/application/services/storage_service.dart';
 import 'package:restaurant_bloc_frontend/features/auth/data/datasources/remote/auth_api_service.dart';
 import 'package:restaurant_bloc_frontend/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/forgot_auth.dart';
@@ -62,6 +63,7 @@ class AppProvider {
         RepositoryProvider(
             create: (context) =>
                 VerifyAccount(context.read<AuthRepositoryImpl>())),
+        RepositoryProvider(create: (context) => StorageService()),
         RepositoryProvider(
             create: (context) =>
                 VerifyForgot(context.read<AuthRepositoryImpl>())),
@@ -79,6 +81,7 @@ class AppProvider {
         ),
         BlocProvider(
           create: (context) => AuthBloc(
+            storageService: context.read<StorageService>(),
             resendOtpForgot: context.read<ResendOtpForgot>(),
             resendOtp: context.read<ResendOtp>(),
             verifyForgot: context.read<VerifyForgot>(),

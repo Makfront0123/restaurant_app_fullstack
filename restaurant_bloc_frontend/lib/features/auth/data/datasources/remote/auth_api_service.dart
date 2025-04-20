@@ -48,6 +48,22 @@ class AuthApiService {
     }
   }
 
+  Future<UserModel> getCurrentUser(String token) async {
+    try {
+      final response = await _dio.get('$baseUrl/api/v1/user/check-auth',
+          options: Options(headers: {'Authorization': 'Bearer $token'}));
+      print('getCurrentUser response: ${response.data}');
+      final userData = response.data['data'];
+      final user = UserModel.fromJson(userData);
+      return user;
+    } on DioException catch (e) {
+      final message = _extractErrorMessage(e);
+      return Future.error(message);
+    } catch (e) {
+      throw Exception('Unexpected error: $e');
+    }
+  }
+
   Future<dynamic> logout() async {
     try {
       final response = await _dio.post('$baseUrl/api/v1/logout');
@@ -123,17 +139,6 @@ class AuthApiService {
       return Future.error(message);
     } catch (e) {
       return Future.error('Unexpected error');
-    }
-  }
-
-  Future<dynamic> getCurrentUser(String token) async {
-    try {
-      final response = await _dio.get('/api/v1/user/current', data: {
-        'token': token,
-      });
-      return response.data;
-    } catch (e) {
-      return e;
     }
   }
 

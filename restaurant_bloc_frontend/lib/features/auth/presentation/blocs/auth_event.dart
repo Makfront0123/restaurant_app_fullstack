@@ -1,4 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:restaurant_bloc_frontend/features/application/services/storage_service.dart';
+import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/login_auth.dart';
 
 abstract class AuthEvent extends Equatable {
   const AuthEvent();
@@ -101,3 +103,5 @@ class VerifyForgotEvent extends AuthEvent {
   @override
   List<Object?> get props => [email, otp];
 }
+
+class AppStarted extends AuthEvent {}

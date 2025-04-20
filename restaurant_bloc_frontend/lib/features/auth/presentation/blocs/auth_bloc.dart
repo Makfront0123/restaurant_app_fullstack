@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/auth/data/models/user_model.dart';
+import 'package:restaurant_bloc_frontend/features/application/services/storage_service.dart';
+
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/forgot_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/login_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/logout_auth.dart';
@@ -22,8 +23,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final VerifyForgot _verifyForgot;
   final ResendOtp _resendOtp;
   final ResendOtpForgot _resendOtpForgot;
+  final StorageService _storageService;
 
   AuthBloc({
+    required StorageService storageService,
     required ResendOtp resendOtp,
     required ForgotAuth forgotPassword,
     required LoginUser loginUser,
@@ -34,6 +37,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required VerifyAccount verifyOtp,
     required ResetAuth resetPassword,
   })  : _logoutUser = logoutUser,
+        _storageService = storageService,
         _loginUser = loginUser,
         _registerUser = registerUser,
         _verifyOtp = verifyOtp,
@@ -53,6 +57,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<VerifyForgotEvent>(_onVerifyForgot);
     on<ResendOtpEvent>(_onResendOtp);
     on<ResendOtpForgotEvent>(_onResendOtpForgot);
+    on<AppStarted>(_onAppStarted);
+  }
+
+  Future<void> _onAppStarted(AppStarted event, Emitter<AuthState> emit) async {
+    final token = await _storageService.getToken();
+
+    if (token != null) {
+      try {
+        final user = await _loginUser.autoLoginWithToken(token);
+        emit(Authenticated(user: user));
+      } catch (e) {
+        await _storageService.clearToken(); // si el token falla, lo limpiamos
+        emit(AuthUnauthenticated());
+      }
+    } else {
+      emit(AuthUnauthenticated());
+    }
   }
 
   Future<void> _onLogin(LoginEvent event, Emitter<AuthState> emit) async {

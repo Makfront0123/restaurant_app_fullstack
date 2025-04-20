@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_bloc_frontend/core/constants/vectors.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_event.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_button.dart';
 import 'package:restaurant_bloc_frontend/features/splash/presentation/blocs/splash_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/splash/presentation/blocs/splash_event.dart';
@@ -26,6 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
         curve: Curves.easeInOut,
       );
     });
+    context.read<AuthBloc>().add(AppStarted());
   }
 
   @override

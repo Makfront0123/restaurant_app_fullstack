@@ -2,6 +2,7 @@ import 'package:restaurant_bloc_frontend/features/auth/domain/entities/user.dart
 
 abstract class AuthRepository {
   Future<User> login(String email, String password);
+  Future<User> loginWithToken(String token);
   Future<String> verify(String email, String otp);
   Future<Map<String, dynamic>> forgotPassword(String email);
   Future<Map<String, dynamic>> verifyForgot(String email, String otp);

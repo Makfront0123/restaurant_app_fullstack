@@ -1,47 +1,27 @@
 import 'package:dio/dio.dart';
+import 'package:restaurant_bloc_frontend/features/order/data/models/order_model.dart';
+import 'package:restaurant_bloc_frontend/features/order/domain/entities/order.dart';
 
 class OrderApiServices {
-  final Dio _dio;
+  final Dio dio;
+  final String baseUrl;
+  OrderApiServices(this.dio, this.baseUrl);
 
-  OrderApiServices(this._dio);
-
-  Future<dynamic> createOrder(
-      String deliveryAddress, String deliveryDate) async {
+  Future<Order> createOrder(OrderModel orderRequest, String token) async {
     try {
-      final response = await _dio.post('/api/v1/order/create-order', data: {
-        'deliveryAddress': deliveryAddress,
-        'deliveryDate': deliveryDate
-      });
+      final response = await dio.post(
+        '/orders', // O la ruta correspondiente
+        data: orderRequest.toJson(),
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
       return response.data;
-    } catch (e) {
-      return e;
-    }
-  }
-
-  Future<dynamic> getOrder(String id) async {
-    try {
-      final response = await _dio.get('/api/v1/order/get-order/$id');
-      return response.data;
-    } catch (e) {
-      return e;
-    }
-  }
-
-  Future<dynamic> getAllOrders() async {
-    try {
-      final response = await _dio.get('/api/v1/order/all-orders');
-      return response.data;
-    } catch (e) {
-      return e;
-    }
-  }
-
-  Future<dynamic> deleteOrder(String id) async {
-    try {
-      final response = await _dio.delete('/api/v1/order/delete-order/$id');
-      return response.data;
-    } catch (e) {
-      return e;
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error creating order');
     }
   }
 }

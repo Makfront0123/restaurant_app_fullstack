@@ -26,6 +26,11 @@ import 'package:restaurant_bloc_frontend/features/menu/domain/usecases/get_all_c
 import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_blocs.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_event.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_screen.dart';
+import 'package:restaurant_bloc_frontend/features/order/data/datasources/remote/order_api_services.dart';
+import 'package:restaurant_bloc_frontend/features/order/data/repositories/order_repository_impl.dart';
+import 'package:restaurant_bloc_frontend/features/order/data/services/storage_services.dart';
+import 'package:restaurant_bloc_frontend/features/order/domain/repository/order_repository.dart';
+import 'package:restaurant_bloc_frontend/features/order/domain/usecases/creater_order.dart';
 import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/product/data/datasources/remote/product_api_services.dart';
 import 'package:restaurant_bloc_frontend/features/product/data/repositories/product_repository_impl.dart';
@@ -155,13 +160,31 @@ class AppProvider {
           create: (context) => HomeBloc(context.read<HomeRepository>()),
         ),
         BlocProvider(create: (_) => FavoriteBloc()),
-        BlocProvider(create: (_) => OrderBloc()),
+
         BlocProvider(create: (_) => CartBloc()),
 
         /// Búsqueda
         BlocProvider(
           create: (context) => SearchBloc(context.read<HomeRepository>()),
           child: const MenuScreen(), // Esto no va acá realmente (ver abajo)
+        ),
+
+        /// Order
+        RepositoryProvider(
+          create: (context) =>
+              OrderApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
+        ),
+        RepositoryProvider<OrderRepository>(
+          create: (context) => OrderRepositoryImpl(
+            context.read<OrderApiServices>(),
+            context.read<StorageService>(),
+          ),
+        ),
+        RepositoryProvider(
+          create: (context) => CreateOrder(context.read<OrderRepository>()),
+        ),
+        BlocProvider(
+          create: (context) => OrderBloc(context.read<CreateOrder>()),
         ),
       ];
 }

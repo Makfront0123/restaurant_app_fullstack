@@ -74,7 +74,6 @@ class _VerifyForgotScreenState extends State<VerifyForgotScreen> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        print('Auth Forgot , state: $state');
         if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

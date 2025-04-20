@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/auth/data/models/user_model.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/forgot_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/login_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/logout_auth.dart';
@@ -71,7 +70,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> _onRegister(RegisterEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
-    print('RegisterEvent received'); // Verifica si se recibe el evento
+
     try {
       final user = await _registerUser(
         event.name,
@@ -79,10 +78,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         event.password,
         event.confirmPassword,
       );
-      print('Registration successful: ${user.email}'); // Confirmación adicional
       emit(AuthRegistrationSuccess(user));
     } catch (e) {
-      print('Error during registration: $e'); // Verifica si hay algún error
       emit(AuthError(e.toString()));
     }
   }
@@ -141,7 +138,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ResendOtpEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      final res = await _resendOtp(event.email);
+      await _resendOtp(event.email);
       emit(
           AuthVerificationSuccess()); // O crea AuthOtpResent(message) si quieres mostrar feedback
     } catch (e) {

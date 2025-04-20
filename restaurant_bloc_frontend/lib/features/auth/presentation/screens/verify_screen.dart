@@ -35,8 +35,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
       email = state.user.email;
     }
 
-    print('Email in _onVerify: $email'); // <- DEPURACIÓN
-
     final otp = _controllers.map((e) => e.text).join();
     context.read<AuthBloc>().add(VerifyOtpEvent(otp: otp, email: email));
   }
@@ -49,20 +47,13 @@ class _VerifyScreenState extends State<VerifyScreen> {
       email = state.user.email;
     }
 
-    print('Email in _resendOtp: $email'); // <- DEPURACIÓN
-
     context.read<AuthBloc>().add(ResendOtpEvent(email: email));
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = context.read<AuthBloc>().state;
-    if (state is AuthRegistrationSuccess) {
-      print('Email in build: ${state.user.email}'); // <- DEPURACIÓN
-    }
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        print('AuthBloc state in VerifyScreen: $state');
         // Manejar errores
         if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(

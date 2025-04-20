@@ -1,5 +1,14 @@
-abstract class OrderEvent {}
+import 'package:equatable/equatable.dart';
 
-class OrderEventOrder extends OrderEvent {}
+abstract class OrderEvent extends Equatable {
+  const OrderEvent();
+}
 
-class OrderEventUnorder extends OrderEvent {}
+class SubmitOrderEvent extends OrderEvent {
+  final String deliveryAddress;
+
+  const SubmitOrderEvent(this.deliveryAddress);
+
+  @override
+  List<Object?> get props => [deliveryAddress];
+}

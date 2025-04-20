@@ -262,3 +262,21 @@ export const resetPassword = asyncHandler(async (req, res) => {
 
     res.status(200).json({ message: "Password successfully reset" });
 });
+
+// controllers/AuthController.js
+export const getAuthenticatedUser = async (req, res) => {
+    try {
+      const user = req.user; // El middleware ya lo puso
+  
+      res.status(200).json({
+        message: "User authenticated",
+        data: user,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "Internal server error",
+        error,
+      });
+    }
+  };
+  

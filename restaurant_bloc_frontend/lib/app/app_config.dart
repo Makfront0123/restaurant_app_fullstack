@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_bloc_frontend/core/theme/blocs/theme_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/application/blocs/application_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/application/services/storage_service.dart';
 import 'package:restaurant_bloc_frontend/features/auth/data/datasources/remote/auth_api_service.dart';
 import 'package:restaurant_bloc_frontend/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/forgot_auth.dart';
@@ -14,7 +15,7 @@ import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/reset_aut
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/verify_forgot.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/verify_otp_user.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/forgot_screen.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_event.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/favorite/presentation/blocs/favorite_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/home/data/repositories/home_repository.dart';
@@ -42,6 +43,7 @@ import 'package:restaurant_bloc_frontend/features/product/domain/usecases/get_al
 import 'package:restaurant_bloc_frontend/features/product/domain/usecases/get_product.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/usecases/get_products_category.dart';
 import 'package:restaurant_bloc_frontend/features/splash/presentation/blocs/splash_bloc.dart';
+import 'package:restaurant_bloc_frontend/main.dart';
 
 class AppProvider {
   static get allproviders => [
@@ -57,6 +59,7 @@ class AppProvider {
           create: (context) =>
               AuthRepositoryImpl(context.read<AuthApiService>()),
         ),
+
         RepositoryProvider(
             create: (context) => ResendOtp(context.read<AuthRepositoryImpl>())),
         RepositoryProvider(
@@ -67,6 +70,7 @@ class AppProvider {
         RepositoryProvider(
             create: (context) =>
                 VerifyAccount(context.read<AuthRepositoryImpl>())),
+        RepositoryProvider(create: (context) => StorageService()),
         RepositoryProvider(
             create: (context) =>
                 VerifyForgot(context.read<AuthRepositoryImpl>())),
@@ -84,6 +88,7 @@ class AppProvider {
         ),
         BlocProvider(
           create: (context) => AuthBloc(
+            storageService: context.read<StorageService>(),
             resendOtpForgot: context.read<ResendOtpForgot>(),
             resendOtp: context.read<ResendOtp>(),
             verifyForgot: context.read<VerifyForgot>(),
@@ -93,8 +98,8 @@ class AppProvider {
             registerUser: context.read<RegisterUser>(),
             loginUser: context.read<LoginUser>(),
             logoutUser: context.read<LogoutUser>(),
-          ),
-          child: const ForgotScreen(),
+          )..add(AppStarted()),
+          child: const MyApp(),
         ),
 
         //SPLASH

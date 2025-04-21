@@ -102,7 +102,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         .read<SplashBloc>()
                         .add(ChangePageEvent(currentPage + 1));
                   } else {
-                    Navigator.pushNamed(context, '/login');
+                    Navigator.pushReplacementNamed(context, '/wrapper');
                   }
                 },
               ),

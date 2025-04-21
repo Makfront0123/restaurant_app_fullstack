@@ -16,7 +16,7 @@ import 'package:restaurant_bloc_frontend/features/product/presentation/screens/p
 import 'package:restaurant_bloc_frontend/features/splash/presentation/screens/splash_screen.dart';
 
 class AppRoutes {
-  static const String wrapper = '/';
+  static const String wrapper = '/wrapper';
   static const String application = '/application';
   static const String login = '/login';
   static const String signup = '/signup';

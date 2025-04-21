@@ -19,7 +19,7 @@ class AuthApiService {
 
       final userData = response.data['data']['user'];
 
-      final user = UserModel.fromJson(userData);
+      final user = UserModel.fromJson(userData, token: '');
 
       return user;
     } on DioException catch (e) {
@@ -37,9 +37,29 @@ class AuthApiService {
         'password': password,
       });
 
-      final userData = response.data['data'];
-      final user = UserModel.fromJson(userData);
+      final data = response.data['data'];
+      final token = data['token']; // <- lo sacas de aquí
+      final userJson = data['user'];
+
+      final user = UserModel.fromJson(userJson, token: token);
+
       return user;
+    } on DioException catch (e) {
+      final message = _extractErrorMessage(e);
+      return Future.error(message);
+    } catch (e) {
+      throw Exception('Unexpected error: $e');
+    }
+  }
+
+  Future<UserModel> getCurrentUser(String token) async {
+    try {
+      final response = await _dio.get('$baseUrl/api/v1/check-auth',
+          options: Options(headers: {'Authorization': 'Bearer $token'}));
+
+      final data = response.data;
+
+      return UserModel.fromJson(data['data'], token: token);
     } on DioException catch (e) {
       final message = _extractErrorMessage(e);
       return Future.error(message);
@@ -122,17 +142,6 @@ class AuthApiService {
       return Future.error(message);
     } catch (e) {
       return Future.error('Unexpected error');
-    }
-  }
-
-  Future<dynamic> getCurrentUser(String token) async {
-    try {
-      final response = await _dio.get('/api/v1/user/current', data: {
-        'token': token,
-      });
-      return response.data;
-    } catch (e) {
-      return e;
     }
   }
 

@@ -101,3 +101,5 @@ class VerifyForgotEvent extends AuthEvent {
   @override
   List<Object?> get props => [email, otp];
 }
+
+class AppStarted extends AuthEvent {}

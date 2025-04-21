@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/application/services/storage_service.dart';
+
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/forgot_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/login_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/logout_auth.dart';
@@ -21,8 +23,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final VerifyForgot _verifyForgot;
   final ResendOtp _resendOtp;
   final ResendOtpForgot _resendOtpForgot;
+  final StorageService _storageService;
 
   AuthBloc({
+    required StorageService storageService,
     required ResendOtp resendOtp,
     required ForgotAuth forgotPassword,
     required LoginUser loginUser,
@@ -33,6 +37,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required VerifyAccount verifyOtp,
     required ResetAuth resetPassword,
   })  : _logoutUser = logoutUser,
+        _storageService = storageService,
         _loginUser = loginUser,
         _registerUser = registerUser,
         _verifyOtp = verifyOtp,
@@ -52,12 +57,32 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<VerifyForgotEvent>(_onVerifyForgot);
     on<ResendOtpEvent>(_onResendOtp);
     on<ResendOtpForgotEvent>(_onResendOtpForgot);
+    on<AppStarted>(_onAppStarted);
+  }
+
+  Future<void> _onAppStarted(AppStarted event, Emitter<AuthState> emit) async {
+    final token = await _storageService.getToken();
+
+    if (token == null) {
+      emit(AuthUnauthenticated());
+      return;
+    }
+    try {
+      final user = await _loginUser.autoLoginWithToken(token);
+      emit(Authenticated(user: user));
+    } catch (e) {
+      await _storageService.clearToken();
+      emit(AuthUnauthenticated());
+    }
   }
 
   Future<void> _onLogin(LoginEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
       final user = await _loginUser(event.email, event.password);
+
+      await _storageService.saveToken(user.token);
+
       if (user.accountVerified) {
         emit(Authenticated(user: user));
       } else {
@@ -159,6 +184,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onLogout(LogoutEvent event, Emitter<AuthState> emit) async {
     try {
       await _logoutUser();
+      await _storageService.clearToken();
       emit(AuthUnauthenticated());
     } catch (e) {
       emit(AuthError(e.toString()));

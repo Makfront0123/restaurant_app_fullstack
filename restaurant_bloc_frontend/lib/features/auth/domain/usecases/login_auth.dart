@@ -2,11 +2,15 @@ import 'package:restaurant_bloc_frontend/features/auth/domain/entities/user.dart
 import 'package:restaurant_bloc_frontend/features/auth/domain/repositories/auth_repository.dart';
 
 class LoginUser {
-  final AuthRepository repository;
+  final AuthRepository _repository;
 
-  LoginUser(this.repository);
+  LoginUser(this._repository);
 
   Future<User> call(String email, String password) {
-    return repository.login(email, password);
+    return _repository.login(email, password);
+  }
+
+  Future<User> autoLoginWithToken(String token) {
+    return _repository.getCurrentUser(token);
   }
 }

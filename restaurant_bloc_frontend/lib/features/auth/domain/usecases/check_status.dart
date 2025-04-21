@@ -16,6 +16,7 @@ class AppStarted {
     if (token != null) {
       try {
         final user = await loginUser.autoLoginWithToken(token);
+
         return user;
       } catch (_) {
         return null;

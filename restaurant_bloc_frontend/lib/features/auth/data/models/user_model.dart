@@ -7,6 +7,7 @@ class UserModel extends User {
   final DateTime? resetPasswordExpires;
 
   const UserModel({
+    required super.token,
     required super.role,
     required super.id,
     required super.name,
@@ -19,7 +20,10 @@ class UserModel extends User {
     this.resetPasswordExpires,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
+  factory UserModel.fromJson(Map<String, dynamic> json,
+          {required String token}) =>
+      UserModel(
+        token: token,
         role: json['role'] ?? 'customer',
         id: json['_id'],
         name: json['name'],
@@ -44,6 +48,7 @@ class UserModel extends User {
         'accountVerified': accountVerified,
         'otp': otp,
         'role': role,
+        'token': token,
         'otpExpires': otpExpires?.toIso8601String(),
         'resetPasswordToken': resetPasswordToken,
         'resetPasswordExpires': resetPasswordExpires?.toIso8601String(),
@@ -56,6 +61,7 @@ class UserModel extends User {
         otp,
         otpExpires,
         resetPasswordToken,
+        token,
         resetPasswordExpires,
       ];
 }

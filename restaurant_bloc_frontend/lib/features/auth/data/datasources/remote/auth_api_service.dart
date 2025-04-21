@@ -19,7 +19,7 @@ class AuthApiService {
 
       final userData = response.data['data']['user'];
 
-      final user = UserModel.fromJson(userData);
+      final user = UserModel.fromJson(userData, token: '');
 
       return user;
     } on DioException catch (e) {
@@ -37,8 +37,12 @@ class AuthApiService {
         'password': password,
       });
 
-      final userData = response.data['data'];
-      final user = UserModel.fromJson(userData);
+      final data = response.data['data'];
+      final token = data['token']; // <- lo sacas de aquí
+      final userJson = data['user'];
+
+      final user = UserModel.fromJson(userJson, token: token);
+
       return user;
     } on DioException catch (e) {
       final message = _extractErrorMessage(e);
@@ -50,12 +54,12 @@ class AuthApiService {
 
   Future<UserModel> getCurrentUser(String token) async {
     try {
-      final response = await _dio.get('$baseUrl/api/v1/user/check-auth',
+      final response = await _dio.get('$baseUrl/api/v1/check-auth',
           options: Options(headers: {'Authorization': 'Bearer $token'}));
-      print('getCurrentUser response: ${response.data}');
-      final userData = response.data['data'];
-      final user = UserModel.fromJson(userData);
-      return user;
+
+      final data = response.data;
+
+      return UserModel.fromJson(data['data'], token: token);
     } on DioException catch (e) {
       final message = _extractErrorMessage(e);
       return Future.error(message);
@@ -95,7 +99,6 @@ class AuthApiService {
         '$baseUrl/api/v1/forgot-password',
         data: {'email': email},
       );
-      print('ForgotPassword response: ${response.data}');
 
       return response.data;
     } on DioException catch (e) {
@@ -131,7 +134,7 @@ class AuthApiService {
         'password': password,
         'newPassword': newPassword
       });
-      print('ResetPassword response: ${response.data}');
+
       return response.data;
     } on DioException catch (e) {
       final message = _extractErrorMessage(e);
@@ -165,7 +168,6 @@ class AuthApiService {
         'email': email,
       });
 
-      print('ResendOtp response: ${response.data}');
       return response.data;
     } on DioException catch (e) {
       final message = _extractErrorMessage(e);
@@ -182,7 +184,7 @@ class AuthApiService {
           await _dio.post('$baseUrl/api/v1/resend-forgot-otp', data: {
         'email': email,
       });
-      print('ResendForgotPasswordOtp response: ${response.data}');
+
       return response.data;
     } on DioException catch (e) {
       final message = _extractErrorMessage(e);

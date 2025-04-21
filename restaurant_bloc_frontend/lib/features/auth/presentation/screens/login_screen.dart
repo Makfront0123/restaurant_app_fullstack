@@ -38,7 +38,6 @@ class _LoginScreenState extends State<LoginScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
-          print('AuthState: $state');
           if (state is Authenticated) {
             Navigator.pushReplacementNamed(context, '/application');
           }

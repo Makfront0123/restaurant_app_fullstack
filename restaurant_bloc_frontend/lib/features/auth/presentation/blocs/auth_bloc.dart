@@ -63,15 +63,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onAppStarted(AppStarted event, Emitter<AuthState> emit) async {
     final token = await _storageService.getToken();
 
-    if (token != null) {
-      try {
-        final user = await _loginUser.autoLoginWithToken(token);
-        emit(Authenticated(user: user));
-      } catch (e) {
-        await _storageService.clearToken(); // si el token falla, lo limpiamos
-        emit(AuthUnauthenticated());
-      }
-    } else {
+    if (token == null) {
+      emit(AuthUnauthenticated());
+      return;
+    }
+    try {
+      final user = await _loginUser.autoLoginWithToken(token);
+      emit(Authenticated(user: user));
+    } catch (e) {
+      await _storageService.clearToken();
       emit(AuthUnauthenticated());
     }
   }
@@ -80,6 +80,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       final user = await _loginUser(event.email, event.password);
+
+      await _storageService.saveToken(user.token);
+
       if (user.accountVerified) {
         emit(Authenticated(user: user));
       } else {
@@ -92,7 +95,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> _onRegister(RegisterEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
-    print('RegisterEvent received'); // Verifica si se recibe el evento
+
     try {
       final user = await _registerUser(
         event.name,
@@ -100,10 +103,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         event.password,
         event.confirmPassword,
       );
-      print('Registration successful: ${user.email}'); // Confirmación adicional
+
       emit(AuthRegistrationSuccess(user));
     } catch (e) {
-      print('Error during registration: $e'); // Verifica si hay algún error
       emit(AuthError(e.toString()));
     }
   }
@@ -162,7 +164,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ResendOtpEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      final res = await _resendOtp(event.email);
+      await _resendOtp(event.email);
       emit(
           AuthVerificationSuccess()); // O crea AuthOtpResent(message) si quieres mostrar feedback
     } catch (e) {
@@ -174,7 +176,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ResendOtpForgotEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      final res = await _resendOtpForgot(event.email);
+      await _resendOtpForgot(event.email);
 
       emit(AuthForgotPasswordOtpSent(event.email));
     } catch (e) {
@@ -185,6 +187,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onLogout(LogoutEvent event, Emitter<AuthState> emit) async {
     try {
       await _logoutUser();
+      await _storageService.clearToken();
       emit(AuthUnauthenticated());
     } catch (e) {
       emit(AuthError(e.toString()));

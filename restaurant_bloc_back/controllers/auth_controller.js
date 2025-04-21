@@ -80,7 +80,7 @@ export const authLogin = asyncHandler(async (req, res) => {
 
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None', });
 
-        res.json({ message: 'Logged in successfully', data: user });
+        res.json({ message: 'Logged in successfully', data: { user, token } });
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",

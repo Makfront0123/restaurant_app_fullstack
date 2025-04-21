@@ -36,7 +36,6 @@ class AuthApiService {
         'email': email,
         'password': password,
       });
-
       final data = response.data['data'];
       final token = data['token']; // <- lo sacas de aquí
       final userJson = data['user'];

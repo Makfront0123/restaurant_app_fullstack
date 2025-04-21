@@ -103,6 +103,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         event.password,
         event.confirmPassword,
       );
+
       emit(AuthRegistrationSuccess(user));
     } catch (e) {
       emit(AuthError(e.toString()));
@@ -124,7 +125,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       final res = await _forgotPassword(event.email);
-      emit(AuthForgotSuccess(res['message'], event.email));
+      emit(AuthForgotSuccess(res['message']));
       emit(AuthForgotPasswordOtpSent(event.email));
     } catch (e) {
       emit(AuthError(e.toString()));
@@ -173,8 +174,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> _onResendOtpForgot(
       ResendOtpForgotEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
     try {
       await _resendOtpForgot(event.email);
+
       emit(AuthForgotPasswordOtpSent(event.email));
     } catch (e) {
       emit(AuthError(e.toString()));

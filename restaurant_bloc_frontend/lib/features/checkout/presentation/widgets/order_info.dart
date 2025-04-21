@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurant_bloc_frontend/app/router.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_button.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_state.dart';

@@ -29,7 +29,7 @@ import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_e
 import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_screen.dart';
 import 'package:restaurant_bloc_frontend/features/order/data/datasources/remote/order_api_services.dart';
 import 'package:restaurant_bloc_frontend/features/order/data/repositories/order_repository_impl.dart';
-import 'package:restaurant_bloc_frontend/features/order/data/services/storage_services.dart';
+
 import 'package:restaurant_bloc_frontend/features/order/domain/repository/order_repository.dart';
 import 'package:restaurant_bloc_frontend/features/order/domain/usecases/creater_order.dart';
 import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_bloc.dart';
@@ -181,9 +181,7 @@ class AppProvider {
         ),
         RepositoryProvider<OrderRepository>(
           create: (context) => OrderRepositoryImpl(
-            context.read<OrderApiServices>(),
-            context.read<StorageService>(),
-          ),
+              context.read<OrderApiServices>(), context.read<StorageService>()),
         ),
         RepositoryProvider(
           create: (context) => CreateOrder(context.read<OrderRepository>()),

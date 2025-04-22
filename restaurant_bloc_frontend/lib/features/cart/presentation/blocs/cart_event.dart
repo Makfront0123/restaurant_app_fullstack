@@ -10,10 +10,19 @@ class AddProductToCart extends CartEvent {
   AddProductToCart({required this.product});
 }
 
+class GetCart extends CartEvent {
+  final String token;
+
+  GetCart({required this.token});
+
+  List<Object?> get props => [token];
+}
+
 class RemoveProductFromCart extends CartEvent {
   final Product product;
+  final String token;
 
-  RemoveProductFromCart({required this.product});
+  RemoveProductFromCart({required this.product, required this.token});
 }
 
 class IncrementProductCount extends CartEvent {

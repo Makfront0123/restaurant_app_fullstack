@@ -12,6 +12,12 @@ class CartUpdatedState extends CartState {
   bool get isEmpty => productsInCart.isEmpty;
 }
 
+class CartErrorState extends CartState {
+  final String message;
+
+  CartErrorState({required this.message});
+}
+
 class CartIncrementdState extends CartState {
   final Product product;
 

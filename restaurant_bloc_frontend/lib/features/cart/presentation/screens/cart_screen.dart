@@ -12,6 +12,7 @@ import 'package:restaurant_bloc_frontend/features/favorite/presentation/widget/s
 import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/menu_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/widgets/item_count.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -22,25 +23,49 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   @override
+  void initState() {
+    super.initState();
+    _loadCart();
+  }
+
+  void _loadCart() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+    if (!mounted) return;
+    context.read<CartBloc>().add(GetCart(token: token ?? ''));
+  }
+
+  void _onDelete(Product product) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+    if (!mounted) return;
+    context
+        .read<CartBloc>()
+        .add(RemoveProductFromCart(product: product, token: token ?? ''));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const MenuAppbar(
-        title: 'Cart',
-      ),
-      body: BlocBuilder<CartBloc, CartState>(
-        builder: (context, state) {
-          if (state is CartUpdatedState) {
-            final products = state.productsInCart;
+        appBar: const MenuAppbar(
+          title: 'Cart',
+        ),
+        body: BlocBuilder<CartBloc, CartState>(
+          builder: (context, state) {
+            if (state is CartUpdatedState) {
+              final products = state.productsInCart;
 
-            return _buildCartList(products);
-          }
-          return const ScreenEmpty(
-            emptyImage: Vectors.favorite,
-            title: 'Your cart is empty',
-          );
-        },
-      ),
-    );
+              return products.isEmpty
+                  ? const ScreenEmpty(
+                      emptyImage: Vectors.favorite,
+                      title: 'Your cart is empty',
+                    )
+                  : _buildCartList(products);
+            }
+
+            return const Center(child: CircularProgressIndicator());
+          },
+        ));
   }
 
   Widget _buildCartList(List<Product> products) {
@@ -78,7 +103,7 @@ class _CartScreenState extends State<CartScreen> {
   Widget _buildCartItem(Product product) {
     const String baseUrl = 'http://10.0.2.2:3000/';
     return Dismissible(
-      key: Key(product.productName), // Usa un identificador único
+      key: Key(product.productName),
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
@@ -87,8 +112,7 @@ class _CartScreenState extends State<CartScreen> {
         child: const Icon(Icons.delete, color: Colors.white),
       ),
       onDismissed: (_) {
-        context.read<CartBloc>().add(RemoveProductFromCart(product: product));
-
+        _onDelete(product);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               backgroundColor: Colors.red,

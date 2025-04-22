@@ -1,35 +1,45 @@
 import 'package:dio/dio.dart';
+import 'package:restaurant_bloc_frontend/features/cart/domain/entities/cart.dart';
+import 'package:restaurant_bloc_frontend/features/product/data/models/product_model.dart';
 
 class CartApiServices {
   final Dio _dio;
+  final String baseUrl;
+  CartApiServices(this._dio, this.baseUrl);
 
-  CartApiServices(this._dio);
+  Future<ProductModel> addToCart(CartItem item, String token) async {
+    final response = await _dio.post(
+      '$baseUrl/api/v1/add-cart/${item.product.id}',
+      data: {'quantity': item.quantity},
+      options: Options(headers: {'Authorization': 'Bearer $token'}),
+    );
 
-  Future<dynamic> addToCart(String productId, int quantity) async {
-    try {
-      final response = await _dio.post('/api/v1/cart/add-cart/$productId',
-          data: {'quantity': quantity});
-      return response.data;
-    } catch (e) {
-      return e;
-    }
+    return ProductModel.fromJson(response.data['data']);
   }
 
-  Future<dynamic> getCart() async {
-    try {
-      final response = await _dio.get('/api/v1/cart/all-cart');
-      return response.data;
-    } catch (e) {
-      return e;
-    }
+  Future<ProductModel> deleteProductFromCart(
+      String productId, String token) async {
+    final response = await _dio.delete(
+      '$baseUrl/api/v1/delete-cart/$productId',
+      options: Options(headers: {'Authorization': 'Bearer $token'}),
+    );
+
+    return ProductModel.fromJson(response.data['data']);
   }
 
-  Future<dynamic> deleteProductFromCart(String productId) async {
-    try {
-      final response = await _dio.delete('/api/v1/cart/delete-cart/$productId');
-      return response.data;
-    } catch (e) {
-      return e;
+  Future<List<CartItem>> getCart(String token) async {
+    final response = await _dio.get(
+      '$baseUrl/api/v1/get-cart',
+      options: Options(headers: {'Authorization': 'Bearer $token'}),
+    );
+
+    if (response.data['data'] != null) {
+      final cartData = response.data['data'];
+      return (cartData['items'] as List)
+          .map((item) => CartItem.fromJson(item))
+          .toList();
+    } else {
+      throw Exception("No cart data available");
     }
   }
 

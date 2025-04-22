@@ -25,6 +25,7 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<Product> getProduct(String name) async {
     return Product(
+      id: '1',
       productName: 'Caesar with Chicken',
       productPrice: 10.40,
       kcal: 140,

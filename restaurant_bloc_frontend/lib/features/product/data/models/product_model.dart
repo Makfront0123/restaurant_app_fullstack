@@ -73,6 +73,7 @@ class ProductModel extends Equatable {
 
   Product toProduct() {
     return Product(
+      id: id,
       image: image,
       productName: name,
       productPrice: price,

@@ -14,7 +14,7 @@ export const addToCart = asyncHandler(async (req, res) => {
 
         if (!cart) {
             const newCart = new Cart({
-                user: req.user.id,
+                userId: req.user.id,
                 items: [{ productId, quantity }]
             });
             await newCart.save();
@@ -70,7 +70,8 @@ export const allCart = asyncHandler(async (req, res) => {
 
 export const getCart = asyncHandler(async (req, res) => {
     try {
-        const cart = await Cart.findOne({ userId: req.user.id })
+        const cart = await Cart.findOne({  userId: req.user.id}).populate('items.productId');
+ 
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' })
         }

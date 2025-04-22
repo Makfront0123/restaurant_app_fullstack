@@ -1,4 +1,5 @@
 class Product {
+  final String id;
   final String image;
   final String productName;
   final double productPrice;
@@ -7,7 +8,9 @@ class Product {
   final int kcal;
   int productCount;
   final String productDescription;
+
   Product({
+    required this.id,
     this.productCount = 1,
     required this.productDescription,
     required this.kcal,
@@ -20,11 +23,12 @@ class Product {
 
   @override
   String toString() {
-    return 'ProductItem(name: $productName, price: $productPrice, count: $productCount)';
+    return 'Product(name: $productName, price: $productPrice, count: $productCount)';
   }
 
   Product copyWith({int? productCount}) {
     return Product(
+      id: id,
       category: category,
       productName: productName,
       productDescription: productDescription,
@@ -35,5 +39,18 @@ class Product {
       productCount: productCount ??
           this.productCount, // Si no se pasa, mantiene el valor actual
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'productName': productName,
+      'productPrice': productPrice,
+      'productWeight': productWeight,
+      'category': category,
+      'kcal': kcal,
+      'productCount': productCount,
+      'productDescription': productDescription,
+      'image': image,
+    };
   }
 }

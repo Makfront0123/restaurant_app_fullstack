@@ -16,7 +16,13 @@ import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/verify_fo
 import 'package:restaurant_bloc_frontend/features/auth/domain/usecases/verify_otp_user.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_event.dart';
+import 'package:restaurant_bloc_frontend/features/cart/data/datasources/remote/cart_api_services.dart';
+import 'package:restaurant_bloc_frontend/features/cart/data/repository/cart_repository_impl.dart';
+import 'package:restaurant_bloc_frontend/features/cart/domain/usecases/add_product.dart';
+import 'package:restaurant_bloc_frontend/features/cart/domain/usecases/get_cart.dart';
+import 'package:restaurant_bloc_frontend/features/cart/domain/usecases/remove_product.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/cart/presentation/screens/cart_screen.dart';
 import 'package:restaurant_bloc_frontend/features/favorite/presentation/blocs/favorite_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/home/data/repositories/home_repository.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_bloc.dart';
@@ -166,7 +172,51 @@ class AppProvider {
         ),
         BlocProvider(create: (_) => FavoriteBloc()),
 
-        BlocProvider(create: (_) => CartBloc()),
+        /// Order
+        RepositoryProvider(
+          create: (context) =>
+              OrderApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
+        ),
+        RepositoryProvider<OrderRepository>(
+          create: (context) => OrderRepositoryImpl(
+              context.read<OrderApiServices>(), context.read<StorageService>()),
+        ),
+        RepositoryProvider(
+          create: (context) => CreateOrder(context.read<OrderRepository>()),
+        ),
+        BlocProvider(
+          create: (context) => OrderBloc(context.read<CreateOrder>()),
+        ),
+
+        // Cart
+        RepositoryProvider(
+          create: (context) =>
+              CartApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
+        ),
+        RepositoryProvider(
+            create: (context) =>
+                CartRepositoryImpl(context.read<CartApiServices>())),
+
+        RepositoryProvider(
+          create: (context) =>
+              AddCartUsecase(context.read<CartRepositoryImpl>()),
+        ),
+        RepositoryProvider(
+          create: (context) =>
+              RemoveProductFromCartUsecase(context.read<CartRepositoryImpl>()),
+        ),
+        RepositoryProvider(
+          create: (context) =>
+              GetCartUsecase(context.read<CartRepositoryImpl>()),
+        ),
+        BlocProvider(
+          create: (context) => CartBloc(
+            getCart: context.read<GetCartUsecase>(),
+            removeProductFromCart: context.read<RemoveProductFromCartUsecase>(),
+            addProductToCart: context.read<AddCartUsecase>(),
+          ),
+          child: const CartScreen(),
+        ),
 
         /// Búsqueda
         BlocProvider(

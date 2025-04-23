@@ -22,7 +22,7 @@ class _OrderScreenState extends State<OrderScreen> {
       ),
       body: BlocBuilder<OrderBloc, OrderState>(
         builder: (context, state) {
-          if (state.isOrder) {
+          if (state is OrderInitial) {
             return const Center(
               child: Text('Order'),
             );

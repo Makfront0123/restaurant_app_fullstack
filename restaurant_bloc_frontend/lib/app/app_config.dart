@@ -33,6 +33,9 @@ import 'package:restaurant_bloc_frontend/features/menu/domain/usecases/get_all_c
 import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_blocs.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_event.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_screen.dart';
+import 'package:restaurant_bloc_frontend/features/order/data/datasources/remote/order_api_services.dart';
+import 'package:restaurant_bloc_frontend/features/order/data/repository/order_repository_impl.dart';
+import 'package:restaurant_bloc_frontend/features/order/domain/usecases/create_order.dart';
 import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/product/data/datasources/remote/product_api_services.dart';
 import 'package:restaurant_bloc_frontend/features/product/data/repositories/product_repository_impl.dart';
@@ -166,7 +169,24 @@ class AppProvider {
           create: (context) => HomeBloc(context.read<HomeRepository>()),
         ),
         BlocProvider(create: (_) => FavoriteBloc()),
-        BlocProvider(create: (_) => OrderBloc()),
+
+        //Order
+        RepositoryProvider(
+          create: (context) =>
+              OrderApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
+        ),
+        RepositoryProvider(
+          create: (context) =>
+              OrderRepositoryImpl(context.read<OrderApiServices>()),
+        ),
+        RepositoryProvider(
+          create: (context) =>
+              CreateOrderUsecase(context.read<OrderRepositoryImpl>()),
+        ),
+        BlocProvider(
+            create: (context) => OrderBloc(
+                  createOrderUsecase: context.read<CreateOrderUsecase>(),
+                )),
 
         // Cart
         RepositoryProvider(

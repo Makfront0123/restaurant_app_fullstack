@@ -2,16 +2,17 @@ import 'package:dio/dio.dart';
 
 class OrderApiServices {
   final Dio _dio;
-
-  OrderApiServices(this._dio);
+  final String baseUrl;
+  OrderApiServices(this._dio, this.baseUrl);
 
   Future<dynamic> createOrder(
       String deliveryAddress, String deliveryDate) async {
     try {
-      final response = await _dio.post('/api/v1/order/create-order', data: {
-        'deliveryAddress': deliveryAddress,
-        'deliveryDate': deliveryDate
-      });
+      final response = await _dio.post('$baseUrl/api/v1/order/create-order',
+          data: {
+            'deliveryAddress': deliveryAddress,
+            'deliveryDate': deliveryDate
+          });
       return response.data;
     } catch (e) {
       return e;

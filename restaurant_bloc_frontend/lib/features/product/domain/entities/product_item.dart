@@ -11,7 +11,7 @@ class Product {
 
   Product({
     required this.id,
-    this.productCount = 1,
+    this.productCount = 0,
     required this.productDescription,
     required this.kcal,
     required this.category,

@@ -2,10 +2,16 @@ import 'package:restaurant_bloc_frontend/features/product/domain/entities/produc
 
 abstract class OrderEvent {}
 
-class CreateOrder extends OrderEvent {
-  final List<Product> products;
+class CreateOrderEvent extends OrderEvent {
+  final String deliveryAddress;
+  final DateTime deliveryDate;
+  final String token;
 
-  CreateOrder({required this.products});
+  CreateOrderEvent({
+    required this.deliveryAddress,
+    required this.deliveryDate,
+    required this.token,
+  });
 }
 
 class SelectPaymentMethod extends OrderEvent {

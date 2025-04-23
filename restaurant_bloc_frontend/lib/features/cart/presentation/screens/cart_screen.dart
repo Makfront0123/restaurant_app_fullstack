@@ -1,6 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_bloc_frontend/core/constants/vectors.dart';
+import 'package:restaurant_bloc_frontend/features/application/presentation/widgets/load_screen.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_button.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_container.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_bloc.dart';
@@ -8,12 +11,14 @@ import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_e
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_state.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/widgets/checkout_content.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/widgets/payment_content.dart';
-import 'package:restaurant_bloc_frontend/features/checkout/presentation/screens/paypal_screen.dart';
-import 'package:restaurant_bloc_frontend/features/checkout/presentation/screens/stripe_screen.dart';
+
 import 'package:restaurant_bloc_frontend/features/favorite/presentation/widget/screen_empty.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/menu_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_event.dart';
 import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_state.dart';
+import 'package:restaurant_bloc_frontend/features/order/presentation/screens/order_failed.dart';
+import 'package:restaurant_bloc_frontend/features/order/presentation/screens/order_success_screen.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/widgets/item_count.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,28 +53,66 @@ class _CartScreenState extends State<CartScreen> {
         .add(RemoveProductFromCart(product: product, token: token ?? ''));
   }
 
+  void _onCheckout() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token') ?? '';
+    final orderState = context.read<OrderBloc>().state;
+
+    if (orderState is PaymentMethodSelected) {
+      ///final method = orderState.selectedPaymentMethod;
+      final event = CreateOrderEvent(
+        deliveryAddress: 'Tu dirección',
+        deliveryDate: DateTime.now().add(const Duration(days: 2)),
+        token: token,
+      );
+      context.read<OrderBloc>().add(event);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a payment method')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const MenuAppbar(
-        title: 'Cart',
-      ),
-      body: BlocBuilder<CartBloc, CartState>(
+    return BlocListener<OrderBloc, OrderState>(
+      listener: (context, state) {
+        if (state is OrderCreated) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const OrderSuccess()),
+          );
+        } else if (state is OrderFailed) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const OrderFailedScreen()),
+          );
+        }
+      },
+      child: BlocBuilder<OrderBloc, OrderState>(
         builder: (context, state) {
-          if (state is CartUpdatedState) {
-            final products = state.productsInCart;
+          final isLoading = state is OrderCreating;
 
-            return products.isEmpty
-                ? const ScreenEmpty(
+          return LoadScreen(
+            isLoading: isLoading,
+            child: Scaffold(
+              appBar: const MenuAppbar(title: 'Cart'),
+              body: BlocBuilder<CartBloc, CartState>(
+                builder: (context, state) {
+                  if (state is CartUpdatedState) {
+                    final products = state.productsInCart;
+                    return products.isEmpty
+                        ? const ScreenEmpty(
+                            emptyImage: Vectors.favorite,
+                            title: 'Your cart is empty',
+                          )
+                        : _buildCartContent(products);
+                  }
+                  return const ScreenEmpty(
                     emptyImage: Vectors.favorite,
                     title: 'Your cart is empty',
-                  )
-                : _buildCartContent(products);
-          }
-
-          return const ScreenEmpty(
-            emptyImage: Vectors.favorite,
-            title: 'Your cart is empty',
+                  );
+                },
+              ),
+            ),
           );
         },
       ),
@@ -177,41 +220,5 @@ class _CartScreenState extends State<CartScreen> {
         ),
       ),
     );
-  }
-
-  void _onCheckout() {
-    final orderState = context.read<OrderBloc>().state;
-
-    if (orderState is PaymentMethodSelected) {
-      final method = orderState.selectedPaymentMethod;
-
-      if (method == 'stripe') {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const StripeScreen(),
-          ),
-        );
-      } else if (method == 'paypal') {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const PaypalScreen(),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please select a payment method'),
-          ),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a payment method'),
-        ),
-      );
-    }
   }
 }

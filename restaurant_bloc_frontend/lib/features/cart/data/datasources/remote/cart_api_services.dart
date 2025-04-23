@@ -32,7 +32,6 @@ class CartApiServices {
       '$baseUrl/api/v1/get-cart',
       options: Options(headers: {'Authorization': 'Bearer $token'}),
     );
-    print('Get cart response: ${response.data}');
 
     if (response.data['data'] != null) {
       final cartData = response.data['data'];

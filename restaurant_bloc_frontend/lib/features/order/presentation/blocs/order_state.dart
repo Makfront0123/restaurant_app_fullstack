@@ -1,13 +1,21 @@
-import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
+import 'package:restaurant_bloc_frontend/features/order/domain/models/order_item.dart';
 
 abstract class OrderState {}
 
 class OrderInitial extends OrderState {}
 
-class OrderCreatedState extends OrderState {
-  final List<Product> products;
+class OrderCreating extends OrderState {}
 
-  OrderCreatedState({required this.products});
+class OrderCreated extends OrderState {
+  final Order order;
+
+  OrderCreated({required this.order});
+}
+
+class OrderFailed extends OrderState {
+  final String error;
+
+  OrderFailed({required this.error});
 }
 
 class PaymentProcessing extends OrderState {}

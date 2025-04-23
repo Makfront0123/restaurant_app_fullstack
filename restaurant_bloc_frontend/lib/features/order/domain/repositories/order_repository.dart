@@ -1,5 +1,9 @@
-import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
+import 'package:restaurant_bloc_frontend/features/order/domain/models/order_item.dart';
 
 abstract class OrderRepository {
-  Future<void> createOrder(List<Product> products);
+  Future<Order> createOrder({
+    required String deliveryAddress,
+    required DateTime deliveryDate,
+    required String token,
+  });
 }

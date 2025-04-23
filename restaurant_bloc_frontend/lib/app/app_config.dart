@@ -34,10 +34,8 @@ import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_b
 import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_event.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_screen.dart';
 import 'package:restaurant_bloc_frontend/features/order/data/datasources/remote/order_api_services.dart';
-import 'package:restaurant_bloc_frontend/features/order/data/repositories/order_repository_impl.dart';
-
-import 'package:restaurant_bloc_frontend/features/order/domain/repository/order_repository.dart';
-import 'package:restaurant_bloc_frontend/features/order/domain/usecases/creater_order.dart';
+import 'package:restaurant_bloc_frontend/features/order/data/repository/order_repository_impl.dart';
+import 'package:restaurant_bloc_frontend/features/order/domain/usecases/create_order.dart';
 import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/product/data/datasources/remote/product_api_services.dart';
 import 'package:restaurant_bloc_frontend/features/product/data/repositories/product_repository_impl.dart';
@@ -172,21 +170,23 @@ class AppProvider {
         ),
         BlocProvider(create: (_) => FavoriteBloc()),
 
-        /// Order
+        //Order
         RepositoryProvider(
           create: (context) =>
               OrderApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
         ),
-        RepositoryProvider<OrderRepository>(
-          create: (context) => OrderRepositoryImpl(
-              context.read<OrderApiServices>(), context.read<StorageService>()),
+        RepositoryProvider(
+          create: (context) =>
+              OrderRepositoryImpl(context.read<OrderApiServices>()),
         ),
         RepositoryProvider(
-          create: (context) => CreateOrder(context.read<OrderRepository>()),
+          create: (context) =>
+              CreateOrderUsecase(context.read<OrderRepositoryImpl>()),
         ),
         BlocProvider(
-          create: (context) => OrderBloc(context.read<CreateOrder>()),
-        ),
+            create: (context) => OrderBloc(
+                  createOrderUsecase: context.read<CreateOrderUsecase>(),
+                )),
 
         // Cart
         RepositoryProvider(

@@ -1,14 +1,24 @@
-import 'package:equatable/equatable.dart';
+import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
 
-abstract class OrderEvent extends Equatable {
-  const OrderEvent();
-}
+abstract class OrderEvent {}
 
-class SubmitOrderEvent extends OrderEvent {
+class CreateOrderEvent extends OrderEvent {
   final String deliveryAddress;
+  final DateTime deliveryDate;
+  final String token;
 
-  const SubmitOrderEvent(this.deliveryAddress);
-
-  @override
-  List<Object?> get props => [deliveryAddress];
+  CreateOrderEvent({
+    required this.deliveryAddress,
+    required this.deliveryDate,
+    required this.token,
+  });
 }
+
+class SelectPaymentMethod extends OrderEvent {
+  final String paymentMethod;
+  final List<Product> products;
+
+  SelectPaymentMethod({required this.paymentMethod, required this.products});
+}
+
+class CompletePayment extends OrderEvent {}

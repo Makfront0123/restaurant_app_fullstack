@@ -1,15 +1,24 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurant_bloc_frontend/app/router.dart';
 import 'package:restaurant_bloc_frontend/core/constants/vectors.dart';
+import 'package:restaurant_bloc_frontend/features/application/presentation/widgets/load_screen.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_button.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_container.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_event.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_state.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/widgets/checkout_content.dart';
+import 'package:restaurant_bloc_frontend/features/cart/presentation/widgets/payment_content.dart';
+
 import 'package:restaurant_bloc_frontend/features/favorite/presentation/widget/screen_empty.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/menu_appbar.dart';
+import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_event.dart';
+import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_state.dart';
+import 'package:restaurant_bloc_frontend/features/order/presentation/screens/order_failed.dart';
+import 'package:restaurant_bloc_frontend/features/order/presentation/screens/order_success_screen.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/widgets/item_count.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,28 +53,90 @@ class _CartScreenState extends State<CartScreen> {
         .add(RemoveProductFromCart(product: product, token: token ?? ''));
   }
 
+  void _onCheckout() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token') ?? '';
+    final orderState = context.read<OrderBloc>().state;
+
+    if (orderState is PaymentMethodSelected) {
+      ///final method = orderState.selectedPaymentMethod;
+      final event = CreateOrderEvent(
+        deliveryAddress: 'Tu dirección',
+        deliveryDate: DateTime.now().add(const Duration(days: 2)),
+        token: token,
+      );
+      context.read<OrderBloc>().add(event);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a payment method')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: const MenuAppbar(
-          title: 'Cart',
+    return BlocListener<OrderBloc, OrderState>(
+      listener: (context, state) {
+        if (state is OrderCreated) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const OrderSuccess()),
+          );
+        } else if (state is OrderFailed) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const OrderFailedScreen()),
+          );
+        }
+      },
+      child: BlocBuilder<OrderBloc, OrderState>(
+        builder: (context, state) {
+          final isLoading = state is OrderCreating;
+
+          return LoadScreen(
+            isLoading: isLoading,
+            child: Scaffold(
+              appBar: const MenuAppbar(title: 'Cart'),
+              body: BlocBuilder<CartBloc, CartState>(
+                builder: (context, state) {
+                  if (state is CartUpdatedState) {
+                    final products = state.productsInCart;
+                    return products.isEmpty
+                        ? const ScreenEmpty(
+                            emptyImage: Vectors.favorite,
+                            title: 'Your cart is empty',
+                          )
+                        : _buildCartContent(products);
+                  }
+                  return const ScreenEmpty(
+                    emptyImage: Vectors.favorite,
+                    title: 'Your cart is empty',
+                  );
+                },
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Column _buildCartContent(List<Product> products) {
+    return Column(
+      children: [
+        Expanded(child: _buildCartList(products)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: BlocBuilder<OrderBloc, OrderState>(
+            builder: (context, orderState) {
+              return AuthButton(
+                onTap: _onCheckout,
+                text: 'Checkout',
+              );
+            },
+          ),
         ),
-        body: BlocBuilder<CartBloc, CartState>(
-          builder: (context, state) {
-            if (state is CartUpdatedState) {
-              final products = state.productsInCart;
-
-              return products.isEmpty
-                  ? const ScreenEmpty(
-                      emptyImage: Vectors.favorite,
-                      title: 'Your cart is empty',
-                    )
-                  : _buildCartList(products);
-            }
-
-            return const Center(child: CircularProgressIndicator());
-          },
-        ));
+        const SizedBox(height: 20),
+      ],
+    );
   }
 
   Widget _buildCartList(List<Product> products) {
@@ -83,18 +154,10 @@ class _CartScreenState extends State<CartScreen> {
               return _buildCartItem(product);
             },
           ),
-          const SizedBox(height: 30),
+          PaymentContent(products: products),
+          const SizedBox(height: 0),
           const CheckoutContent(),
           const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: AuthButton(
-              onTap: () {
-                Navigator.pushNamed(context, AppRoutes.checkout);
-              },
-              text: 'Checkout',
-            ),
-          ),
         ],
       ),
     );

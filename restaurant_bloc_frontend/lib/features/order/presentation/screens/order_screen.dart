@@ -23,6 +23,10 @@ class _OrderScreenState extends State<OrderScreen> {
       body: BlocBuilder<OrderBloc, OrderState>(
         builder: (context, state) {
           if (state is OrderInitial) {
+            return const Center(
+              child: Text('Order'),
+            );
+          } else {
             return const ScreenEmpty(
               emptyImage: Vectors.orderSuccess,
               title: 'Your order',

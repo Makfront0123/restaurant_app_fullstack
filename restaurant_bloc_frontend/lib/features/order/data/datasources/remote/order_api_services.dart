@@ -1,27 +1,28 @@
+// order_api_services.dart
 import 'package:dio/dio.dart';
 import 'package:restaurant_bloc_frontend/features/order/data/models/order_model.dart';
 import 'package:restaurant_bloc_frontend/features/order/domain/entities/order.dart';
 
 class OrderApiServices {
-  final Dio dio;
+  final Dio _dio;
   final String baseUrl;
-  OrderApiServices(this.dio, this.baseUrl);
 
-  Future<Order> createOrder(OrderModel orderRequest, String token) async {
+  OrderApiServices(this._dio, this.baseUrl);
+
+  Future<Map<String, dynamic>> createOrder(
+      String deliveryAddress, String deliveryDate, String token) async {
     try {
-      final response = await dio.post(
-        '/orders', // O la ruta correspondiente
-        data: orderRequest.toJson(),
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Content-Type': 'application/json',
+      final response = await _dio.post('$baseUrl/api/v1/create-order',
+          data: {
+            'deliveryAddress': deliveryAddress,
+            'deliveryDate': deliveryDate,
           },
-        ),
-      );
-      return response.data;
-    } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'Error creating order');
+          options: Options(headers: {'Authorization': 'Bearer $token'}));
+
+      return response
+          .data; // Asumiendo que la API devuelve la respuesta en el formato adecuado.
+    } catch (e) {
+      throw Exception('Error creating order: $e');
     }
   }
 }

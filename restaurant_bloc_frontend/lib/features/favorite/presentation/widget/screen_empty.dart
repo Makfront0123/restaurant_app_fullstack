@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_button.dart';
 
 class ScreenEmpty extends StatefulWidget {
-  const ScreenEmpty({super.key, required this.emptyImage, required this.title});
+  const ScreenEmpty(
+      {super.key, required this.emptyImage, this.onTap, required this.title});
   final String emptyImage;
   final String title;
+  final VoidCallback? onTap;
 
   @override
   State<ScreenEmpty> createState() => _ScreenEmptyState();
@@ -44,9 +46,7 @@ class _ScreenEmptyState extends State<ScreenEmpty> {
                   ),
                 )),
             AuthButton(
-              onTap: () {
-                Navigator.pop(context);
-              },
+              onTap: widget.onTap,
               text: 'Explore our Menu',
             )
           ],

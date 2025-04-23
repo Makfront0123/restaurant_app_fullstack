@@ -1,21 +1,58 @@
-import 'package:restaurant_bloc_frontend/features/application/services/storage_service.dart';
-import 'package:restaurant_bloc_frontend/features/order/data/datasources/remote/order_api_services.dart';
-import 'package:restaurant_bloc_frontend/features/order/data/models/order_model.dart';
-import 'package:restaurant_bloc_frontend/features/order/domain/entities/order.dart';
-import 'package:restaurant_bloc_frontend/features/order/domain/repository/order_repository.dart';
+// order_data.dart (Datos)
+import 'package:restaurant_bloc_frontend/features/order/domain/models/order_data.dart';
+import 'package:restaurant_bloc_frontend/features/order/domain/models/order_item.dart';
 
-class OrderRepositoryImpl implements OrderRepository {
-  final OrderApiServices api;
-  final StorageService storage;
+class OrderData {
+  final String id;
+  final String userId;
+  final List<OrderItemData> items;
+  final String status;
+  final String deliveryAddress;
+  final DateTime deliveryDate;
+  final double totalPrice;
 
-  OrderRepositoryImpl(this.api, this.storage);
+  OrderData({
+    required this.id,
+    required this.userId,
+    required this.items,
+    required this.status,
+    required this.deliveryAddress,
+    required this.deliveryDate,
+    required this.totalPrice,
+  });
 
-  @override
-  Future<Order> createOrder(Order order) async {
-    final token = await storage.getToken();
-    if (token == null) throw Exception("Token not found");
+  Order toDomain() {
+    return Order(
+      id: id,
+      status: status,
+      deliveryAddress: deliveryAddress,
+      deliveryDate: deliveryDate,
+      totalPrice: totalPrice,
+    );
+  }
 
-    final orderModel = OrderModel.fromOrder(order);
-    return await api.createOrder(orderModel, token);
+  static OrderData fromJson(Map<String, dynamic> json) {
+    return OrderData(
+      id: json['_id'] ?? '',
+      userId: json['userId'],
+      items: (json['items'] as List)
+          .map((item) => OrderItemData.fromJson(item))
+          .toList(),
+      status: json['status'],
+      deliveryAddress: json['deliveryAddress'],
+      deliveryDate: DateTime.parse(json['deliveryDate']),
+      totalPrice: (json['totalPrice'] as num).toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'userId': userId,
+      'items': items.map((item) => item.toJson()).toList(),
+      'status': status,
+      'deliveryAddress': deliveryAddress,
+      'deliveryDate': deliveryDate.toIso8601String(),
+      'totalPrice': totalPrice,
+    };
   }
 }

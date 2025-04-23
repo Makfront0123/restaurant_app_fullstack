@@ -32,7 +32,6 @@ class _OrderScreenState extends State<OrderScreen> {
               title: 'Your order',
             );
           }
-          return const Center(child: Text('Order'));
         },
       ),
     );

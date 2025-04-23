@@ -223,21 +223,5 @@ class AppProvider {
           create: (context) => SearchBloc(context.read<HomeRepository>()),
           child: const MenuScreen(), // Esto no va acá realmente (ver abajo)
         ),
-
-        /// Order
-        RepositoryProvider(
-          create: (context) =>
-              OrderApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
-        ),
-        RepositoryProvider<OrderRepository>(
-          create: (context) => OrderRepositoryImpl(
-              context.read<OrderApiServices>(), context.read<StorageService>()),
-        ),
-        RepositoryProvider(
-          create: (context) => CreateOrder(context.read<OrderRepository>()),
-        ),
-        BlocProvider(
-          create: (context) => OrderBloc(context.read<CreateOrder>()),
-        ),
       ];
 }

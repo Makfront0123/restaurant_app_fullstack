@@ -1,7 +1,5 @@
 // order_api_services.dart
 import 'package:dio/dio.dart';
-import 'package:restaurant_bloc_frontend/features/order/data/models/order_model.dart';
-import 'package:restaurant_bloc_frontend/features/order/domain/entities/order.dart';
 
 class OrderApiServices {
   final Dio _dio;

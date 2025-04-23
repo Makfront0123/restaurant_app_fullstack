@@ -1,5 +1,5 @@
 import Order from '../models/order_model.js';
-import Cart from '../models/cart_model.js';  
+import Cart from '../models/cart_model.js';
 import asyncHandler from 'express-async-handler';
 
 export const createOrder = asyncHandler(async (req, res) => {
@@ -13,7 +13,8 @@ export const createOrder = asyncHandler(async (req, res) => {
     const items = cart.items.map(item => {
         const price = item.productId.price;
         const subTotal = price * item.quantity;
-        totalPrice += subTotal.toFixed(2);
+        totalPrice += subTotal;
+
         return {
             productId: item.productId._id,
             quantity: item.quantity
@@ -21,6 +22,8 @@ export const createOrder = asyncHandler(async (req, res) => {
     });
 
     try {
+        totalPrice = Number(totalPrice.toFixed(2)); // <-- opcional
+
         const order = new Order({
             userId: req.user.id,
             items,
@@ -29,7 +32,6 @@ export const createOrder = asyncHandler(async (req, res) => {
             deliveryDate: req.body.deliveryDate || Date.now(),
             totalPrice
         });
-
         await order.save();
 
         // Vaciar el carrito
@@ -75,7 +77,7 @@ export const getAllOrders = asyncHandler(async (req, res) => {
             error: error.message || error
         });
     }
-}); 
+});
 
 export const deleteOrder = asyncHandler(async (req, res) => {
     const { id } = req.params;

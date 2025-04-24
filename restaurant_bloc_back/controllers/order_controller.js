@@ -67,6 +67,19 @@ export const getOrder = asyncHandler(async (req, res) => {
     }
 });
 
+export const getOrderByUser = asyncHandler(async (req, res) => {
+    try {
+        const user=req.user;
+        const orders = await Order.find({ userId: user.id }).populate('items.productId');
+        res.status(200).json({ message: 'Orders found', data: orders });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Internal server error',
+            error: error.message || error
+        });
+    }
+});
+
 export const getAllOrders = asyncHandler(async (req, res) => {
     try {
         const orders = await Order.find().populate('items.productId');

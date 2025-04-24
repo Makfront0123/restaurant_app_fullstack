@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:restaurant_bloc_frontend/app/app_config.dart';
 import 'package:restaurant_bloc_frontend/app/router.dart';
 import 'package:restaurant_bloc_frontend/core/theme/blocs/theme_bloc.dart';
 import 'package:restaurant_bloc_frontend/core/theme/blocs/theme_state.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    throw Exception('Error loading .env file: $e');
+  }
+  Stripe.publishableKey = dotenv.env['STRIPE_PUBLIC_KEY'] ?? '';
+  await Stripe.instance.applySettings();
   runApp(MultiBlocProvider(providers: [
     ...AppProvider.allproviders,
   ], child: const MyApp()));

@@ -11,6 +11,7 @@ import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_e
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_state.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/widgets/checkout_content.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/widgets/payment_content.dart';
+import 'package:restaurant_bloc_frontend/features/cart/services/stripe_service.dart';
 
 import 'package:restaurant_bloc_frontend/features/favorite/presentation/widget/screen_empty.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/menu_appbar.dart';
@@ -59,13 +60,50 @@ class _CartScreenState extends State<CartScreen> {
     final orderState = context.read<OrderBloc>().state;
 
     if (orderState is PaymentMethodSelected) {
-      ///final method = orderState.selectedPaymentMethod;
-      final event = CreateOrderEvent(
-        deliveryAddress: 'Tu dirección',
-        deliveryDate: DateTime.now().add(const Duration(days: 2)),
-        token: token,
-      );
-      context.read<OrderBloc>().add(event);
+      final method = orderState.selectedPaymentMethod;
+      if (method == 'stripe') {
+        final userPayService = UserPayServices();
+        try {
+          final success = await userPayService.makePayment(context);
+          if (success) {
+            final event = CreateOrderEvent(
+              deliveryAddress: 'Tu dirección',
+              deliveryDate: DateTime.now().add(const Duration(days: 2)),
+              token: token,
+            );
+            context.read<OrderBloc>().add(event);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Error al pagar')),
+            );
+          }
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Error al pagar')),
+          );
+        }
+      } else if (method == 'paypal') {
+        final userPayService = UserPayServices();
+        try {
+          final success = await userPayService.navigatePaypal(context);
+          if (success) {
+            final event = CreateOrderEvent(
+              deliveryAddress: 'Tu dirección',
+              deliveryDate: DateTime.now().add(const Duration(days: 2)),
+              token: token,
+            );
+            context.read<OrderBloc>().add(event);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Error al pagar')),
+            );
+          }
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Error al pagar')),
+          );
+        }
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select a payment method')),

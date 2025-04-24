@@ -5,14 +5,19 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppbar({
     super.key,
     this.showUser = true,
+    this.title,
   });
   final bool showUser;
+
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: AppBar(
+        centerTitle: true,
+        title: Text(title ?? ''),
         leadingWidth: showUser ? 195 : 80,
         leading: Row(
           mainAxisAlignment: MainAxisAlignment.center,

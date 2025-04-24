@@ -17,11 +17,19 @@ class OrderRepositoryImpl implements OrderRepository {
     final response = await api.createOrder(
         deliveryAddress, deliveryDate.toIso8601String(), token);
 
-    // Puedes verificar aquí si hubo un error, por ejemplo:
+    // Verifica si la respuesta contiene la clave 'data'
     if (response['data'] == null) {
       throw Exception(response['message'] ?? 'Unknown error creating order');
     }
 
     return OrderData.fromJson(response['data']).toDomain();
+  }
+
+  @override
+  Future<List<Order>> getOrderByUser(String token) async {
+    final response = await api.getOrderByUser(token);
+
+    // Mapear cada OrderData a Order
+    return response.map((orderData) => orderData.toDomain()).toList();
   }
 }

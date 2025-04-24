@@ -36,6 +36,7 @@ import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu
 import 'package:restaurant_bloc_frontend/features/order/data/datasources/remote/order_api_services.dart';
 import 'package:restaurant_bloc_frontend/features/order/data/repository/order_repository_impl.dart';
 import 'package:restaurant_bloc_frontend/features/order/domain/usecases/create_order.dart';
+import 'package:restaurant_bloc_frontend/features/order/domain/usecases/get_order_user.dart';
 import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/product/data/datasources/remote/product_api_services.dart';
 import 'package:restaurant_bloc_frontend/features/product/data/repositories/product_repository_impl.dart';
@@ -183,9 +184,14 @@ class AppProvider {
           create: (context) =>
               CreateOrderUsecase(context.read<OrderRepositoryImpl>()),
         ),
+        RepositoryProvider(
+          create: (context) =>
+              GetOrderUsercase(context.read<OrderRepositoryImpl>()),
+        ),
         BlocProvider(
             create: (context) => OrderBloc(
                   createOrderUsecase: context.read<CreateOrderUsecase>(),
+                  getOrderUsercase: context.read<GetOrderUsercase>(),
                 )),
 
         // Cart

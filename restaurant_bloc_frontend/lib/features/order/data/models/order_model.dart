@@ -1,11 +1,12 @@
 // order_data.dart (Datos)
-import 'package:restaurant_bloc_frontend/features/order/domain/models/order_data.dart';
+import 'package:restaurant_bloc_frontend/features/order/data/models/order_item_data.dart';
+
 import 'package:restaurant_bloc_frontend/features/order/domain/models/order_item.dart';
 
 class OrderData {
   final String id;
   final String userId;
-  final List<OrderItemData> items;
+  final List<OrderItemData> items; // <-- ESTA FALTABA
   final String status;
   final String deliveryAddress;
   final DateTime deliveryDate;
@@ -14,7 +15,7 @@ class OrderData {
   OrderData({
     required this.id,
     required this.userId,
-    required this.items,
+    required this.items, // <-- asegúrate que esté aquí también
     required this.status,
     required this.deliveryAddress,
     required this.deliveryDate,
@@ -34,7 +35,7 @@ class OrderData {
   static OrderData fromJson(Map<String, dynamic> json) {
     return OrderData(
       id: json['_id'] ?? '',
-      userId: json['userId'],
+      userId: json['userId'] is String ? json['userId'] : json['userId']['_id'],
       items: (json['items'] as List)
           .map((item) => OrderItemData.fromJson(item))
           .toList(),

@@ -6,4 +6,6 @@ abstract class OrderRepository {
     required DateTime deliveryDate,
     required String token,
   });
+
+  Future<List<Order>> getOrderByUser(String token);
 }

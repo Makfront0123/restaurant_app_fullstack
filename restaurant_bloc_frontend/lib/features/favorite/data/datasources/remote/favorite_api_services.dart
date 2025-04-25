@@ -66,7 +66,6 @@ class FavoriteApiServices {
         throw Exception('Error obteniendo favoritos: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error: $e');
       throw Exception('Error obteniendo favoritos: $e');
     }
   }

@@ -47,6 +47,11 @@ import 'package:restaurant_bloc_frontend/features/product/data/repositories/prod
 import 'package:restaurant_bloc_frontend/features/product/domain/repositories/product_repository.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_event.dart';
+import 'package:restaurant_bloc_frontend/features/profile/data/datasources/profile_api_services.dart';
+import 'package:restaurant_bloc_frontend/features/profile/data/repository/profile_repository_impl.dart';
+import 'package:restaurant_bloc_frontend/features/profile/domain/usecases/update_profile.dart';
+import 'package:restaurant_bloc_frontend/features/profile/presentation/blocs/profile_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/profile/presentation/screens/profile_screen.dart';
 import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/usecases/get_all_products.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/usecases/get_product.dart';
@@ -251,6 +256,26 @@ class AppProvider {
             addProductToCart: context.read<AddCartUsecase>(),
           ),
           child: const CartScreen(),
+        ),
+
+        //Profile
+        RepositoryProvider(
+          create: (context) =>
+              ProfileApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
+        ),
+        RepositoryProvider(
+          create: (context) =>
+              ProfileRepositoryImpl(context.read<ProfileApiServices>()),
+        ),
+        RepositoryProvider(
+          create: (context) =>
+              UpdateProfileUsecase(context.read<ProfileRepositoryImpl>()),
+        ),
+        RepositoryProvider(
+          create: (context) => ProfileBloc(
+            updateProfile: context.read<UpdateProfileUsecase>(),
+          ),
+          child: const ProfileScreen(),
         ),
 
         /// Búsqueda

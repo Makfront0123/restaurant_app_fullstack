@@ -50,7 +50,6 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       body: BlocBuilder<FavoriteBloc, FavoriteState>(
         builder: (context, state) {
           final isLoading = state is FavoriteLoading;
-          print('FavoriteState is $state');
 
           if (state is FavoriteError) {
             return const Center(child: CircularProgressIndicator());

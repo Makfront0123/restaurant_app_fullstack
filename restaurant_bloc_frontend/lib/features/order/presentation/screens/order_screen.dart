@@ -74,6 +74,7 @@ class _OrderScreenState extends State<OrderScreen> {
   void _getOrders() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token') ?? '';
+    // ignore: use_build_context_synchronously
     context.read<OrderBloc>().add(GetOrderEvent(token: token));
   }
 }

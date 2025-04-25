@@ -74,3 +74,11 @@ export const deleteFavorite = asyncHandler(async (req, res) => {
         });
     }
 });
+
+export const getFavorites = asyncHandler(async (req,res)=>{
+    const favorites = await Favorites.findOne({ userId: req.user.id });
+    if (!favorites) {
+        return res.status(404).json({ message: 'Favorites not found' });
+    }
+    res.status(200).json({ message: 'Favorites found', data: favorites });
+});

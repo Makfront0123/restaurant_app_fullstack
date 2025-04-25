@@ -23,6 +23,10 @@ import 'package:restaurant_bloc_frontend/features/cart/domain/usecases/get_cart.
 import 'package:restaurant_bloc_frontend/features/cart/domain/usecases/remove_product.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/screens/cart_screen.dart';
+import 'package:restaurant_bloc_frontend/features/favorite/data/datasources/remote/favorite_api_services.dart';
+import 'package:restaurant_bloc_frontend/features/favorite/data/repository/favorite_respository_impl.dart';
+import 'package:restaurant_bloc_frontend/features/favorite/domain/usecases/add_favorite.dart';
+import 'package:restaurant_bloc_frontend/features/favorite/domain/usecases/get_favorite.dart';
 import 'package:restaurant_bloc_frontend/features/favorite/presentation/blocs/favorite_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/home/data/repositories/home_repository.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_bloc.dart';
@@ -169,8 +173,33 @@ class AppProvider {
         BlocProvider(
           create: (context) => HomeBloc(context.read<HomeRepository>()),
         ),
-        BlocProvider(create: (_) => FavoriteBloc()),
 
+        //Favorite
+        RepositoryProvider(
+          create: (context) =>
+              FavoriteApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
+        ),
+
+        RepositoryProvider(
+            create: (context) =>
+                FavoriteRepositoryImpl(context.read<FavoriteApiServices>())),
+
+        RepositoryProvider(
+          create: (context) =>
+              AddFavoriteUsecase(context.read<FavoriteRepositoryImpl>()),
+        ),
+        RepositoryProvider(
+          create: (context) =>
+              GetFavoriteUsecase(context.read<FavoriteRepositoryImpl>()),
+        ),
+
+        BlocProvider(
+          create: (context) => FavoriteBloc(
+            getFavorite: context.read<GetFavoriteUsecase>(),
+            addFavorite: context.read<AddFavoriteUsecase>(),
+          ),
+          child: const MyApp(),
+        ),
         //Order
         RepositoryProvider(
           create: (context) =>

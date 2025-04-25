@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_event.dart';
+import 'package:restaurant_bloc_frontend/features/favorite/presentation/blocs/favorite_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/favorite/presentation/blocs/favorite_event.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_container.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/product_carousel.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_state.dart';
 
-class ProductCarouselContent extends StatelessWidget {
+class ProductCarouselContent extends StatefulWidget {
   final ProductsState? Function(ProductsState) stateFilter;
   final List<Product> Function(ProductsState) productExtractor;
   final double? containerHeight;
@@ -21,6 +23,25 @@ class ProductCarouselContent extends StatelessWidget {
     this.containerHeight,
     this.isVertical = false,
   });
+
+  @override
+  State<ProductCarouselContent> createState() => _ProductCarouselContentState();
+}
+
+class _ProductCarouselContentState extends State<ProductCarouselContent> {
+  void _onFavorite(Product product) async {
+    context.read<FavoriteBloc>().add(
+          FavoriteEventFavorite(
+            product: product,
+          ),
+        );
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 1),
+          content: Text('${product.productName} added to favorite')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +67,7 @@ class ProductCarouselContent extends StatelessWidget {
   Widget _buildProductList(BuildContext context, List<Product> products) {
     if (products.isEmpty) {
       return SizedBox(
-        height: containerHeight ?? MediaQuery.of(context).size.height,
+        height: widget.containerHeight ?? MediaQuery.of(context).size.height,
         child: const Center(
           child: Text(
             'No hay productos disponibles 😔',
@@ -56,15 +77,17 @@ class ProductCarouselContent extends StatelessWidget {
       );
     }
     return SizedBox(
-      height: containerHeight ?? MediaQuery.of(context).size.height,
+      height: widget.containerHeight ?? MediaQuery.of(context).size.height,
       child: ListView.separated(
-        scrollDirection: isVertical ? Axis.vertical : Axis.horizontal,
+        scrollDirection: widget.isVertical ? Axis.vertical : Axis.horizontal,
         itemCount: products.length,
-        separatorBuilder: (_, __) =>
-            isVertical ? const SizedBox(height: 20) : const SizedBox(width: 20),
+        separatorBuilder: (_, __) => widget.isVertical
+            ? const SizedBox(height: 20)
+            : const SizedBox(width: 20),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
         itemBuilder: (context, index) {
-          return _buildCard(context, products[index], isVertical: isVertical);
+          return _buildCard(context, products[index],
+              isVertical: widget.isVertical);
         },
       ),
     );
@@ -110,7 +133,7 @@ class ProductCarouselContent extends StatelessWidget {
               top: -15,
               right: -5,
               child: IconButton(
-                  onPressed: () {},
+                  onPressed: () => _onFavorite(product),
                   icon: const Icon(Icons.favorite_border_outlined)),
             ),
             Positioned(

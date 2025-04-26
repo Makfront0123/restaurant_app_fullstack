@@ -19,7 +19,17 @@ class ProductRepositoryImpl implements ProductRepository {
 
   @override
   Future<List<Product>> getProductsByCategory(String category) async {
-    return [];
+    final response = await read.getProductsByCategory(category);
+
+    if (response is Map && response.containsKey('data')) {
+      final products = (response['data'] as List)
+          .map((item) => ProductModel.fromJson(item).toProduct())
+          .toList();
+
+      return products;
+    } else {
+      throw Exception('Respuesta inesperada: $response');
+    }
   }
 
   @override

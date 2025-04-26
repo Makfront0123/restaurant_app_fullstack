@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_bloc_frontend/core/constants/images.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_state.dart';
 
 class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppbar({
@@ -13,6 +16,17 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        return _buildAppBar(context, state);
+      },
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  Widget _buildAppBar(BuildContext context, AuthState state) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: AppBar(
@@ -34,10 +48,15 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
             const SizedBox(
               width: 20,
             ),
-            showUser
-                ? Text('Armando Sanchez',
-                    style: Theme.of(context).textTheme.titleMedium)
-                : Container()
+            if (state is Authenticated)
+              showUser
+                  ? Text(
+                      state.user.name,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    )
+                  : const Text('')
+            else
+              const Text('No Name'),
           ],
         ),
         actions: [
@@ -51,7 +70,4 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
   }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

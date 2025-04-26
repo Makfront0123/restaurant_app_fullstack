@@ -36,8 +36,16 @@ class _HomeScreenState extends State<HomeScreen> {
           TitleButton(context: context, title: 'We offer'),
           CategoryCarouselContent(
             isVertical: false,
-            stateFilter: (state) => state is MenuLoaded ? state : null,
-            categoryExtractor: (state) => (state as MenuLoaded).categories,
+            stateFilter: (state) =>
+                state is MenuLoaded || state is MenuFiltered ? state : null,
+            categoryExtractor: (state) {
+              if (state is MenuLoaded) {
+                return state.categories;
+              } else if (state is MenuFiltered) {
+                return state.filteredCategories;
+              }
+              return [];
+            },
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 11),
@@ -55,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
             context: context,
             title: 'Our Happy Clients Say',
           ),
-          const ReviewCarousel()
+          const ReviewCarousel(),
         ],
       ),
     );

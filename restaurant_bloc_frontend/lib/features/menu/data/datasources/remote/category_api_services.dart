@@ -41,6 +41,7 @@ class CategoryApiServices {
   Future<dynamic> getAllCategory() async {
     try {
       final response = await _dio.get('$baseUrl/api/v1/all-category');
+
       return response.data;
     } catch (e) {
       return e;

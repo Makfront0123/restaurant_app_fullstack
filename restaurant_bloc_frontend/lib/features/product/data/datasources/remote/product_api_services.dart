@@ -65,4 +65,15 @@ class ProductApiServices {
       return e;
     }
   }
+
+  Future<dynamic> getProductsByCategory(String category) async {
+    try {
+      final response =
+          await _dio.get('$baseUrl/api/v1/all-products?category=$category');
+
+      return response.data;
+    } catch (e) {
+      return e;
+    }
+  }
 }

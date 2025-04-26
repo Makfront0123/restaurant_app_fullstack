@@ -22,13 +22,16 @@ import 'package:restaurant_bloc_frontend/features/cart/domain/usecases/add_produ
 import 'package:restaurant_bloc_frontend/features/cart/domain/usecases/get_cart.dart';
 import 'package:restaurant_bloc_frontend/features/cart/domain/usecases/remove_product.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/cart/presentation/screens/cart_screen.dart';
+
 import 'package:restaurant_bloc_frontend/features/favorite/data/datasources/remote/favorite_api_services.dart';
 import 'package:restaurant_bloc_frontend/features/favorite/data/repository/favorite_respository_impl.dart';
 import 'package:restaurant_bloc_frontend/features/favorite/domain/usecases/add_favorite.dart';
 import 'package:restaurant_bloc_frontend/features/favorite/domain/usecases/get_favorite.dart';
 import 'package:restaurant_bloc_frontend/features/favorite/presentation/blocs/favorite_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/home/data/repositories/home_repository.dart';
+import 'package:restaurant_bloc_frontend/features/home/data/datasources/home_api_services.dart';
+import 'package:restaurant_bloc_frontend/features/home/data/repositories/home_repository_impl.dart';
+
+import 'package:restaurant_bloc_frontend/features/home/domain/usecases/get_categories.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/menu/data/datasources/remote/category_api_services.dart';
 import 'package:restaurant_bloc_frontend/features/menu/data/repositories/category_repository_impl.dart';
@@ -36,7 +39,7 @@ import 'package:restaurant_bloc_frontend/features/menu/domain/repositories/categ
 import 'package:restaurant_bloc_frontend/features/menu/domain/usecases/get_all_categories.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_blocs.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_event.dart';
-import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_screen.dart';
+
 import 'package:restaurant_bloc_frontend/features/order/data/datasources/remote/order_api_services.dart';
 import 'package:restaurant_bloc_frontend/features/order/data/repository/order_repository_impl.dart';
 import 'package:restaurant_bloc_frontend/features/order/domain/usecases/create_order.dart';
@@ -51,13 +54,12 @@ import 'package:restaurant_bloc_frontend/features/profile/data/datasources/profi
 import 'package:restaurant_bloc_frontend/features/profile/data/repository/profile_repository_impl.dart';
 import 'package:restaurant_bloc_frontend/features/profile/domain/usecases/update_profile.dart';
 import 'package:restaurant_bloc_frontend/features/profile/presentation/blocs/profile_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/profile/presentation/screens/profile_screen.dart';
+
 import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/usecases/get_all_products.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/usecases/get_product.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/usecases/get_products_category.dart';
 import 'package:restaurant_bloc_frontend/features/splash/presentation/blocs/splash_bloc.dart';
-import 'package:restaurant_bloc_frontend/main.dart';
 
 class AppProvider {
   static get allproviders => [
@@ -73,7 +75,6 @@ class AppProvider {
           create: (context) =>
               AuthRepositoryImpl(context.read<AuthApiService>()),
         ),
-
         RepositoryProvider(
             create: (context) => ResendOtp(context.read<AuthRepositoryImpl>())),
         RepositoryProvider(
@@ -95,11 +96,10 @@ class AppProvider {
             create: (context) =>
                 RegisterUser(context.read<AuthRepositoryImpl>())),
         RepositoryProvider(
-          create: (context) => LoginUser(context.read<AuthRepositoryImpl>()),
-        ),
+            create: (context) => LoginUser(context.read<AuthRepositoryImpl>())),
         RepositoryProvider(
-          create: (context) => LogoutUser(context.read<AuthRepositoryImpl>()),
-        ),
+            create: (context) =>
+                LogoutUser(context.read<AuthRepositoryImpl>())),
         BlocProvider(
           create: (context) => AuthBloc(
             storageService: context.read<StorageService>(),
@@ -113,10 +113,9 @@ class AppProvider {
             loginUser: context.read<LoginUser>(),
             logoutUser: context.read<LogoutUser>(),
           )..add(AppStarted()),
-          child: const MyApp(),
         ),
 
-        //SPLASH
+        // Splash
         BlocProvider(create: (_) => SplashBloc()),
 
         /// Productos
@@ -125,21 +124,17 @@ class AppProvider {
               ProductApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
         ),
         RepositoryProvider<ProductRepository>(
-          create: (context) => ProductRepositoryImpl(
-            context.read<ProductApiServices>(),
-          ),
-        ),
-        RepositoryProvider(
           create: (context) =>
-              GetAllProducts(context.read<ProductRepository>()),
+              ProductRepositoryImpl(context.read<ProductApiServices>()),
         ),
         RepositoryProvider(
-          create: (context) => GetProduct(context.read<ProductRepository>()),
-        ),
+            create: (context) =>
+                GetAllProducts(context.read<ProductRepository>())),
         RepositoryProvider(
-          create: (context) =>
-              GetProductsByCategory(context.read<ProductRepository>()),
-        ),
+            create: (context) => GetProduct(context.read<ProductRepository>())),
+        RepositoryProvider(
+            create: (context) =>
+                GetProductsByCategory(context.read<ProductRepository>())),
         BlocProvider(
           create: (context) => ProductsBloc(
             getAllProducts: context.read<GetAllProducts>(),
@@ -148,64 +143,71 @@ class AppProvider {
           )..add(LoadProductsData()),
         ),
 
-        //Category
+        // Categorías
         RepositoryProvider(
           create: (context) =>
               CategoryApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
         ),
         RepositoryProvider<CategoryRepository>(
-          create: (context) => CategoryRepositoryImpl(
-            context.read<CategoryApiServices>(),
-          ),
-        ),
-
-        RepositoryProvider(
           create: (context) =>
-              GetAllCategories(context.read<CategoryRepository>()),
+              CategoryRepositoryImpl(context.read<CategoryApiServices>()),
         ),
+        RepositoryProvider(
+            create: (context) =>
+                GetAllCategories(context.read<CategoryRepository>())),
         BlocProvider(
           create: (context) => MenuBloc(
             getAllCategories: context.read<GetAllCategories>(),
           )..add(LoadCategories()),
         ),
 
-        /// General
+        // General
         BlocProvider(create: (_) => ApplicationBloc()),
         BlocProvider(create: (_) => ThemeBloc()),
 
-        /// Home y relacionados
-        RepositoryProvider(create: (_) => HomeRepository()),
+        // Home
+        RepositoryProvider(
+          create: (context) =>
+              HomeApiServices('http://10.0.2.2:3000', context.read<Dio>()),
+        ),
+        RepositoryProvider(
+          create: (context) =>
+              HomeRepositoryImpl(context.read<HomeApiServices>()),
+        ),
+        RepositoryProvider(
+          create: (context) =>
+              GetCategoriesUseCase(context.read<HomeRepositoryImpl>()),
+        ),
         BlocProvider(
-          create: (context) => HomeBloc(context.read<HomeRepository>()),
+          create: (context) => HomeBloc(
+            getCategoriesUseCase: context.read<GetCategoriesUseCase>(),
+            homeRepository: context.read<HomeRepositoryImpl>(),
+          ),
         ),
 
-        //Favorite
+        // Favorite
         RepositoryProvider(
           create: (context) =>
               FavoriteApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
         ),
-
+        RepositoryProvider(
+          create: (context) =>
+              FavoriteRepositoryImpl(context.read<FavoriteApiServices>()),
+        ),
         RepositoryProvider(
             create: (context) =>
-                FavoriteRepositoryImpl(context.read<FavoriteApiServices>())),
-
+                AddFavoriteUsecase(context.read<FavoriteRepositoryImpl>())),
         RepositoryProvider(
-          create: (context) =>
-              AddFavoriteUsecase(context.read<FavoriteRepositoryImpl>()),
-        ),
-        RepositoryProvider(
-          create: (context) =>
-              GetFavoriteUsecase(context.read<FavoriteRepositoryImpl>()),
-        ),
-
+            create: (context) =>
+                GetFavoriteUsecase(context.read<FavoriteRepositoryImpl>())),
         BlocProvider(
           create: (context) => FavoriteBloc(
             getFavorite: context.read<GetFavoriteUsecase>(),
             addFavorite: context.read<AddFavoriteUsecase>(),
           ),
-          child: const MyApp(),
         ),
-        //Order
+
+        // Orders
         RepositoryProvider(
           create: (context) =>
               OrderApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
@@ -215,18 +217,17 @@ class AppProvider {
               OrderRepositoryImpl(context.read<OrderApiServices>()),
         ),
         RepositoryProvider(
-          create: (context) =>
-              CreateOrderUsecase(context.read<OrderRepositoryImpl>()),
-        ),
+            create: (context) =>
+                CreateOrderUsecase(context.read<OrderRepositoryImpl>())),
         RepositoryProvider(
-          create: (context) =>
-              GetOrderUsercase(context.read<OrderRepositoryImpl>()),
-        ),
+            create: (context) =>
+                GetOrderUsercase(context.read<OrderRepositoryImpl>())),
         BlocProvider(
-            create: (context) => OrderBloc(
-                  createOrderUsecase: context.read<CreateOrderUsecase>(),
-                  getOrderUsercase: context.read<GetOrderUsercase>(),
-                )),
+          create: (context) => OrderBloc(
+            createOrderUsecase: context.read<CreateOrderUsecase>(),
+            getOrderUsercase: context.read<GetOrderUsercase>(),
+          ),
+        ),
 
         // Cart
         RepositoryProvider(
@@ -234,31 +235,27 @@ class AppProvider {
               CartApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
         ),
         RepositoryProvider(
+          create: (context) =>
+              CartRepositoryImpl(context.read<CartApiServices>()),
+        ),
+        RepositoryProvider(
             create: (context) =>
-                CartRepositoryImpl(context.read<CartApiServices>())),
-
+                AddCartUsecase(context.read<CartRepositoryImpl>())),
         RepositoryProvider(
-          create: (context) =>
-              AddCartUsecase(context.read<CartRepositoryImpl>()),
-        ),
+            create: (context) => RemoveProductFromCartUsecase(
+                context.read<CartRepositoryImpl>())),
         RepositoryProvider(
-          create: (context) =>
-              RemoveProductFromCartUsecase(context.read<CartRepositoryImpl>()),
-        ),
-        RepositoryProvider(
-          create: (context) =>
-              GetCartUsecase(context.read<CartRepositoryImpl>()),
-        ),
+            create: (context) =>
+                GetCartUsecase(context.read<CartRepositoryImpl>())),
         BlocProvider(
           create: (context) => CartBloc(
             getCart: context.read<GetCartUsecase>(),
             removeProductFromCart: context.read<RemoveProductFromCartUsecase>(),
             addProductToCart: context.read<AddCartUsecase>(),
           ),
-          child: const CartScreen(),
         ),
 
-        //Profile
+        // Profile
         RepositoryProvider(
           create: (context) =>
               ProfileApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
@@ -268,20 +265,17 @@ class AppProvider {
               ProfileRepositoryImpl(context.read<ProfileApiServices>()),
         ),
         RepositoryProvider(
-          create: (context) =>
-              UpdateProfileUsecase(context.read<ProfileRepositoryImpl>()),
-        ),
+            create: (context) =>
+                UpdateProfileUsecase(context.read<ProfileRepositoryImpl>())),
         RepositoryProvider(
           create: (context) => ProfileBloc(
             updateProfile: context.read<UpdateProfileUsecase>(),
           ),
-          child: const ProfileScreen(),
         ),
 
-        /// Búsqueda
+        // Search
         BlocProvider(
-          create: (context) => SearchBloc(context.read<HomeRepository>()),
-          child: const MenuScreen(), // Esto no va acá realmente (ver abajo)
+          create: (context) => SearchBloc(context.read<HomeRepositoryImpl>()),
         ),
       ];
 }

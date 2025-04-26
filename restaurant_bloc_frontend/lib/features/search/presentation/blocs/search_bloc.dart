@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/home/data/repositories/home_repository.dart';
+import 'package:restaurant_bloc_frontend/features/home/domain/repository/home_repository.dart';
 import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_event.dart';
 import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_state.dart';
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurant_bloc_frontend/app/app_config.dart';
 import 'package:restaurant_bloc_frontend/app/router.dart';
 import 'package:restaurant_bloc_frontend/core/theme/blocs/theme_bloc.dart';
@@ -16,9 +17,12 @@ void main() async {
   }
   Stripe.publishableKey = dotenv.env['STRIPE_PUBLIC_KEY'] ?? '';
   await Stripe.instance.applySettings();
-  runApp(MultiBlocProvider(providers: [
-    ...AppProvider.allproviders,
-  ], child: const MyApp()));
+  runApp(
+    MultiProvider(
+      providers: AppProvider.allproviders,
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

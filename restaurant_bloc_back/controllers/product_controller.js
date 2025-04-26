@@ -100,3 +100,14 @@ export const productAll = asyncHandler(async (req, res) => {
         data: product,
     });
 });
+
+
+export const productSearch = asyncHandler(async (req, res) => {
+    const { query } = req.query;
+
+    const product = await Product.find({ name: new RegExp(query, 'i') });
+    res.status(200).json({
+        message: 'Products Found',
+        data: product,
+    });
+}); 

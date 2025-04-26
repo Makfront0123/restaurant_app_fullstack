@@ -1,12 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/home/domain/repository/home_repository.dart';
+import 'package:restaurant_bloc_frontend/features/home/data/datasources/home_api_services.dart';
+
 import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_event.dart';
 import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_state.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  final HomeRepository repository;
+  final HomeApiServices productApiServices;
 
-  SearchBloc(this.repository) : super(SearchInitial()) {
+  SearchBloc(this.productApiServices) : super(SearchInitial()) {
     on<SearchQueryChanged>(_onSearchQueryChanged);
     on<SearchHideCategoryList>(_onSearchHideCategoryList);
   }
@@ -20,12 +21,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       return;
     }
 
-    final allCategories = await repository.getCategories();
-    final filtered = allCategories
-        .where((cat) => cat.title.toLowerCase().contains(query.toLowerCase()))
-        .toList();
-
-    emit(SearchCategoryListVisibleState(filtered));
+    try {
+      // Llamamos al servicio para buscar productos
+      final products = await productApiServices.searchProducts(query);
+      emit(SearchCategoryListVisibleState(products));
+    } catch (e) {
+      emit(SearchCategoryListHiddenState());
+    }
   }
 
   Future<void> _onSearchHideCategoryList(

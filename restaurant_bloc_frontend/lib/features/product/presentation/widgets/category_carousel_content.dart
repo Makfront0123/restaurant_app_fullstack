@@ -28,18 +28,23 @@ class CategoryCarouselContent extends StatelessWidget {
       stateBuilder: (context, state) {
         if (state is MenuLoading) {
           return const Center(child: CircularProgressIndicator());
-        } else if (state is MenuLoaded) {
-          final categories = state.categories;
+        } else {
+          final filteredState = stateFilter(state);
+          if (filteredState == null) {
+            return const SizedBox.shrink();
+          }
+
+          final categories = categoryExtractor(filteredState);
           final categoryItems = categories
               .map((cat) => CategoryItem(
                     id: cat.id,
                     title: cat.title,
                     image: cat.image,
                   ))
-              .toList(); // Mapeo de Category a CategoryItem
+              .toList();
+
           return _buildCategoryList(context, categoryItems);
         }
-        return const Text("Error");
       },
     );
   }
@@ -65,7 +70,7 @@ class CategoryCarouselContent extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/menuCat', arguments: category.title);
+        Navigator.pushNamed(context, '/menuCat', arguments: category.id);
       },
       child: Column(
         children: [

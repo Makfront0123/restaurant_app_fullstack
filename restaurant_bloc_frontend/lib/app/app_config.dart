@@ -274,8 +274,8 @@ class AppProvider {
         ),
 
         // Search
-        BlocProvider(
-          create: (context) => SearchBloc(context.read<HomeRepositoryImpl>()),
+        RepositoryProvider(
+          create: (context) => SearchBloc(context.read<HomeApiServices>()),
         ),
       ];
 }

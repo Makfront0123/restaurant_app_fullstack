@@ -15,4 +15,17 @@ class HomeApiServices {
       return e;
     }
   }
+
+  Future<dynamic> searchProducts(String query) async {
+    try {
+      final response =
+          await _dio.get('$baseUrl/api/v1/search-products', queryParameters: {
+        'query': query,
+      });
+
+      return response.data;
+    } catch (e) {
+      return e;
+    }
+  }
 }

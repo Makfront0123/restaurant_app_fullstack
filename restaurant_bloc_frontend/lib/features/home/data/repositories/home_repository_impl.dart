@@ -4,6 +4,7 @@ import 'package:restaurant_bloc_frontend/features/home/domain/entities/carousel_
 import 'package:restaurant_bloc_frontend/features/home/domain/entities/category_item.dart';
 import 'package:restaurant_bloc_frontend/features/home/domain/entities/review_item.dart';
 import 'package:restaurant_bloc_frontend/features/home/domain/repository/home_repository.dart';
+import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
   final HomeApiServices _homeApiServices;
@@ -21,6 +22,11 @@ class HomeRepositoryImpl implements HomeRepository {
       const CarouselItem(image: Images.carousel01),
       const CarouselItem(image: Images.carousel01)
     ];
+  }
+
+  @override
+  Future<List<Product>> searchProducts(String query) async {
+    return await _homeApiServices.searchProducts(query);
   }
 
   @override

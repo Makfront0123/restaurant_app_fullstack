@@ -67,6 +67,7 @@ class _CartScreenState extends State<CartScreen> {
           final success = await userPayService.makePayment(context);
           if (success) {
             final event = CreateOrderEvent(
+              comment: 'Pago con Stripe',
               deliveryAddress: 'Tu dirección',
               deliveryDate: DateTime.now().add(const Duration(days: 2)),
               token: token,
@@ -88,6 +89,7 @@ class _CartScreenState extends State<CartScreen> {
           final success = await userPayService.navigatePaypal(context);
           if (success) {
             final event = CreateOrderEvent(
+              comment: 'Pago con Paypal',
               deliveryAddress: 'Tu dirección',
               deliveryDate: DateTime.now().add(const Duration(days: 2)),
               token: token,
@@ -142,8 +144,9 @@ class _CartScreenState extends State<CartScreen> {
                             emptyImage: Vectors.favorite,
                             title: 'Your cart is empty',
                           )
-                        : _buildCartContent(products);
+                        : _buildCartContent(products, state);
                   }
+
                   return const ScreenEmpty(
                     emptyImage: Vectors.favorite,
                     title: 'Your cart is empty',
@@ -157,10 +160,10 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Column _buildCartContent(List<Product> products) {
+  Column _buildCartContent(List<Product> products, CartState state) {
     return Column(
       children: [
-        Expanded(child: _buildCartList(products)),
+        Expanded(child: _buildCartList(products, state)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: BlocBuilder<OrderBloc, OrderState>(
@@ -177,7 +180,7 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildCartList(List<Product> products) {
+  Widget _buildCartList(List<Product> products, CartState state) {
     return SingleChildScrollView(
       padding: const EdgeInsets.only(bottom: 30),
       child: Column(
@@ -189,7 +192,7 @@ class _CartScreenState extends State<CartScreen> {
             itemCount: products.length,
             itemBuilder: (context, index) {
               final product = products[index];
-              return _buildCartItem(product);
+              return _buildCartItem(product, state);
             },
           ),
           PaymentContent(products: products),
@@ -201,10 +204,20 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildCartItem(Product product) {
+  Widget _buildCartItem(Product product, CartState state) {
     const String baseUrl = 'http://10.0.2.2:3000/';
+
+    Product updatedProduct = product.copyWith(productCount: 2);
+    if (state is CartUpdatedState) {
+      final foundProduct = state.productsInCart.firstWhere(
+        (p) => p.productName == product.productName,
+        orElse: () => updatedProduct,
+      );
+      updatedProduct = foundProduct;
+    }
+
     return Dismissible(
-      key: Key(product.productName),
+      key: Key(updatedProduct.productName),
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
@@ -213,12 +226,12 @@ class _CartScreenState extends State<CartScreen> {
         child: const Icon(Icons.delete, color: Colors.white),
       ),
       onDismissed: (_) {
-        _onDelete(product);
+        _onDelete(updatedProduct);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               backgroundColor: Colors.red,
               duration: const Duration(seconds: 1),
-              content: Text('${product.productName} removed from cart')),
+              content: Text('${updatedProduct.productName} removed from cart')),
         );
       },
       child: Padding(
@@ -230,7 +243,7 @@ class _CartScreenState extends State<CartScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.network('$baseUrl${product.image}', height: 90),
+              Image.network('$baseUrl${updatedProduct.image}', height: 90),
               const SizedBox(width: 20),
               Expanded(
                 child: Column(
@@ -238,11 +251,11 @@ class _CartScreenState extends State<CartScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      product.productName,
+                      updatedProduct.productName,
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     Text(
-                      "\$${product.productPrice}",
+                      "\$${updatedProduct.productPrice}",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ],
@@ -251,7 +264,7 @@ class _CartScreenState extends State<CartScreen> {
               const SizedBox(width: 10),
               ItemCount(
                 direction: Axis.vertical,
-                product: product,
+                product: updatedProduct,
               ),
             ],
           ),

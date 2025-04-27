@@ -11,7 +11,7 @@ class Product {
 
   Product({
     required this.id,
-    this.productCount = 0,
+    this.productCount = 1,
     required this.productDescription,
     required this.kcal,
     required this.category,
@@ -24,16 +24,13 @@ class Product {
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       id: json['_id'] ?? '',
-      productName:
-          json['name'] ?? 'Sin nombre', // Cambié 'productName' por 'name'
-      productPrice:
-          (json['price'] ?? 0).toDouble(), // Cambié 'productPrice' por 'price'
+      productName: json['name'] ?? 'Sin nombre',
+      productPrice: (json['price'] ?? 0).toDouble(),
       productWeight: json['productWeight'] ?? 0,
       category: json['category'] ?? 'Sin categoría',
       kcal: json['kcal'] ?? 0,
-      productCount: json['productCount'] ?? 0,
-      productDescription: json['description'] ??
-          'Sin descripción', // Cambié 'productDescription' por 'description'
+      productCount: json['productCount'] ?? 1,
+      productDescription: json['description'] ?? 'Sin descripción',
       image: json['image'] ?? '',
     );
   }

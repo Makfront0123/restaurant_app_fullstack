@@ -52,27 +52,3 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     }
   }
 }
-
-
-
-
-
-
-
-
-
-/*
-class OrderBloc extends Bloc<OrderEvent, OrderState> {
-  final CreateOrderUsecase _createOrderUsecase;
-
-  OrderBloc({required CreateOrderUsecase createOrderUsecase})
-      : _createOrderUsecase = createOrderUsecase,
-        super(OrderInitial()) {
-    on<SelectPaymentMethod>(_onSelectPaymentMethod);
-  }
-  void _onSelectPaymentMethod(
-      SelectPaymentMethod event, Emitter<OrderState> emit) async {
-    emit(PaymentMethodSelected(selectedPaymentMethod: event.paymentMethod));
-  }
-}
- */

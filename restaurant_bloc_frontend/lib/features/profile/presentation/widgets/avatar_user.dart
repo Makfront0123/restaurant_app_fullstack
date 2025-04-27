@@ -18,8 +18,7 @@ class AvatarUser extends StatelessWidget {
           height: 200,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.black
-                .withOpacity(0.5), // Color con opacidad para el overlay
+            color: Colors.black.withOpacity(0.5),
           ),
           child: Icon(
             Icons.camera_alt_outlined,

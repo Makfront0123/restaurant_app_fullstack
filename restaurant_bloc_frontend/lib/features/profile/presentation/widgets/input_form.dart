@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_bloc_frontend/core/utils/validator_auth.dart';
 
 class InputForm extends StatelessWidget {
   const InputForm(
-      {super.key, required this.controller, this.titleForm, this.icon});
+      {super.key,
+      required this.controller,
+      this.obscureText,
+      this.titleForm,
+      this.icon,
+      this.validator});
 
   final TextEditingController controller;
   final String? titleForm;
   final IconData? icon;
+  final String? Function(String?)? validator;
+  final bool? obscureText;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      obscureText: obscureText ?? false,
       decoration: InputDecoration(
           labelText: titleForm,
           hintText: titleForm,
@@ -35,7 +42,7 @@ class InputForm extends StatelessWidget {
                   color: Colors.white,
                 )),
           )),
-      validator: (value) => Validators.validateEmail(value),
+      validator: validator,
       keyboardType: TextInputType.emailAddress,
     );
   }

@@ -165,8 +165,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       await _resendOtp(event.email);
-      emit(
-          AuthVerificationSuccess()); // O crea AuthOtpResent(message) si quieres mostrar feedback
+      emit(AuthVerificationSuccess());
     } catch (e) {
       emit(AuthError(e.toString()));
     }

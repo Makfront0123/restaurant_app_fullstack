@@ -25,12 +25,9 @@ class RemoveProductFromCart extends CartEvent {
   RemoveProductFromCart({required this.product, required this.token});
 }
 
-class IncrementProductCount extends CartEvent {
+class UpdateProductCount extends CartEvent {
   final Product product;
-  IncrementProductCount({required this.product});
-}
+  final int count;
 
-class DecrementProductCount extends CartEvent {
-  final Product product;
-  DecrementProductCount({required this.product});
+  UpdateProductCount({required this.product, required this.count});
 }

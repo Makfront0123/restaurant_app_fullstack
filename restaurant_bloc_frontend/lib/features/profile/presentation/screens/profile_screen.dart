@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_bloc_frontend/core/utils/validator_auth.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_button.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/menu_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/profile/presentation/blocs/profile_bloc.dart';
@@ -36,30 +37,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: BlocBuilder<ProfileBloc, ProfileState>(
             builder: (context, state) {
               if (state is ProfileLoading) {
-                return const CircularProgressIndicator(); // Muestra el loading
+                return const CircularProgressIndicator();
               } else if (state is ProfileUpdated) {
-                return Column(
-                  children: [
-                    const AvatarUser(),
-                    _buildProfileForm(),
-                    Text(state.message), // Muestra el mensaje de éxito
-                  ],
-                );
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.message)),
+                  );
+                });
+                usernameController.clear();
+                passwordController.clear();
+                confirmPasswordController.clear();
+
+                return _buildProfileContent(state);
               } else if (state is ProfileError) {
-                return Column(
-                  children: [
-                    const AvatarUser(),
-                    _buildProfileForm(),
-                    // Muestra el error
-                  ],
-                );
+                return const SizedBox.shrink();
               }
-              return Column(
-                children: [
-                  const AvatarUser(),
-                  _buildProfileForm(),
-                ],
-              );
+              return _buildProfileContent(state);
             },
           ),
         ),
@@ -67,7 +60,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Form _buildProfileForm() {
+  Column _buildProfileContent(state) {
+    return Column(
+      children: [
+        const AvatarUser(),
+        const SizedBox(height: 20),
+        _buildProfileForm(state),
+      ],
+    );
+  }
+
+  Form _buildProfileForm(state) {
     return Form(
       child: Column(
         children: [
@@ -75,24 +78,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
             controller: usernameController,
             titleForm: 'Enter your Username',
             icon: Icons.person,
+            validator: (value) => Validators.validateUsername(value),
           ),
           const SizedBox(height: 10),
           InputForm(
-            controller: passwordController,
-            titleForm: 'Enter your Password',
-            icon: Icons.key_rounded,
-          ),
+              controller: passwordController,
+              titleForm: 'Enter your Password',
+              icon: Icons.key_rounded,
+              obscureText: true,
+              validator: (value) => Validators.validatePassword(value)),
           const SizedBox(height: 10),
           InputForm(
-            controller: confirmPasswordController,
-            titleForm: 'Confirm Password',
-            icon: Icons.key_rounded,
-          ),
+              controller: confirmPasswordController,
+              titleForm: 'Confirm Password',
+              icon: Icons.key_rounded,
+              obscureText: true,
+              validator: (value) => Validators.validatePassword(value)),
           const SizedBox(height: 60),
           AuthButton(
             onTap: _updateProfile,
             text: 'Update Profile',
-          ),
+          )
         ],
       ),
     );
@@ -106,19 +112,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final confirmPassword = confirmPasswordController.text;
     final password = passwordController.text;
 
-    if (username.isNotEmpty &&
-        confirmPassword.isNotEmpty &&
-        password.isNotEmpty) {
-      context.read<ProfileBloc>().add(UpdateProfileEvent(
-            username: username,
-            confirmPassword: confirmPassword,
-            password: password,
-            token: token,
-          ));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please fill in all fields")),
-      );
-    }
+    context.read<ProfileBloc>().add(UpdateProfileEvent(
+          username: username,
+          confirmPassword: confirmPassword,
+          password: password,
+          token: token,
+        ));
   }
 }

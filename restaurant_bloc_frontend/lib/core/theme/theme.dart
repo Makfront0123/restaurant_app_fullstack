@@ -81,6 +81,3 @@ class AppTheme {
     );
   }
 }
-
-
-/*context.read<ThemeBlocZ().add(ToogleThemeEvent()) */

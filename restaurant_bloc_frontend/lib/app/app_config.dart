@@ -55,7 +55,10 @@ import 'package:restaurant_bloc_frontend/features/profile/data/datasources/profi
 import 'package:restaurant_bloc_frontend/features/profile/data/repository/profile_repository_impl.dart';
 import 'package:restaurant_bloc_frontend/features/profile/domain/usecases/update_profile.dart';
 import 'package:restaurant_bloc_frontend/features/profile/presentation/blocs/profile_bloc.dart';
-
+import 'package:restaurant_bloc_frontend/features/reviews/data/datasources/remote/reviews_api_services.dart';
+import 'package:restaurant_bloc_frontend/features/reviews/data/repository/reviews_repository_impl.dart';
+import 'package:restaurant_bloc_frontend/features/reviews/domain/usecase/get_reviews.dart';
+import 'package:restaurant_bloc_frontend/features/reviews/presentation/blocs/reviews_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/usecases/get_all_products.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/usecases/get_product.dart';
@@ -281,6 +284,25 @@ class AppProvider {
         RepositoryProvider(
           create: (context) => SearchBloc(
             filterProducts: context.read<FilterProductsUseCase>(),
+          ),
+        ),
+
+        /// Reviews
+        RepositoryProvider(
+          create: (context) =>
+              ReviewsApiServices(context.read<Dio>(), 'http://10.0.2.2:3000'),
+        ),
+        RepositoryProvider(
+          create: (context) =>
+              ReviewsRepositoryImpl(context.read<ReviewsApiServices>()),
+        ),
+        RepositoryProvider(
+            create: (context) =>
+                GetReviewsUsecase(context.read<ReviewsRepositoryImpl>())),
+
+        RepositoryProvider(
+          create: (context) => ReviewsBloc(
+            getReviews: context.read<GetReviewsUsecase>(),
           ),
         ),
       ];

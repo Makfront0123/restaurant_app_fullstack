@@ -4,10 +4,9 @@ import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_container.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_event.dart';
-import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_state.dart';
+
 import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/menu_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
-import 'package:restaurant_bloc_frontend/features/product/presentation/widgets/item_product_count.dart';
 
 class ProductScreen extends StatelessWidget {
   const ProductScreen({super.key});
@@ -63,22 +62,6 @@ class ProductScreen extends StatelessWidget {
                 Text(description,
                     style: Theme.of(context).textTheme.labelMedium),
                 const SizedBox(height: 50),
-                BlocBuilder<CartBloc, CartState>(
-                  builder: (context, state) {
-                    Product updatedProduct = product.copyWith(productCount: 0);
-
-                    if (state is CartUpdatedState) {
-                      final foundProduct = state.productsInCart.firstWhere(
-                        (p) => p.productName == product.productName,
-                        orElse: () => updatedProduct,
-                      );
-                      updatedProduct = foundProduct;
-                    }
-
-                    return ItemProductCount(product: updatedProduct);
-                  },
-                ),
-                const SizedBox(height: 10),
                 AuthButton(
                   onTap: () {
                     context

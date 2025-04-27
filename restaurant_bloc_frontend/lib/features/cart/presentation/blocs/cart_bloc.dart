@@ -26,8 +26,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<AddProductToCart>(_onAddProduct);
     on<RemoveProductFromCart>(_onRemoveProduct);
     on<GetCart>(_onGetCart);
-    on<IncrementProductCount>(_onIncrementCount);
-    on<DecrementProductCount>(_onDecrementCount);
+    on<UpdateProductCount>(_onUpdateProductCount);
   }
 
   void _onGetCart(GetCart event, Emitter<CartState> emit) async {
@@ -92,23 +91,21 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     }
   }
 
-  void _onIncrementCount(IncrementProductCount event, Emitter<CartState> emit) {
-    final index = _productsInCart
-        .indexWhere((item) => item.productName == event.product.productName);
+  void _onUpdateProductCount(
+    UpdateProductCount event,
+    Emitter<CartState> emit,
+  ) async {
+    final currentState = state;
 
-    if (index != -1) {
-      _productsInCart[index].productCount++;
-      emit(CartUpdatedState(productsInCart: List.from(_productsInCart)));
-    }
-  }
+    if (currentState is CartUpdatedState) {
+      final updatedProducts = currentState.productsInCart.map((product) {
+        if (product.id == event.product.id) {
+          return product.copyWith(productCount: event.count);
+        }
+        return product;
+      }).toList();
 
-  void _onDecrementCount(DecrementProductCount event, Emitter<CartState> emit) {
-    final index = _productsInCart
-        .indexWhere((item) => item.productName == event.product.productName);
-
-    if (index != -1 && _productsInCart[index].productCount > 1) {
-      _productsInCart[index].productCount--;
-      emit(CartUpdatedState(productsInCart: List.from(_productsInCart)));
+      emit(CartUpdatedState(productsInCart: updatedProducts));
     }
   }
 }

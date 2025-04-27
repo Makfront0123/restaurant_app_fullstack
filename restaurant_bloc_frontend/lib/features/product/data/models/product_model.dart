@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
+import 'package:restaurant_bloc_frontend/features/reviews/domain/entities/reviews_item.dart';
 
 class ProductModel extends Equatable {
   final String id;
@@ -77,35 +78,10 @@ class ProductModel extends Equatable {
       image: image,
       productName: name,
       productPrice: price,
-      productWeight: weight, // Asumimos que weight es el peso del producto
-      category: category ?? 'Unknown', // Usamos 'Unknown' si no hay categoría
-      kcal: 140, // Considera si realmente quieres este valor por defecto
+      productWeight: weight,
+      category: category ?? 'Unknown',
+      kcal: 140,
       productDescription: description,
     );
   }
-}
-
-class Review extends Equatable {
-  final String author;
-  final String comment;
-
-  const Review({
-    required this.author,
-    required this.comment,
-  });
-
-  @override
-  List<Object?> get props => [author, comment];
-
-  factory Review.fromJson(Map<String, dynamic> json) {
-    return Review(
-      author: json['author'] ?? '',
-      comment: json['comment'] ?? '',
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-        'author': author,
-        'comment': comment,
-      };
 }

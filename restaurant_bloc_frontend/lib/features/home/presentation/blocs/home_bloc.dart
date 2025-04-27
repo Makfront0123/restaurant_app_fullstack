@@ -20,12 +20,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(HomeLoading());
     try {
       final images = await _homeRepository.getCarouselImages();
-      final reviews = await _homeRepository.getReviews();
+
       emit(HomeLoaded(
         images: images,
         currentPage: 0,
         categories: const [],
-        reviews: reviews,
       ));
     } catch (e) {
       emit(HomeError(message: e.toString()));

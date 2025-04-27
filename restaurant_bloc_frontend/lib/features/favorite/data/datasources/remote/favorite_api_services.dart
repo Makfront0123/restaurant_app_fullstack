@@ -29,7 +29,6 @@ class FavoriteApiServices {
         options: Options(
           headers: {'Authorization': 'Bearer $token'},
           validateStatus: (status) {
-            // Solo lanzamos una excepción si el estado es diferente a 200 o 404
             return status == 200 || status == 404;
           },
         ),
@@ -38,7 +37,7 @@ class FavoriteApiServices {
       if (response.statusCode == 200) {
         final items = response.data?['data']?['items'] as List<dynamic>?;
         if (items == null || items.isEmpty) {
-          return []; // Si no hay favoritos, devolvemos una lista vacía
+          return [];
         }
 
         final productIds = items.map((item) => item['productId']).toList();
@@ -61,7 +60,7 @@ class FavoriteApiServices {
 
         return products;
       } else if (response.statusCode == 404) {
-        return []; // No hay productos favoritos, retornamos lista vacía
+        return [];
       } else {
         throw Exception('Error obteniendo favoritos: ${response.statusCode}');
       }

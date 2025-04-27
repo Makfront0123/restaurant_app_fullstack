@@ -4,7 +4,7 @@ import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_b
 import 'package:restaurant_bloc_frontend/features/cart/presentation/blocs/cart_event.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
 
-class ItemCount extends StatelessWidget {
+class ItemCount extends StatefulWidget {
   final Axis direction;
   final Product product;
 
@@ -15,13 +15,49 @@ class ItemCount extends StatelessWidget {
   });
 
   @override
+  State<ItemCount> createState() => _ItemCountState();
+}
+
+class _ItemCountState extends State<ItemCount> {
+  late int _count;
+
+  @override
+  void initState() {
+    super.initState();
+    _count =
+        widget.product.productCount; // Inicializas con el valor del producto
+  }
+
+  void _increment() {
+    setState(() {
+      _count++;
+    });
+    context.read<CartBloc>().add(UpdateProductCount(
+          product: widget.product,
+          count: _count,
+        ));
+  }
+
+  void _decrement() {
+    if (_count > 1) {
+      setState(() {
+        _count--;
+      });
+      context.read<CartBloc>().add(UpdateProductCount(
+            product: widget.product,
+            count: _count,
+          ));
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final isHorizontal = direction == Axis.horizontal;
+    final isHorizontal = widget.direction == Axis.horizontal;
     final spacing =
         isHorizontal ? const SizedBox(width: 10) : const SizedBox(height: 10);
 
     return Flex(
-      direction: direction,
+      direction: widget.direction,
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -29,26 +65,18 @@ class ItemCount extends StatelessWidget {
         IconButton(
           padding: const EdgeInsets.only(top: 2),
           icon: const Icon(Icons.remove),
-          onPressed: () {
-            context
-                .read<CartBloc>()
-                .add(DecrementProductCount(product: product));
-          },
+          onPressed: _decrement,
         ),
         spacing,
         Text(
-          product.productCount.toString(),
+          _count.toString(),
           style: Theme.of(context).textTheme.labelSmall,
         ),
         spacing,
         IconButton(
           padding: const EdgeInsets.only(top: 2),
           icon: const Icon(Icons.add),
-          onPressed: () {
-            context
-                .read<CartBloc>()
-                .add(IncrementProductCount(product: product));
-          },
+          onPressed: _increment,
         ),
       ],
     );

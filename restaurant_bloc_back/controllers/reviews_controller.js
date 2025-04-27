@@ -72,16 +72,58 @@ export const deleteReview = asyncHandler(async (req, res) => {
 
 export const getAllReviews = asyncHandler(async (req, res) => {
     try {
-        const reviews = await Review.find({ productId: req.params.id });
-        res.status(200).json({ message: 'Reviews found', data: reviews });
+        const reviews = await Review.find();
+
+        if (!reviews) {
+            return res.status(404).json({ message: 'Reviews not found' });
+        }
+
+        if (reviews.length === 0) {
+            return res.status(200).json({
+                message: 'No reviews found for this product',
+                data:[]
+            });
+        }
+
+        res.status(200).json({
+            message: 'Reviews found',
+            data: reviews,
+        });
     } catch (error) {
         res.status(500).json({
             message: 'Internal server error',
-            error: error.message || error
+            error: error.message || error,
         });
     }
 });
 
+/*
+export const getAllReviews = asyncHandler(async (req, res) => {
+    try {
+        const reviews = await Review.find({ productId: req.params.id });
+
+        if (!reviews) {
+            return res.status(404).json({ message: 'Reviews not found' });
+        }
+
+        if (reviews.length === 0) {
+            return res.status(404).json({
+                message: 'No reviews found for this product',
+            });
+        }
+
+        res.status(200).json({
+            message: 'Reviews found',
+            data: reviews,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Internal server error',
+            error: error.message || error,
+        });
+    }
+});
+*/
 export const editReview = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { author, comment } = req.body;

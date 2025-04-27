@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_carousel.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_drawer.dart';
-import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/review_carousel.dart';
+
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/title_button.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_state.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/blocs/products_state.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/widgets/category_carousel_content.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/widgets/product_carousel_content.dart';
+import 'package:restaurant_bloc_frontend/features/reviews/presentation/screens/review_carousel.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

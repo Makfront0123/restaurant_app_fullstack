@@ -59,7 +59,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
           padding: const EdgeInsets.all(20),
           width: width,
-          height: height * 0.3,
+          height: height * 0.35,
           child: Column(
             children: [
               Text(

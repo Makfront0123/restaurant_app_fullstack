@@ -15,13 +15,11 @@ class HomeLoaded extends HomeState {
   final List<CarouselItem> images;
   final int currentPage;
   final List<CategoryItem> categories;
-  final List<ReviewItem> reviews;
 
   const HomeLoaded({
     required this.images,
     this.currentPage = 0,
     required this.categories,
-    required this.reviews,
   });
 
   HomeLoaded copyWith({
@@ -34,12 +32,15 @@ class HomeLoaded extends HomeState {
       images: images ?? this.images,
       currentPage: currentPage ?? this.currentPage,
       categories: categories ?? this.categories,
-      reviews: reviews ?? this.reviews,
     );
   }
 
   @override
-  List<Object> get props => [images, currentPage, categories, reviews];
+  List<Object> get props => [
+        images,
+        currentPage,
+        categories,
+      ];
 }
 
 class HomeError extends HomeState {

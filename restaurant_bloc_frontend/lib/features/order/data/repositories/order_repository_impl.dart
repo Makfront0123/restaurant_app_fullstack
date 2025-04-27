@@ -1,5 +1,4 @@
-// order_data.dart (Datos)
-import 'package:restaurant_bloc_frontend/features/order/domain/models/order_data.dart';
+import 'package:restaurant_bloc_frontend/features/order/data/models/order_item_data.dart';
 import 'package:restaurant_bloc_frontend/features/order/domain/models/order_item.dart';
 
 class OrderData {

@@ -7,5 +7,5 @@ abstract class HomeRepository {
   Future<List<CarouselItem>> getCarouselImages();
   Future<List<CategoryItem>> getCategories();
   Future<List<ReviewItem>> getReviews();
-  Future<List<Product>> searchProducts(String query);
+  Future<List<Product>> searchProducts(String query, String category);
 }

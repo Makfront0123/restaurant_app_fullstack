@@ -16,11 +16,12 @@ class HomeApiServices {
     }
   }
 
-  Future<dynamic> searchProducts(String query) async {
+  Future<dynamic> searchProducts(String query, String category) async {
     try {
       final response =
           await _dio.get('$baseUrl/api/v1/search-products', queryParameters: {
         'query': query,
+        'category': category,
       });
 
       return response.data;

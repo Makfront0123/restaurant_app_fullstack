@@ -17,7 +17,7 @@ class FormInput extends StatelessWidget {
       child: TextFormField(
         controller: searchController,
         onChanged: (value) {
-          context.read<SearchBloc>().add(SearchQueryChanged(value));
+          context.read<SearchBloc>().add(SearchQueryChanged(value, ''));
         },
         decoration: InputDecoration(
             hintText: 'Search',

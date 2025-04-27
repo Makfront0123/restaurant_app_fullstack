@@ -103,11 +103,26 @@ export const productAll = asyncHandler(async (req, res) => {
 
 
 export const productSearch = asyncHandler(async (req, res) => {
-    const { query } = req.query;
-
-    const product = await Product.find({ name: new RegExp(query, 'i') });
+    const { query, category } = req.query;
+  
+    
+    const filters = {};
+  
+    if (query) {
+      filters.name = new RegExp(query, 'i');
+    }
+  
+    
+    if (category) {
+      filters.category = category;
+    }
+  
+    
+    const products = await Product.find(filters);
+  
     res.status(200).json({
-        message: 'Products Found',
-        data: product,
+      message: 'Products Found',
+      data: products,
     });
-}); 
+  });
+  

@@ -30,6 +30,7 @@ import 'package:restaurant_bloc_frontend/features/favorite/domain/usecases/get_f
 import 'package:restaurant_bloc_frontend/features/favorite/presentation/blocs/favorite_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/home/data/datasources/home_api_services.dart';
 import 'package:restaurant_bloc_frontend/features/home/data/repositories/home_repository_impl.dart';
+import 'package:restaurant_bloc_frontend/features/home/domain/usecases/filter_products.dart';
 
 import 'package:restaurant_bloc_frontend/features/home/domain/usecases/get_categories.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_bloc.dart';
@@ -275,7 +276,12 @@ class AppProvider {
 
         // Search
         RepositoryProvider(
-          create: (context) => SearchBloc(context.read<HomeApiServices>()),
+            create: (context) =>
+                FilterProductsUseCase(context.read<HomeRepositoryImpl>())),
+        RepositoryProvider(
+          create: (context) => SearchBloc(
+            filterProducts: context.read<FilterProductsUseCase>(),
+          ),
         ),
       ];
 }

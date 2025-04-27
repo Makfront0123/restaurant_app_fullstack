@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/home/domain/entities/category_item.dart';
-
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_container.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/product_carousel.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_blocs.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_state.dart';
-import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/category_list.dart';
-import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/search_input.dart';
 import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_event.dart';
 import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_state.dart';
@@ -50,39 +47,10 @@ class _MenuScreenState extends State<MenuScreen> {
           SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SearchInput(),
-                  _buildMenuCarousel(context),
-                ],
-              ),
+              child: _buildMenuCarousel(context),
             ),
           ),
-          if (state is SearchCategoryListVisibleState)
-            _buildSidebarCategory(context),
         ],
-      ),
-    );
-  }
-
-  Positioned _buildSidebarCategory(BuildContext context) {
-    return Positioned(
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      child: GestureDetector(
-        onTap: () {
-          context.read<SearchBloc>().add(SearchShowCategoryList());
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 60),
-          child: Container(
-            color: Theme.of(context).primaryColor,
-            child: const CategoryList(),
-          ),
-        ),
       ),
     );
   }

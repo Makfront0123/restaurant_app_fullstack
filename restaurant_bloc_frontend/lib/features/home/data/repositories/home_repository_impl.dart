@@ -25,8 +25,12 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   @override
-  Future<List<Product>> searchProducts(String query) async {
-    return await _homeApiServices.searchProducts(query);
+  Future<List<Product>> searchProducts(String query, String category) async {
+    final response = await _homeApiServices.searchProducts(query, category);
+
+    final dataList = response['data'] as List<dynamic>;
+
+    return dataList.map((json) => Product.fromJson(json)).toList();
   }
 
   @override

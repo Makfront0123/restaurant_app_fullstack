@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post('/register', authRegister)
 router.post('/login', authLogin)
-router.get('/logout', authLogout)
+router.get('/logout',  authLogout)
 router.post('/verify', authVerify)
 router.post('/resend-otp', authResendOtp)
 router.post('/resend-forgot-otp', resendForgotPasswordOtp)

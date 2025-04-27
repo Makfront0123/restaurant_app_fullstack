@@ -11,8 +11,8 @@ export const authMiddleware = async (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verificación del token
-        const user = await User.findById(decoded.userId); // Buscar al usuario usando el ID decodificado del token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.userId);
 
         if (!user) {
             return res.status(401).json({
@@ -21,8 +21,8 @@ export const authMiddleware = async (req, res, next) => {
             });
         }
 
-        req.user = user; // Guardamos el usuario autenticado en la solicitud
-        next(); // Pasamos al siguiente middleware o ruta
+        req.user = user;
+        next();
     } catch (error) {
         return res.status(401).json({
             isAuthenticated: false,

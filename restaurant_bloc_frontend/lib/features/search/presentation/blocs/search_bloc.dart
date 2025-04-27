@@ -1,35 +1,40 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/home/data/repositories/home_repository.dart';
+import 'package:restaurant_bloc_frontend/features/home/domain/usecases/filter_products.dart';
 import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_event.dart';
 import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_state.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  final HomeRepository repository;
+  final FilterProductsUseCase _filterProducts;
 
-  SearchBloc(this.repository) : super(SearchInitial()) {
+  SearchBloc({
+    required FilterProductsUseCase filterProducts,
+  })  : _filterProducts = filterProducts,
+        super(SearchInitial()) {
     on<SearchQueryChanged>(_onSearchQueryChanged);
     on<SearchHideCategoryList>(_onSearchHideCategoryList);
   }
 
   Future<void> _onSearchQueryChanged(
       SearchQueryChanged event, Emitter<SearchState> emit) async {
-    final query = event.query.trim();
-
-    if (query.isEmpty) {
-      emit(SearchCategoryListHiddenState());
-      return;
+    if (event.query.isEmpty) {
+      emit(SearchCategoryListHiddenState([], showSidebar: false));
+    } else {
+      final filteredProducts =
+          await _filterProducts(event.query, event.category);
+      if (filteredProducts.isEmpty) {
+        emit(SearchNoResultsState([], showSidebar: true));
+      } else {
+        emit(SearchCategoryListVisibleState(
+          filteredProducts,
+          showSidebar: true,
+        ));
+      }
     }
-
-    final allCategories = await repository.getCategories();
-    final filtered = allCategories
-        .where((cat) => cat.title.toLowerCase().contains(query.toLowerCase()))
-        .toList();
-
-    emit(SearchCategoryListVisibleState(filtered));
   }
 
   Future<void> _onSearchHideCategoryList(
       SearchHideCategoryList event, Emitter<SearchState> emit) async {
-    emit(SearchCategoryListHiddenState());
+    // Emitir el estado para ocultar el sidebar
+    emit(SearchCategoryListHiddenState([], showSidebar: false));
   }
 }

@@ -2,7 +2,8 @@ abstract class SearchEvent {}
 
 class SearchQueryChanged extends SearchEvent {
   final String query;
-  SearchQueryChanged(this.query);
+  final String category;
+  SearchQueryChanged(this.query, this.category);
 }
 
 class SearchShowCategoryList extends SearchEvent {}

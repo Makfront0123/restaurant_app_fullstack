@@ -37,7 +37,7 @@ class ProductScreen extends StatelessWidget {
             margin: const EdgeInsets.only(top: 5),
             padding: const EdgeInsets.all(40),
             width: double.infinity,
-            height: MediaQuery.of(context).size.height * .45,
+            height: MediaQuery.of(context).size.height * .42,
             child: Image.network('$baseUrl${product.image}'),
           ),
           const SizedBox(height: 30),

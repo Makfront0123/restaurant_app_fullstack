@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
 
 class ProductApiServices {
   final Dio _dio;
@@ -63,6 +64,33 @@ class ProductApiServices {
       return response.data;
     } catch (e) {
       return e;
+    }
+  }
+
+  Future<dynamic> getProductsByCategory(String category) async {
+    try {
+      final response =
+          await _dio.get('$baseUrl/api/v1/all-products?category=$category');
+
+      return response.data;
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<List<Product>> searchProducts(String query, String category) async {
+    try {
+      final response =
+          await _dio.get('$baseUrl/api/v1/search-products', queryParameters: {
+        'query': query,
+        'category': category,
+      });
+
+      return (response.data as List)
+          .map((product) => Product.fromJson(product))
+          .toList();
+    } catch (e) {
+      rethrow;
     }
   }
 }

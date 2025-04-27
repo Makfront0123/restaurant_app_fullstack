@@ -6,10 +6,18 @@ class OrderInitial extends OrderState {}
 
 class OrderCreating extends OrderState {}
 
+class OrderLoading extends OrderState {}
+
 class OrderCreated extends OrderState {
   final Order order;
 
   OrderCreated({required this.order});
+}
+
+class OrderByUser extends OrderState {
+  final List<Order> orders;
+
+  OrderByUser({required this.orders});
 }
 
 class OrderFailed extends OrderState {

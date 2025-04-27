@@ -87,9 +87,42 @@ export const productEdit = asyncHandler(async (req, res) => {
     }
 })
 export const productAll = asyncHandler(async (req, res) => {
-    const product = await Product.find();
-    res.status(201).json({
-        message: 'Products Founds',
-        data: product
-    })
-})
+    const { category } = req.query;
+
+    let filter = {};
+    if (category) {
+        filter.category = category;
+    }
+
+    const product = await Product.find(filter);
+    res.status(200).json({
+        message: 'Products Found',
+        data: product,
+    });
+});
+
+
+export const productSearch = asyncHandler(async (req, res) => {
+    const { query, category } = req.query;
+  
+    
+    const filters = {};
+  
+    if (query) {
+      filters.name = new RegExp(query, 'i');
+    }
+  
+    
+    if (category) {
+      filters.category = category;
+    }
+  
+    
+    const products = await Product.find(filters);
+  
+    res.status(200).json({
+      message: 'Products Found',
+      data: products,
+    });
+  });
+  

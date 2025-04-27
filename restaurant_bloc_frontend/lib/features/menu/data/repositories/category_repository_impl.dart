@@ -9,7 +9,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
   Future<List<Category>> getCategories() async {
     final response = await read.getAllCategory();
     return (response['data'] as List)
-        .map((e) => Category(title: e['name'], image: e['image']))
+        .map((e) => Category(title: e['name'], image: e['image'], id: e['_id']))
         .toList();
   }
 }

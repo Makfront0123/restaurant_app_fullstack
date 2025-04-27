@@ -97,3 +97,19 @@ export const getCategory = asyncHandler(async (req, res) => {
         });
     }
 })
+
+export const searchCategory = asyncHandler(async (req, res) => {
+    const { query } = req.query;
+    try {
+        const category = await Category.find({ name: new RegExp(query, 'i') });
+        res.status(200).json({
+            message: "Categories found",
+            data: category
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error
+        });
+    }
+})

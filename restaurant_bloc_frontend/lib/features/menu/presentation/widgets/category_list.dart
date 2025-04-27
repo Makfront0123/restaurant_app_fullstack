@@ -1,29 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/home/domain/entities/category_item.dart';
-import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_state.dart';
+import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
 
 class CategoryList extends StatelessWidget {
-  const CategoryList({super.key});
+  final List<Product> filteredProducts;
+
+  const CategoryList({super.key, required this.filteredProducts});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchBloc, SearchState>(
-      builder: (context, state) {
-        if (state is SearchCategoryListVisibleState) {
-          return _buildSearchCategoryList(state.categories, context);
-        } else if (state is SearchCategoryListHiddenState) {
-          return const SizedBox.shrink();
-        }
+    if (filteredProducts.isEmpty) {
+      return const Center(child: Text('No se encontraron productos'));
+    }
 
-        return const SizedBox.shrink();
-      },
-    );
-  }
-
-  Widget _buildSearchCategoryList(
-      List<CategoryItem> categories, BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 50),
       height: MediaQuery.of(context).size.height,
@@ -31,17 +19,18 @@ class CategoryList extends StatelessWidget {
       child: ListView.separated(
         separatorBuilder: (_, __) => const SizedBox(height: 30),
         shrinkWrap: true,
-        itemCount: categories.length,
+        itemCount: filteredProducts.length,
         itemBuilder: (context, index) {
-          final category = categories[index];
+          const String baseUrl = 'http://10.0.2.2:3000/';
+          final product = filteredProducts[index];
           return GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, '/menuCat',
-                  arguments: categories[index].title);
+              Navigator.pushNamed(context, '/product', arguments: product);
             },
             child: ListTile(
-              leading: Image.asset(category.image),
-              title: Text(category.title),
+              leading: Image.network('$baseUrl${product.image}',
+                  width: 50, height: 50),
+              title: Text(product.productName),
             ),
           );
         },

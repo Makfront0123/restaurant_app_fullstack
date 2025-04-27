@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/home/domain/entities/category_item.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/product_carousel.dart';
 import 'package:restaurant_bloc_frontend/features/menu/domain/entities/category_item.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_blocs.dart';
@@ -21,21 +22,35 @@ class CategoryCarouselContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProductCarousel<Category, MenuBloc, MenuState>(
+    return ProductCarousel<CategoryItem, MenuBloc, MenuState>(
+      // Cambio aquí
       bloc: context.read<MenuBloc>(),
       stateBuilder: (context, state) {
         if (state is MenuLoading) {
           return const Center(child: CircularProgressIndicator());
-        } else if (state is MenuLoaded) {
-          final categories = state.categories;
-          return _buildCategoryList(context, categories);
+        } else {
+          final filteredState = stateFilter(state);
+          if (filteredState == null) {
+            return const SizedBox.shrink();
+          }
+
+          final categories = categoryExtractor(filteredState);
+          final categoryItems = categories
+              .map((cat) => CategoryItem(
+                    id: cat.id,
+                    title: cat.title,
+                    image: cat.image,
+                  ))
+              .toList();
+
+          return _buildCategoryList(context, categoryItems);
         }
-        return const Text("Error");
       },
     );
   }
 
-  Widget _buildCategoryList(BuildContext context, List<Category> categories) {
+  Widget _buildCategoryList(
+      BuildContext context, List<CategoryItem> categories) {
     return SizedBox(
       height: containerHeight,
       child: ListView.separated(
@@ -50,12 +65,12 @@ class CategoryCarouselContent extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryCard(BuildContext context, Category category) {
+  Widget _buildCategoryCard(BuildContext context, CategoryItem category) {
     const String baseUrl = 'http://10.0.2.2:3000/';
 
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/menuCat', arguments: category.title);
+        Navigator.pushNamed(context, '/menuCat', arguments: category.id);
       },
       child: Column(
         children: [

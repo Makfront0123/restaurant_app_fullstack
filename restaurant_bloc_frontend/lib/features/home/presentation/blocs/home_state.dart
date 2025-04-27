@@ -16,22 +16,30 @@ class HomeLoaded extends HomeState {
   final int currentPage;
   final List<CategoryItem> categories;
   final List<ReviewItem> reviews;
+
   const HomeLoaded({
     required this.images,
     this.currentPage = 0,
     required this.categories,
     required this.reviews,
   });
-  HomeLoaded copyWith({List<CarouselItem>? images, int? currentPage}) {
+
+  HomeLoaded copyWith({
+    List<CarouselItem>? images,
+    int? currentPage,
+    List<CategoryItem>? categories,
+    List<ReviewItem>? reviews,
+  }) {
     return HomeLoaded(
-        images: images ?? this.images,
-        currentPage: currentPage ?? this.currentPage,
-        categories: categories,
-        reviews: reviews);
+      images: images ?? this.images,
+      currentPage: currentPage ?? this.currentPage,
+      categories: categories ?? this.categories,
+      reviews: reviews ?? this.reviews,
+    );
   }
 
   @override
-  List<Object> get props => [images, currentPage];
+  List<Object> get props => [images, currentPage, categories, reviews];
 }
 
 class HomeError extends HomeState {

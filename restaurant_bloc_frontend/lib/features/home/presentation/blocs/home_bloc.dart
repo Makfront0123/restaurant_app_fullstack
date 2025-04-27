@@ -1,11 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/home/data/repositories/home_repository.dart';
+import 'package:restaurant_bloc_frontend/features/home/domain/repository/home_repository.dart';
+import 'package:restaurant_bloc_frontend/features/home/domain/usecases/get_categories.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_event.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final HomeRepository _homeRepository;
-  HomeBloc(this._homeRepository) : super(HomeLoading()) {
+
+  HomeBloc({
+    required HomeRepository homeRepository,
+    required GetCategoriesUseCase getCategoriesUseCase,
+  })  : _homeRepository = homeRepository,
+        super(HomeLoading()) {
     on<LoadHomeData>(_onLoadHomeData);
     on<CarouselPageChanged>(_onCarouselPageChanged);
   }
@@ -14,12 +20,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(HomeLoading());
     try {
       final images = await _homeRepository.getCarouselImages();
-      final categories = await _homeRepository.getCategories();
       final reviews = await _homeRepository.getReviews();
       emit(HomeLoaded(
         images: images,
         currentPage: 0,
-        categories: categories,
+        categories: const [],
         reviews: reviews,
       ));
     } catch (e) {

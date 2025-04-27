@@ -21,6 +21,36 @@ class Product {
     required this.productWeight,
   });
 
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['_id'] ?? '',
+      productName:
+          json['name'] ?? 'Sin nombre', // Cambié 'productName' por 'name'
+      productPrice:
+          (json['price'] ?? 0).toDouble(), // Cambié 'productPrice' por 'price'
+      productWeight: json['productWeight'] ?? 0,
+      category: json['category'] ?? 'Sin categoría',
+      kcal: json['kcal'] ?? 0,
+      productCount: json['productCount'] ?? 0,
+      productDescription: json['description'] ??
+          'Sin descripción', // Cambié 'productDescription' por 'description'
+      image: json['image'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'productName': productName,
+      'productPrice': productPrice,
+      'productWeight': productWeight,
+      'category': category,
+      'kcal': kcal,
+      'productCount': productCount,
+      'productDescription': productDescription,
+      'image': image,
+    };
+  }
+
   @override
   String toString() {
     return 'Product(name: $productName, price: $productPrice, count: $productCount)';
@@ -36,21 +66,7 @@ class Product {
       kcal: kcal,
       productWeight: productWeight,
       productPrice: productPrice,
-      productCount: productCount ??
-          this.productCount, // Si no se pasa, mantiene el valor actual
+      productCount: productCount ?? this.productCount,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'productName': productName,
-      'productPrice': productPrice,
-      'productWeight': productWeight,
-      'category': category,
-      'kcal': kcal,
-      'productCount': productCount,
-      'productDescription': productDescription,
-      'image': image,
-    };
   }
 }

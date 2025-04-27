@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/home/domain/entities/category_item.dart';
-import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_bloc.dart';
-import 'package:restaurant_bloc_frontend/features/home/presentation/blocs/home_state.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_container.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/product_carousel.dart';
-import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/category_list.dart';
-import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/search_input.dart';
+import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_blocs.dart';
+import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_state.dart';
 import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_event.dart';
 import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_state.dart';
@@ -49,54 +47,34 @@ class _MenuScreenState extends State<MenuScreen> {
           SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SearchInput(),
-                  _buildMenuCarousel(context),
-                ],
-              ),
+              child: _buildMenuCarousel(context),
             ),
           ),
-          if (state is SearchCategoryListVisibleState)
-            _buildSidebarCategory(context),
         ],
       ),
     );
   }
 
-  Positioned _buildSidebarCategory(BuildContext context) {
-    return Positioned(
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      child: GestureDetector(
-        onTap: () {
-          context.read<SearchBloc>().add(SearchShowCategoryList());
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 60),
-          child: Container(
-            color: Theme.of(context).primaryColor,
-            child: const CategoryList(),
-          ),
-        ),
-      ),
-    );
-  }
-
-  ProductCarousel<CategoryItem, HomeBloc, HomeState> _buildMenuCarousel(
+  ProductCarousel<CategoryItem, MenuBloc, MenuState> _buildMenuCarousel(
       BuildContext context) {
-    return ProductCarousel<CategoryItem, HomeBloc, HomeState>(
-      bloc: context.read<HomeBloc>(),
+    return ProductCarousel<CategoryItem, MenuBloc, MenuState>(
+      bloc: context.read<MenuBloc>(),
       stateBuilder: (context, state) {
-        if (state is HomeLoading) {
+        if (state is MenuLoading) {
           return const CircularProgressIndicator();
-        } else if (state is HomeLoaded) {
-          return _buildCategoryList(context, state.categories);
+        } else if (state is MenuLoaded) {
+          // Convierte las categorías de `Category` a `CategoryItem`
+          final categoryItems = state.categories
+              .map((cat) => CategoryItem(
+                    id: cat.id,
+                    title: cat.title,
+                    image: cat.image,
+                  ))
+              .toList();
+
+          return _buildCategoryList(context, categoryItems);
         }
-        return const Text("Error");
+        return const Text("Error al cargar categorías");
       },
     );
   }
@@ -120,18 +98,21 @@ class _MenuScreenState extends State<MenuScreen> {
   Widget _buildCategoryCard(int index, List<CategoryItem> categories) {
     final queryH = MediaQuery.of(context).size.height;
     final queryW = MediaQuery.of(context).size.width;
+    const String baseUrl = 'http://10.0.2.2:3000/';
+
+    final catId = categories[index].id;
+
     return HomeContainer(
       height: queryH * .4,
       width: queryW * .4,
       onTap: () {
-        Navigator.pushNamed(context, '/menuCat',
-            arguments: categories[index].title);
+        Navigator.pushNamed(context, '/menuCat', arguments: catId);
       },
       child: Stack(children: [
         Positioned.fill(
           top: -50,
           right: 0,
-          child: Image.asset(categories[index].image),
+          child: Image.network('$baseUrl${categories[index].image}'),
         ),
         Positioned(
           bottom: 7,

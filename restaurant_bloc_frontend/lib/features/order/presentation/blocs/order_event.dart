@@ -22,3 +22,9 @@ class SelectPaymentMethod extends OrderEvent {
 }
 
 class CompletePayment extends OrderEvent {}
+
+class GetOrderEvent extends OrderEvent {
+  final String token;
+
+  GetOrderEvent({required this.token});
+}

@@ -41,6 +41,7 @@ class CategoryApiServices {
   Future<dynamic> getAllCategory() async {
     try {
       final response = await _dio.get('$baseUrl/api/v1/all-category');
+
       return response.data;
     } catch (e) {
       return e;
@@ -50,6 +51,19 @@ class CategoryApiServices {
   Future<dynamic> getCategory(String id) async {
     try {
       final response = await _dio.get('/api/v1/category/get-category/$id');
+      return response.data;
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> searchProducts(String query) async {
+    try {
+      final response =
+          await _dio.get('$baseUrl/api/v1/search-products', queryParameters: {
+        'query': query,
+      });
+
       return response.data;
     } catch (e) {
       return e;

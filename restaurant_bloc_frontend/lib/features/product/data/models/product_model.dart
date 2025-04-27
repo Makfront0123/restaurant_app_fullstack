@@ -49,7 +49,7 @@ class ProductModel extends Equatable {
       price: (json['price'] ?? 0).toDouble(),
       weight: json['productWeight'] ?? 0,
       isFavorite: json['isFavorite'] ?? false,
-      category: json['category'],
+      category: json['category'] ?? '',
       dateAdded:
           json['dateAdded'] != null ? DateTime.parse(json['dateAdded']) : null,
       reviews: json['reviews'] != null
@@ -66,7 +66,7 @@ class ProductModel extends Equatable {
         'price': price,
         'quantity': weight,
         'isFavorite': isFavorite,
-        'category': category,
+        'category': category ?? '',
         'dateAdded': dateAdded?.toIso8601String(),
         'reviews': reviews.map((r) => r.toJson()).toList(),
       };
@@ -77,9 +77,9 @@ class ProductModel extends Equatable {
       image: image,
       productName: name,
       productPrice: price,
-      productWeight: weight, // asumimos que quantity representa el peso
-      category: category ?? 'Unknown',
-      kcal: 140, // si no lo recibís del backend, un valor por defecto
+      productWeight: weight, // Asumimos que weight es el peso del producto
+      category: category ?? 'Unknown', // Usamos 'Unknown' si no hay categoría
+      kcal: 140, // Considera si realmente quieres este valor por defecto
       productDescription: description,
     );
   }

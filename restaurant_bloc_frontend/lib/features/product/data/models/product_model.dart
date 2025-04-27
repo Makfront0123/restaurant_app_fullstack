@@ -78,9 +78,9 @@ class ProductModel extends Equatable {
       image: image,
       productName: name,
       productPrice: price,
-      productWeight: weight, // Asumimos que weight es el peso del producto
-      category: category ?? 'Unknown', // Usamos 'Unknown' si no hay categoría
-      kcal: 140, // Considera si realmente quieres este valor por defecto
+      productWeight: weight,
+      category: category ?? 'Unknown',
+      kcal: 140,
       productDescription: description,
     );
   }

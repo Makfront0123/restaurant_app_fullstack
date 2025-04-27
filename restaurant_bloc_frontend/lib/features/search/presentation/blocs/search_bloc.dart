@@ -34,7 +34,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Future<void> _onSearchHideCategoryList(
       SearchHideCategoryList event, Emitter<SearchState> emit) async {
-    // Emitir el estado para ocultar el sidebar
     emit(SearchCategoryListHiddenState([], showSidebar: false));
   }
 }

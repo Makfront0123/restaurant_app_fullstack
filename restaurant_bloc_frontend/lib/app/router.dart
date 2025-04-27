@@ -8,7 +8,6 @@ import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/veri
 import 'package:restaurant_bloc_frontend/features/auth/presentation/screens/verify_screen.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_wrapper.dart';
 import 'package:restaurant_bloc_frontend/features/cart/presentation/screens/cart_screen.dart';
-import 'package:restaurant_bloc_frontend/features/checkout/presentation/screens/checkout_screen.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_cat_screen.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_screen.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/screens/product_screen.dart';
@@ -46,6 +45,5 @@ class AppRoutes {
     signup: (context) => const RegisterScreen(),
     product: (context) => const ProductScreen(),
     cart: (context) => const CartScreen(),
-    checkout: (context) => const CheckoutScreen()
   };
 }

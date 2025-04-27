@@ -67,6 +67,7 @@ class _CartScreenState extends State<CartScreen> {
           final success = await userPayService.makePayment(context);
           if (success) {
             final event = CreateOrderEvent(
+              comment: 'Pago con Stripe',
               deliveryAddress: 'Tu dirección',
               deliveryDate: DateTime.now().add(const Duration(days: 2)),
               token: token,
@@ -88,6 +89,7 @@ class _CartScreenState extends State<CartScreen> {
           final success = await userPayService.navigatePaypal(context);
           if (success) {
             final event = CreateOrderEvent(
+              comment: 'Pago con Paypal',
               deliveryAddress: 'Tu dirección',
               deliveryDate: DateTime.now().add(const Duration(days: 2)),
               token: token,
@@ -204,10 +206,8 @@ class _CartScreenState extends State<CartScreen> {
 
   Widget _buildCartItem(Product product, CartState state) {
     const String baseUrl = 'http://10.0.2.2:3000/';
-    // Aquí aseguramos que el producto tenga la cantidad correcta.
-    Product updatedProduct = product.copyWith(productCount: 2);
 
-    // Si el producto ya está en el carrito, actualizamos el contador
+    Product updatedProduct = product.copyWith(productCount: 2);
     if (state is CartUpdatedState) {
       final foundProduct = state.productsInCart.firstWhere(
         (p) => p.productName == product.productName,

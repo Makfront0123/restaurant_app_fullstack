@@ -6,8 +6,10 @@ class CreateOrderEvent extends OrderEvent {
   final String deliveryAddress;
   final DateTime deliveryDate;
   final String token;
+  final String comment;
 
   CreateOrderEvent({
+    required this.comment,
     required this.deliveryAddress,
     required this.deliveryDate,
     required this.token,
@@ -27,4 +29,16 @@ class GetOrderEvent extends OrderEvent {
   final String token;
 
   GetOrderEvent({required this.token});
+}
+
+class AddCommentToOrderEvent extends OrderEvent {
+  final String orderId;
+  final String comment;
+  final String token;
+
+  AddCommentToOrderEvent({
+    required this.orderId,
+    required this.comment,
+    required this.token,
+  });
 }

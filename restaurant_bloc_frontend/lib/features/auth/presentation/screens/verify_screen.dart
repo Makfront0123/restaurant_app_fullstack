@@ -54,7 +54,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        // Manejar errores
         if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -63,7 +62,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
             ),
           );
         }
-        // Si la verificación del OTP fue exitosa
+
         if (state is AuthOtpVerified) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -85,7 +84,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                "Enter the 6-digit code sent", // Mostrar el email recibido
+                "Enter the 6-digit code sent",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),
@@ -132,117 +131,3 @@ class _VerifyScreenState extends State<VerifyScreen> {
     );
   }
 }
-
-
-/*
-class VerifyScreen extends StatefulWidget {
-  const VerifyScreen({super.key});
-
-  @override
-  State<VerifyScreen> createState() => _VerifyScreenState();
-}
-
-class _VerifyScreenState extends State<VerifyScreen> {
-  final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
-  final List<TextEditingController> _controllers =
-      List.generate(6, (index) => TextEditingController());
-
-  @override
-  void dispose() {
-    for (var c in _controllers) {
-      c.dispose();
-    }
-    for (var f in _focusNodes) {
-      f.dispose();
-    }
-    super.dispose();
-  }
-
-  void _onVerify() {
-    final otp = _controllers.map((e) => e.text).join();
-    context
-        .read<AuthBloc>()
-        .add(VerifyOtpEvent(otp: otp, email: "pusugu03@gmail.com"));
-  }
-
-  void _resendOtp() {
-    final otp = _controllers.map((e) => e.text).join();
-    context.read<AuthBloc>().add(VerifyOtpEvent(
-          otp: otp,
-          email: "pusugu03@gmail.com",
-        ));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state.error != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error!),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-        if (state.isVerify) {
-          Navigator.pushReplacementNamed(context, '/login');
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(title: const Text("Verify OTP")),
-        body: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "Enter the 6-digit code sent to your email",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(6, (index) => _buildOtpBox(index)),
-              ),
-              const SizedBox(height: 40),
-              TextButton(onPressed: _resendOtp, child: const Text("Resend")),
-              ElevatedButton(
-                onPressed: _onVerify,
-                child: const Text("Verify"),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOtpBox(int index) {
-    return SizedBox(
-      width: 45,
-      child: TextField(
-        controller: _controllers[index],
-        focusNode: _focusNodes[index],
-        keyboardType: TextInputType.number,
-        textAlign: TextAlign.center,
-        maxLength: 1,
-        style: const TextStyle(fontSize: 22),
-        decoration: const InputDecoration(
-          counterText: "",
-          border: OutlineInputBorder(),
-        ),
-        onChanged: (value) {
-          if (value.isNotEmpty && index < 5) {
-            _focusNodes[index + 1].requestFocus();
-          } else if (value.isEmpty && index > 0) {
-            _focusNodes[index - 1].requestFocus();
-          }
-        },
-      ),
-    );
-  }
-}
-
- */

@@ -5,7 +5,6 @@ import 'package:restaurant_bloc_frontend/features/menu/domain/usecases/get_all_c
 import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_event.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/blocs/menu_state.dart';
 
-// blocs/menu_bloc.dart
 class MenuBloc extends Bloc<MenuEvent, MenuState> {
   final GetAllCategories _getAllCategories;
   List<Category> _allCategories = [];
@@ -25,7 +24,7 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
     emit(MenuLoading());
     try {
       final categories = await _getAllCategories();
-      _allCategories = categories; // Guardamos las categorías completas
+      _allCategories = categories;
       emit(MenuLoaded(categories));
     } catch (e) {
       emit(MenuError('Error loading categories: $e'));

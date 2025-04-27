@@ -98,19 +98,14 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     final currentState = state;
 
     if (currentState is CartUpdatedState) {
-      // Actualiza el producto con el nuevo conteo
       final updatedProducts = currentState.productsInCart.map((product) {
         if (product.id == event.product.id) {
-          return product.copyWith(
-              productCount: event.count); // Actualiza el count
+          return product.copyWith(productCount: event.count);
         }
         return product;
       }).toList();
 
-      // Emite el estado actualizado
       emit(CartUpdatedState(productsInCart: updatedProducts));
-
-      // Si es necesario, puedes realizar cualquier otra operación aquí (p. ej., guardar en la base de datos).
     }
   }
 }

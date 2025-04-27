@@ -105,7 +105,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _updateProfile() async {
-    // ✅ sin parámetros
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token') ?? '';
 

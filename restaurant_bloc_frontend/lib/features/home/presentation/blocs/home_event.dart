@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-// home_event.dart
-// home_event.dart
 abstract class HomeEvent extends Equatable {
   const HomeEvent();
 

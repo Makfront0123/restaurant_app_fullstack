@@ -38,7 +38,7 @@ class AuthApiService {
       });
 
       final data = response.data['data'];
-      final token = data['token']; // <- lo sacas de aquí
+      final token = data['token'];
       final userJson = data['user'];
 
       final user = UserModel.fromJson(userJson, token: token);

@@ -22,9 +22,7 @@ class _ReviewCarouselState extends State<ReviewCarousel> {
   @override
   void initState() {
     super.initState();
-    context
-        .read<ReviewsBloc>()
-        .add(LoadReviewsEvent()); // Cargar las reseñas al inicio
+    context.read<ReviewsBloc>().add(LoadReviewsEvent());
   }
 
   @override
@@ -32,7 +30,7 @@ class _ReviewCarouselState extends State<ReviewCarousel> {
     return BlocBuilder<ReviewsBloc, ReviewState>(
       builder: (context, state) {
         if (state is ReviewLoadingState) {
-          return const CircularProgressIndicator(); // Indicador de carga
+          return const CircularProgressIndicator();
         } else if (state is ReviewLoadedState) {
           if (state.reviews.isEmpty) {
             return const SizedBox(
@@ -70,7 +68,6 @@ class _ReviewCarouselState extends State<ReviewCarousel> {
     final queryW = MediaQuery.of(context).size.width;
     final queryH = MediaQuery.of(context).size.height;
 
-    // Formatear la fecha
     final date = DateFormat('yyyy-MM-dd').format(reviews[index].date);
 
     return HomeContainer(

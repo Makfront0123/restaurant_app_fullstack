@@ -3,10 +3,10 @@ import 'package:restaurant_bloc_frontend/features/product/domain/entities/produc
 abstract class OrderEvent {}
 
 class CreateOrderEvent extends OrderEvent {
+  final String comment;
   final String deliveryAddress;
   final DateTime deliveryDate;
   final String token;
-  final String comment;
 
   CreateOrderEvent({
     required this.comment,
@@ -29,16 +29,4 @@ class GetOrderEvent extends OrderEvent {
   final String token;
 
   GetOrderEvent({required this.token});
-}
-
-class AddCommentToOrderEvent extends OrderEvent {
-  final String orderId;
-  final String comment;
-  final String token;
-
-  AddCommentToOrderEvent({
-    required this.orderId,
-    required this.comment,
-    required this.token,
-  });
 }

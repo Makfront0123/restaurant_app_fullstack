@@ -69,7 +69,6 @@ class ProductModel extends Equatable {
         'isFavorite': isFavorite,
         'category': category ?? '',
         'dateAdded': dateAdded?.toIso8601String(),
-        'reviews': reviews.map((r) => r.toJson()).toList(),
       };
 
   Product toProduct() {

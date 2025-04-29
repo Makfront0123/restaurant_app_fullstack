@@ -6,7 +6,7 @@ class GetReviewsUsecase {
 
   GetReviewsUsecase(this._repository);
 
-  Future<List<Review>> getReviews() async {
-    return await _repository.getAllReviews();
+  Future<List<Review>> getReviews(String token) async {
+    return await _repository.getAllReviews(token);
   }
 }

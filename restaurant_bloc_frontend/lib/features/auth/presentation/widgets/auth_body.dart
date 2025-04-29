@@ -12,7 +12,7 @@ class AuthBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final queryW = MediaQuery.of(context).size.width;
-    final queryH = MediaQuery.of(context).size.height * .85;
+    final queryH = MediaQuery.of(context).size.height * .8;
     return SingleChildScrollView(
       child: Center(
         child: Column(

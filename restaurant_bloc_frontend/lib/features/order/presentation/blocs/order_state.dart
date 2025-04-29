@@ -1,4 +1,4 @@
-import 'package:restaurant_bloc_frontend/features/order/domain/models/order_item.dart';
+import 'package:restaurant_bloc_frontend/features/order/domain/entities/order_item.dart';
 
 abstract class OrderState {}
 

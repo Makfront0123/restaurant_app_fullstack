@@ -77,6 +77,17 @@ class ProductScreen extends StatelessWidget {
                   },
                   text: 'Add to Cart',
                 ),
+                const SizedBox(height: 10),
+                AuthButton(
+                  text: "Add Review",
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/review',
+                      arguments: product,
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -85,3 +96,20 @@ class ProductScreen extends StatelessWidget {
     );
   }
 }
+
+
+/*
+
+const SizedBox(height: 20),
+AuthButton(
+  text: "Escribir reseña",
+  onTap: () {
+    Navigator.pushNamed(
+      context,
+      '/review',
+      arguments: product,
+    );
+  },
+),
+
+ */

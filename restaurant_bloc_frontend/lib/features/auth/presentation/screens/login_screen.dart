@@ -86,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
             'Sign in to continue',
             style: Theme.of(context).textTheme.labelMedium,
           ),
-          const SizedBox(height: 50),
+          const SizedBox(height: 20),
           _buildLoginForm(formKey),
           const SizedBox(height: 30),
           RichText(

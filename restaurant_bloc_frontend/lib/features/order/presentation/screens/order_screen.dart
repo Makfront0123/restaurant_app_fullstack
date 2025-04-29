@@ -5,7 +5,7 @@ import 'package:restaurant_bloc_frontend/features/application/presentation/widge
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_container.dart';
 import 'package:restaurant_bloc_frontend/features/favorite/presentation/widget/screen_empty.dart';
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_appbar.dart';
-import 'package:restaurant_bloc_frontend/features/order/domain/models/order_item.dart';
+import 'package:restaurant_bloc_frontend/features/order/domain/entities/order_item.dart';
 import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_event.dart';
 import 'package:restaurant_bloc_frontend/features/order/presentation/blocs/order_state.dart';

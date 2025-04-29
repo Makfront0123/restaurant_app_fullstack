@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:restaurant_bloc_frontend/core/constants/images.dart';
 import 'package:restaurant_bloc_frontend/core/theme/app_colors.dart';
 
 import 'package:restaurant_bloc_frontend/features/home/presentation/widgets/home_container.dart';
@@ -10,6 +11,7 @@ import 'package:restaurant_bloc_frontend/features/reviews/domain/entities/review
 import 'package:restaurant_bloc_frontend/features/reviews/presentation/blocs/reviews_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/reviews/presentation/blocs/reviews_event.dart';
 import 'package:restaurant_bloc_frontend/features/reviews/presentation/blocs/reviews_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ReviewCarousel extends StatefulWidget {
   const ReviewCarousel({super.key});
@@ -22,7 +24,13 @@ class _ReviewCarouselState extends State<ReviewCarousel> {
   @override
   void initState() {
     super.initState();
-    context.read<ReviewsBloc>().add(LoadReviewsEvent());
+    loadReviews();
+  }
+
+  void loadReviews() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token') ?? '';
+    context.read<ReviewsBloc>().add(LoadReviewsEvent(token: token));
   }
 
   @override
@@ -41,6 +49,7 @@ class _ReviewCarouselState extends State<ReviewCarousel> {
             return _buildReviewList(context, state.reviews);
           }
         } else if (state is ReviewErrorState) {
+          print('Reviews error: ${state.error}');
           return const Center(
             child: Text('Failed to load reviews.'),
           );
@@ -72,12 +81,13 @@ class _ReviewCarouselState extends State<ReviewCarousel> {
 
     return HomeContainer(
       height: queryH * .1,
-      width: queryW * .8,
+      width: queryW * .9,
       onTap: () {},
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               padding: const EdgeInsets.all(10.0),
@@ -91,8 +101,12 @@ class _ReviewCarouselState extends State<ReviewCarousel> {
                   Row(
                     children: [
                       CircleAvatar(
-                          backgroundImage:
-                              AssetImage(reviews[index].imageUser)),
+                        backgroundImage: AssetImage(
+                          reviews[index].imageUser.isNotEmpty
+                              ? reviews[index].imageUser
+                              : Images.user,
+                        ),
+                      ),
                       const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,12 +117,16 @@ class _ReviewCarouselState extends State<ReviewCarousel> {
                       ),
                     ],
                   ),
-                  Text(date),
+                  Text(
+                    date,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ],
               ),
             ),
+            const SizedBox(height: 10),
             Text(
-              reviews[index].review,
+              reviews[index].comment,
               style:
                   const TextStyle(fontSize: 13, color: AppColors.textTertiary),
             ),

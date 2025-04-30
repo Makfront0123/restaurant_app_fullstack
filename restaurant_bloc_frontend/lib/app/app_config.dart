@@ -57,6 +57,7 @@ import 'package:restaurant_bloc_frontend/features/profile/domain/usecases/update
 import 'package:restaurant_bloc_frontend/features/profile/presentation/blocs/profile_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/reviews/data/datasources/remote/reviews_api_services.dart';
 import 'package:restaurant_bloc_frontend/features/reviews/data/repository/reviews_repository_impl.dart';
+import 'package:restaurant_bloc_frontend/features/reviews/domain/usecase/create_reviews.dart';
 import 'package:restaurant_bloc_frontend/features/reviews/domain/usecase/get_reviews.dart';
 import 'package:restaurant_bloc_frontend/features/reviews/presentation/blocs/reviews_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/search/presentation/blocs/search_bloc.dart';
@@ -296,12 +297,18 @@ class AppProvider {
           create: (context) =>
               ReviewsRepositoryImpl(context.read<ReviewsApiServices>()),
         ),
+
+        RepositoryProvider(
+            create: (context) =>
+                CreateReviewsUsecase(context.read<ReviewsRepositoryImpl>())),
+
         RepositoryProvider(
             create: (context) =>
                 GetReviewsUsecase(context.read<ReviewsRepositoryImpl>())),
 
         RepositoryProvider(
           create: (context) => ReviewsBloc(
+            createReviews: context.read<CreateReviewsUsecase>(),
             getReviews: context.read<GetReviewsUsecase>(),
           ),
         ),

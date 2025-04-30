@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 
 abstract class ProfileEvent extends Equatable {
@@ -10,13 +12,16 @@ class UpdateProfileEvent extends ProfileEvent {
   final String confirmPassword;
   final String password;
   final String token;
+  final File? image;
 
   UpdateProfileEvent(
       {required this.username,
       required this.confirmPassword,
       required this.password,
+      this.image,
       required this.token});
 
   @override
-  List<Object?> get props => [username, confirmPassword, password, token];
+  List<Object?> get props =>
+      [username, confirmPassword, password, image, token];
 }

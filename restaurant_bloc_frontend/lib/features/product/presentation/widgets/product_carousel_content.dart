@@ -118,12 +118,21 @@ class _ProductCarouselContentState extends State<ProductCarouselContent> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(product.productName),
+                  Text(
+                    product.productName,
+                    style: const TextStyle(color: Colors.black),
+                  ),
                   Row(
                     children: [
-                      Text("\$${product.productPrice}"),
+                      Text(
+                        "\$${product.productPrice}",
+                        style: const TextStyle(color: Colors.black),
+                      ),
                       const SizedBox(width: 10),
-                      Text("${product.productWeight}gr"),
+                      Text(
+                        "${product.productWeight}gr",
+                        style: const TextStyle(color: Colors.black),
+                      ),
                     ],
                   ),
                 ],

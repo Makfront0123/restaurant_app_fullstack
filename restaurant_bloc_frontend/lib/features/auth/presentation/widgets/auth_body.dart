@@ -21,7 +21,7 @@ class AuthBody extends StatelessWidget {
           children: [
             AuthContainer(
                 height: queryH * .91, width: queryW * .9, child: child),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             if (showSocialButtons) _buildSocialButtons(queryW),
           ],
         ),

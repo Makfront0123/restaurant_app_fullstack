@@ -1,4 +1,4 @@
-import 'package:restaurant_bloc_frontend/features/order/domain/models/order_item.dart';
+import 'package:restaurant_bloc_frontend/features/order/domain/entities/order_item.dart';
 import 'package:restaurant_bloc_frontend/features/order/domain/repositories/order_repository.dart';
 
 class CreateOrderUsecase {
@@ -10,10 +10,6 @@ class CreateOrderUsecase {
     required DateTime deliveryDate,
     required String token,
   }) async {
-    return await repository.createOrder(
-      deliveryAddress: deliveryAddress,
-      deliveryDate: deliveryDate,
-      token: token,
-    );
+    return await repository.createOrder(deliveryAddress, deliveryDate, token);
   }
 }

@@ -1,6 +1,10 @@
 abstract class ReviewEvent {}
 
-class LoadReviewsEvent extends ReviewEvent {}
+class LoadReviewsEvent extends ReviewEvent {
+  final String token;
+
+  LoadReviewsEvent({required this.token});
+}
 
 class CreateReviewEvent extends ReviewEvent {
   final String productId;

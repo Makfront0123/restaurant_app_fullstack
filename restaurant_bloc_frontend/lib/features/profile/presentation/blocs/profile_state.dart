@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:restaurant_bloc_frontend/features/auth/domain/entities/user.dart';
 
 abstract class ProfileState extends Equatable {
   @override
@@ -11,8 +12,9 @@ class ProfileLoading extends ProfileState {}
 
 class ProfileUpdated extends ProfileState {
   final String message;
+  final User updatedUser;
 
-  ProfileUpdated(this.message);
+  ProfileUpdated(this.message, this.updatedUser);
 }
 
 class ProfileError extends ProfileState {

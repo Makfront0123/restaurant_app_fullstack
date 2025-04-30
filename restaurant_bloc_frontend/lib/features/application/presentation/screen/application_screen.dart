@@ -30,7 +30,7 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
 
   Widget buildBottomNav(ApplicationState state, BuildContext context) {
     return Container(
-      width: 375,
+      width: MediaQuery.of(context).size.width,
       height: 58,
       decoration: BoxDecoration(
         boxShadow: [
@@ -44,6 +44,7 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
       ),
       child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           showUnselectedLabels: true,
           showSelectedLabels: true,
           selectedLabelStyle: const TextStyle(fontSize: 12),

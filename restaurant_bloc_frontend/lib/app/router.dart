@@ -12,6 +12,7 @@ import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu
 import 'package:restaurant_bloc_frontend/features/menu/presentation/screens/menu_screen.dart';
 import 'package:restaurant_bloc_frontend/features/order/presentation/screens/end_oder.dart';
 import 'package:restaurant_bloc_frontend/features/product/presentation/screens/product_screen.dart';
+import 'package:restaurant_bloc_frontend/features/reviews/presentation/screens/review_screen.dart';
 import 'package:restaurant_bloc_frontend/features/splash/presentation/screens/splash_screen.dart';
 
 class AppRoutes {
@@ -31,13 +32,14 @@ class AppRoutes {
   static const String forgot = '/forgot';
   static const String reset = '/reset';
   static const String verifyForgot = '/verifyForgot';
-  static const String endOrder = '/endOrder';
+  static const String review = '/review';
 
   static Map<String, WidgetBuilder> routes = {
     endOrder: (context) => const EndOrderScreen(),
     verifyForgot: (context) => const VerifyForgotScreen(),
     verify: (context) => const VerifyScreen(),
     reset: (context) => const ResetScreen(),
+    review: (context) => const ReviewScreen(),
     splash: (context) => const SplashScreen(),
     application: (context) => const ApplicationScreen(),
     forgot: (context) => const ForgotScreen(),

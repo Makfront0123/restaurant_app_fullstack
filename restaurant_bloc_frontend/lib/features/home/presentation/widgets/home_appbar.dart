@@ -40,8 +40,11 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
               onTap: () {
                 Scaffold.of(context).openDrawer();
               },
-              child: const CircleAvatar(
-                backgroundImage: AssetImage(Images.user),
+              child: CircleAvatar(
+                backgroundImage:
+                    state is Authenticated && state.user.imageUser.isNotEmpty
+                        ? NetworkImage(state.user.imageUser)
+                        : const AssetImage(Images.user),
                 radius: 20,
               ),
             ),

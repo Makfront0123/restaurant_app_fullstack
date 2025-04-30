@@ -44,8 +44,10 @@ class ProductScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
@@ -61,7 +63,7 @@ class ProductScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(description,
                     style: Theme.of(context).textTheme.labelMedium),
-                const SizedBox(height: 50),
+                const SizedBox(height: 20),
                 AuthButton(
                   onTap: () {
                     context
@@ -77,6 +79,17 @@ class ProductScreen extends StatelessWidget {
                   },
                   text: 'Add to Cart',
                 ),
+                const SizedBox(height: 10),
+                AuthButton(
+                  text: "Add Review",
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/review',
+                      arguments: product,
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -85,3 +98,20 @@ class ProductScreen extends StatelessWidget {
     );
   }
 }
+
+
+/*
+
+const SizedBox(height: 20),
+AuthButton(
+  text: "Escribir reseña",
+  onTap: () {
+    Navigator.pushNamed(
+      context,
+      '/review',
+      arguments: product,
+    );
+  },
+),
+
+ */

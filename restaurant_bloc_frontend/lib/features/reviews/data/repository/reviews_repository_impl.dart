@@ -8,9 +8,22 @@ class ReviewsRepositoryImpl implements ReviewsRepository {
   ReviewsRepositoryImpl(this._reviewsApiServices);
 
   @override
-  Future<List<Review>> getAllReviews() async {
-    final rawData = await _reviewsApiServices.getAllReviews();
+  Future<List<Review>> getAllReviews(String token) async {
+    return await _reviewsApiServices.getAllReviews(token);
+  }
 
-    return rawData.map<Review>((json) => Review.fromJson(json)).toList();
+  @override
+  Future<Review> createReview(
+    String productId,
+    String author,
+    String comment,
+    String token,
+  ) async {
+    return await _reviewsApiServices.createReview(
+      productId,
+      author,
+      comment,
+      token,
+    );
   }
 }

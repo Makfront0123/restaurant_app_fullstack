@@ -54,6 +54,18 @@ class UserModel extends User {
         'resetPasswordExpires': resetPasswordExpires?.toIso8601String(),
       };
 
+  User toEntity() {
+    return User(
+      id: id,
+      name: name,
+      email: email,
+      imageUser: imageUser,
+      accountVerified: accountVerified,
+      role: role,
+      token: token,
+    );
+  }
+
   @override
   List<Object?> get props =>
       super.props +

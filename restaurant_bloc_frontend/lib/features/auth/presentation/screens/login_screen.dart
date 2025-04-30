@@ -94,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
             'Sign in to continue',
             style: Theme.of(context).textTheme.labelMedium,
           ),
-          const SizedBox(height: 50),
+          const SizedBox(height: 20),
           _buildLoginForm(formKey),
           const SizedBox(height: 30),
           RichText(
@@ -130,7 +130,6 @@ class _LoginScreenState extends State<LoginScreen> {
             label: "Enter your email",
             icon: Icons.email,
             validator: (value) => Validators.validateEmail(value),
-            keyboardType: TextInputType.text,
           ),
           const SizedBox(height: 15),
           AuthFormfield(

@@ -24,8 +24,7 @@ class _ItemCountState extends State<ItemCount> {
   @override
   void initState() {
     super.initState();
-    _count =
-        widget.product.productCount; // Inicializas con el valor del producto
+    _count = widget.product.productCount;
   }
 
   void _increment() {
@@ -70,7 +69,8 @@ class _ItemCountState extends State<ItemCount> {
         spacing,
         Text(
           _count.toString(),
-          style: Theme.of(context).textTheme.labelSmall,
+          style:
+              const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         spacing,
         IconButton(

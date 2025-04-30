@@ -15,6 +15,15 @@ class _VerifyScreenState extends State<VerifyScreen> {
   final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
   final List<TextEditingController> _controllers =
       List.generate(6, (index) => TextEditingController());
+  String? email;
+  @override
+  void initState() {
+    super.initState();
+    final state = context.read<AuthBloc>().state;
+    if (state is AuthRegistrationSuccess) {
+      email = state.user.email;
+    }
+  }
 
   @override
   void dispose() {
@@ -28,26 +37,23 @@ class _VerifyScreenState extends State<VerifyScreen> {
   }
 
   void _onVerify() {
-    final state = context.read<AuthBloc>().state;
-    String email = '';
-
-    if (state is AuthRegistrationSuccess) {
-      email = state.user.email;
+    if (email != null) {
+      final otp = _controllers.map((e) => e.text).join();
+      context.read<AuthBloc>().add(VerifyOtpEvent(otp: otp, email: email!));
     }
-
-    final otp = _controllers.map((e) => e.text).join();
-    context.read<AuthBloc>().add(VerifyOtpEvent(otp: otp, email: email));
   }
 
   void _resendOtp() {
-    final state = context.read<AuthBloc>().state;
-    String email = '';
-
-    if (state is AuthRegistrationSuccess) {
-      email = state.user.email;
+    if (email != null) {
+      context.read<AuthBloc>().add(ResendOtpEvent(email: email!));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Otp sent')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error Sending Otp')),
+      );
     }
-
-    context.read<AuthBloc>().add(ResendOtpEvent(email: email));
   }
 
   @override

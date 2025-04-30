@@ -1,8 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_bloc_frontend/core/utils/image_picker_util.dart';
 import 'package:restaurant_bloc_frontend/core/utils/validator_auth.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_event.dart';
 import 'package:restaurant_bloc_frontend/features/auth/presentation/widgets/auth_button.dart';
 import 'package:restaurant_bloc_frontend/features/menu/presentation/widgets/menu_appbar.dart';
 import 'package:restaurant_bloc_frontend/features/profile/presentation/blocs/profile_bloc.dart';
@@ -23,6 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final usernameController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final passwordController = TextEditingController();
+  File? _selectedImage;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +45,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               if (state is ProfileLoading) {
                 return const CircularProgressIndicator();
               } else if (state is ProfileUpdated) {
+                context
+                    .read<AuthBloc>()
+                    .add(UpdateUserFromProfile(state.updatedUser));
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(state.message)),
@@ -47,6 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 usernameController.clear();
                 passwordController.clear();
                 confirmPasswordController.clear();
+                _selectedImage = null;
 
                 return _buildProfileContent(state);
               } else if (state is ProfileError) {
@@ -63,7 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Column _buildProfileContent(state) {
     return Column(
       children: [
-        const AvatarUser(),
+        AvatarUser(image: _selectedImage, onTap: _handlePickImage),
         const SizedBox(height: 20),
         _buildProfileForm(state),
       ],
@@ -118,5 +128,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
           password: password,
           token: token,
         ));
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Datos actualizados')),
+    );
+  }
+
+  bool _isPicking = false;
+
+  void _handlePickImage() async {
+    if (_isPicking) return;
+    _isPicking = true;
+
+    try {
+      final image = await ImagePickerUtil.pickImageFromGallery();
+      if (image != null) {
+        setState(() {
+          _selectedImage = image;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error al seleccionar imagen')),
+      );
+    } finally {
+      _isPicking = false;
+    }
   }
 }

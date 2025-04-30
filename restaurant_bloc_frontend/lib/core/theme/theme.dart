@@ -46,8 +46,8 @@ class AppTheme {
               height: 1.6,
             ),
             labelSmall: TextStyle(
-              color: AppColors.textTertiary,
-              fontSize: 14.0,
+              color: AppColors.textColorLight,
+              fontSize: 10.0,
               fontWeight: FontWeight.bold,
             )),
         scaffoldBackgroundColor: AppColors.backgroundLight,
@@ -73,9 +73,14 @@ class AppTheme {
             fontSize: 12.0,
           ),
           labelMedium: TextStyle(
-            color: AppColors.textTertiary,
+            color: AppColors.textColorLight,
             fontSize: 14.0,
             height: 1.6,
+          ),
+          labelSmall: TextStyle(
+            color: AppColors.textColorDark,
+            fontSize: 10.0,
+            fontWeight: FontWeight.bold,
           )),
       brightness: Brightness.dark,
     );

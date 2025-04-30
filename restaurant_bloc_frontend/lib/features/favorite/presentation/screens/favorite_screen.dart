@@ -60,8 +60,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             child: Builder(
               builder: (context) {
                 if (state is FavoritegetLoaded) {
-                  final products =
-                      state.products; // Aquí obtienes la lista de productos
+                  final products = state.products;
 
                   return products.isEmpty
                       ? const ScreenEmpty(

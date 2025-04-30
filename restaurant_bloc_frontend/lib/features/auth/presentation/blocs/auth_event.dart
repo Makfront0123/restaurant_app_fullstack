@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:restaurant_bloc_frontend/features/auth/domain/entities/user.dart';
 
 abstract class AuthEvent extends Equatable {
   const AuthEvent();
@@ -103,3 +104,8 @@ class VerifyForgotEvent extends AuthEvent {
 }
 
 class AppStarted extends AuthEvent {}
+
+class UpdateUserFromProfile extends AuthEvent {
+  final User user;
+  const UpdateUserFromProfile(this.user);
+}

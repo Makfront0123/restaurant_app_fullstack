@@ -39,7 +39,7 @@ class ReviewsApiServices {
         },
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
-      print(response.data);
+
       return response.data;
     } catch (e) {
       rethrow;

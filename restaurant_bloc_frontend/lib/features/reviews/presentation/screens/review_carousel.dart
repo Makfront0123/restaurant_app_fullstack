@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -49,7 +51,6 @@ class _ReviewCarouselState extends State<ReviewCarousel> {
             return _buildReviewList(context, state.reviews);
           }
         } else if (state is ReviewErrorState) {
-          print('Reviews error: ${state.error}');
           return const Center(
             child: Text('Failed to load reviews.'),
           );

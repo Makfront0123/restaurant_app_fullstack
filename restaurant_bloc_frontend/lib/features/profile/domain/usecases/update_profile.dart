@@ -1,13 +1,21 @@
+import 'dart:io';
+
+import 'package:restaurant_bloc_frontend/features/auth/domain/entities/user.dart';
 import 'package:restaurant_bloc_frontend/features/profile/domain/repository/profile_repository.dart';
 
 class UpdateProfileUsecase {
-  final ProfileRepository _profileRepository;
+  final ProfileRepository repository;
 
-  UpdateProfileUsecase(this._profileRepository);
+  UpdateProfileUsecase(this.repository);
 
-  Future<void> updateProfile(String username, String confirmPassword,
-      String password, String token) async {
-    await _profileRepository.updateProfile(
-        username, confirmPassword, password, token);
+  Future<User> updateProfile(
+    String username,
+    String confirmPassword,
+    String password,
+    String token,
+    File? image,
+  ) {
+    return repository.updateProfile(
+        username, confirmPassword, password, token, image);
   }
 }

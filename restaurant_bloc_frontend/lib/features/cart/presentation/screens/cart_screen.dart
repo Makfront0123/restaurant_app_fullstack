@@ -60,7 +60,7 @@ class _CartScreenState extends State<CartScreen> {
 
     if (orderState is PaymentMethodSelected) {
       final method = orderState.selectedPaymentMethod;
-      if (method == 'Stripe') {
+      if (method == 'stripe') {
         final userPayService = UserPayServices();
         try {
           await userPayService.makePayment(context);
@@ -236,7 +236,11 @@ class _CartScreenState extends State<CartScreen> {
                   children: [
                     Text(
                       updatedProduct.productName,
-                      style: Theme.of(context).textTheme.headlineSmall,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       "\$${updatedProduct.productPrice}",

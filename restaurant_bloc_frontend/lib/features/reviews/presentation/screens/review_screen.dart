@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:restaurant_bloc_frontend/features/auth/presentation/blocs/auth_state.dart';
 import 'package:restaurant_bloc_frontend/features/product/domain/entities/product_item.dart';
 import 'package:restaurant_bloc_frontend/features/reviews/presentation/blocs/reviews_bloc.dart';
 import 'package:restaurant_bloc_frontend/features/reviews/presentation/blocs/reviews_event.dart';
@@ -28,10 +30,17 @@ class _ReviewScreenState extends State<ReviewScreen> {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token') ?? '';
 
+    final authState = context.read<AuthBloc>().state;
+    String authorName = '';
+
+    if (authState is Authenticated) {
+      authorName = authState.user.name;
+    }
+
     if (_controller.text.isNotEmpty) {
       context.read<ReviewsBloc>().add(CreateReviewEvent(
             productId: product.id,
-            author: product.productName,
+            author: authorName,
             comment: _controller.text,
             token: token,
           ));

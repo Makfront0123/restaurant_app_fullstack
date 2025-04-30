@@ -33,7 +33,10 @@ class _ScreenEmptyState extends State<ScreenEmpty> {
                       Image.asset(widget.emptyImage),
                       const SizedBox(height: 30),
                       Text(widget.title,
-                          style: Theme.of(context).textTheme.headlineMedium,
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
                           maxLines: 1,
                           textAlign: TextAlign.center),
                       const SizedBox(height: 20),

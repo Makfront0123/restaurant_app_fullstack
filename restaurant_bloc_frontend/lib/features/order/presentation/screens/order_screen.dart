@@ -64,6 +64,7 @@ class _OrderScreenState extends State<OrderScreen> {
   void _getOrders() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token') ?? '';
+
     // ignore: use_build_context_synchronously
     context.read<OrderBloc>().add(GetOrderEvent(token: token));
   }
@@ -84,8 +85,14 @@ class _OrderScreenState extends State<OrderScreen> {
             height: MediaQuery.of(context).size.height * 0.3,
             width: MediaQuery.of(context).size.width * 0.8,
             child: ListTile(
-              title: Text('Order #${order.id} - \$${order.totalPrice}'),
-              subtitle: Text('Status: ${order.status}'),
+              title: Text(
+                'Order #${order.id} - \$${order.totalPrice}',
+                style: const TextStyle(color: Colors.black),
+              ),
+              subtitle: Text(
+                'Status: ${order.status}',
+                style: const TextStyle(color: Colors.black),
+              ),
             ),
           );
         },

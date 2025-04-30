@@ -58,6 +58,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<ResendOtpEvent>(_onResendOtp);
     on<ResendOtpForgotEvent>(_onResendOtpForgot);
     on<AppStarted>(_onAppStarted);
+    on<UpdateUserFromProfile>(_onUpdateUserFromProfile);
   }
 
   Future<void> _onAppStarted(AppStarted event, Emitter<AuthState> emit) async {
@@ -190,6 +191,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthUnauthenticated());
     } catch (e) {
       emit(AuthError(e.toString()));
+    }
+  }
+
+  void _onUpdateUserFromProfile(
+      UpdateUserFromProfile event, Emitter<AuthState> emit) {
+    final currentState = state;
+    if (currentState is Authenticated) {
+      emit(Authenticated(user: event.user));
     }
   }
 }

@@ -1,5 +1,3 @@
-import 'package:restaurant_bloc_frontend/features/reviews/domain/entities/reviews_item.dart';
-
 class ReviewsModel {
   final String author;
   final String imageUser;

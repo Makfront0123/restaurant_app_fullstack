@@ -12,7 +12,7 @@ class AuthBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final queryW = MediaQuery.of(context).size.width;
-    final queryH = MediaQuery.of(context).size.height * .8;
+    final queryH = MediaQuery.of(context).size.height * .85;
     return SingleChildScrollView(
       child: Center(
         child: Column(
@@ -21,7 +21,7 @@ class AuthBody extends StatelessWidget {
           children: [
             AuthContainer(
                 height: queryH * .91, width: queryW * .9, child: child),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             if (showSocialButtons) _buildSocialButtons(queryW),
           ],
         ),

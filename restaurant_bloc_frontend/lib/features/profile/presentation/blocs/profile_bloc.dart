@@ -5,9 +5,9 @@ import 'package:restaurant_bloc_frontend/features/profile/presentation/blocs/pro
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final UpdateProfileUsecase _updateProfile;
-  ProfileBloc({
-    required UpdateProfileUsecase updateProfile,
-  })  : _updateProfile = updateProfile,
+
+  ProfileBloc({required UpdateProfileUsecase updateProfile})
+      : _updateProfile = updateProfile,
         super(ProfileInitial()) {
     on<UpdateProfileEvent>(_onUpdateProfile);
   }
@@ -16,9 +16,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       UpdateProfileEvent event, Emitter<ProfileState> emit) async {
     emit(ProfileLoading());
     try {
-      await _updateProfile.updateProfile(
-          event.username, event.confirmPassword, event.password, event.token);
-      emit(ProfileUpdated('Profile updated successfully'));
+      final updatedUser = await _updateProfile.updateProfile(
+        event.username,
+        event.confirmPassword,
+        event.password,
+        event.token,
+        event.image,
+      );
+      emit(ProfileUpdated('Profile updated successfully', updatedUser));
     } catch (e) {
       emit(ProfileError('Error updating profile: $e'));
     }

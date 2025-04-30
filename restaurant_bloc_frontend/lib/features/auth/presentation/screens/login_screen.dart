@@ -122,7 +122,6 @@ class _LoginScreenState extends State<LoginScreen> {
             label: "Enter your email",
             icon: Icons.email,
             validator: (value) => Validators.validateEmail(value),
-            keyboardType: TextInputType.text,
           ),
           const SizedBox(height: 15),
           AuthFormfield(

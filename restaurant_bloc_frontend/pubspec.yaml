@@ -46,6 +46,7 @@ dependencies:
   flutter_stripe: 9.4.0
   flutter_paypal_payment: ^1.0.8
   flutter_dotenv: ^5.2.1
+  image_picker: ^1.1.2
 
  
 

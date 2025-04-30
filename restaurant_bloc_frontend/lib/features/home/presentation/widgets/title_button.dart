@@ -17,16 +17,20 @@ class TitleButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.headlineSmall,
+          Expanded(
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.headlineSmall,
+              overflow: TextOverflow.ellipsis, // evita desbordes
+            ),
           ),
           TextButton(
-              onPressed: () {},
-              child: Text(
-                'View all',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ))
+            onPressed: () {},
+            child: Text(
+              'View all',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+          ),
         ],
       ),
     );

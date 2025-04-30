@@ -42,16 +42,14 @@ class OrderApiServices {
       final response = await _dio.get('$baseUrl/api/v1/get-order-by-user',
           options: Options(headers: {'Authorization': 'Bearer $token'}));
 
-      final List<dynamic> ordersJson = response.data['data'];
-
-      List<OrderData> orders =
-          ordersJson.map((orderJson) => OrderData.fromJson(orderJson)).toList();
-
-      if (filterStatus != null) {
-        orders = orders.where((order) => order.status == filterStatus).toList();
+      final data = response.data['data'];
+      if (data is List) {
+        return data.map((orderJson) => OrderData.fromJson(orderJson)).toList();
+      } else if (data is Map<String, dynamic>) {
+        return [OrderData.fromJson(data)];
+      } else {
+        throw Exception('Formato de datos inesperado');
       }
-
-      return orders;
     } catch (e) {
       throw Exception('Error getting orders: $e');
     }

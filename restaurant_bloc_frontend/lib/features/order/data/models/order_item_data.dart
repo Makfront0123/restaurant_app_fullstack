@@ -6,7 +6,7 @@ class OrderItemData {
 
   factory OrderItemData.fromJson(Map<String, dynamic> json) {
     return OrderItemData(
-      productId: json['productId'],
+      productId: json['productId']['_id'],
       quantity: json['quantity'],
     );
   }

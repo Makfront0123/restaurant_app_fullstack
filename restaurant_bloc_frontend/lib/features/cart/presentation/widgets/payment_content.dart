@@ -34,7 +34,12 @@ class PaymentContent extends StatelessWidget {
                       ? WidgetStateProperty.all(Colors.blue)
                       : WidgetStateProperty.all(Colors.grey),
                 ),
-                child: const Text('Pay with Stripe'),
+                child: const Text(
+                  'Pay with Stripe',
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -48,7 +53,12 @@ class PaymentContent extends StatelessWidget {
                       ? WidgetStateProperty.all(Colors.blue)
                       : WidgetStateProperty.all(Colors.grey),
                 ),
-                child: const Text('Pay with PayPal'),
+                child: const Text(
+                  'Pay with PayPal',
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
               ),
             ],
           ),

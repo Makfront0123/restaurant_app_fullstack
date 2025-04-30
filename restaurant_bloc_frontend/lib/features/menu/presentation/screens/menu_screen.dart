@@ -63,7 +63,6 @@ class _MenuScreenState extends State<MenuScreen> {
         if (state is MenuLoading) {
           return const CircularProgressIndicator();
         } else if (state is MenuLoaded) {
-          // Convierte las categorías de `Category` a `CategoryItem`
           final categoryItems = state.categories
               .map((cat) => CategoryItem(
                     id: cat.id,
@@ -117,7 +116,12 @@ class _MenuScreenState extends State<MenuScreen> {
         Positioned(
           bottom: 7,
           left: 7,
-          child: Text(categories[index].title),
+          child: Text(
+            categories[index].title,
+            style: const TextStyle(
+              color: Colors.black,
+            ),
+          ),
         ),
       ]),
     );

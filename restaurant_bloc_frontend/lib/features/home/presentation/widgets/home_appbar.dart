@@ -27,6 +27,7 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   Widget _buildAppBar(BuildContext context, AuthState state) {
+    String baseUrl = "http://10.0.2.2:3000";
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: AppBar(
@@ -41,10 +42,11 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
                 Scaffold.of(context).openDrawer();
               },
               child: CircleAvatar(
-                backgroundImage:
-                    state is Authenticated && state.user.imageUser.isNotEmpty
-                        ? NetworkImage(state.user.imageUser)
-                        : const AssetImage(Images.user),
+                backgroundImage: state is Authenticated &&
+                        state.user.imageUser.isNotEmpty
+                    ? NetworkImage(
+                        '$baseUrl/${state.user.imageUser.replaceFirst('/', '')}')
+                    : const AssetImage(Images.user),
                 radius: 20,
               ),
             ),

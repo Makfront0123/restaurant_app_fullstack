@@ -30,6 +30,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final passwordController = TextEditingController();
   File? _selectedImage;
 
+  bool _isPicking = false;
+
+  void _handlePickImage() async {
+    if (_isPicking) return;
+    _isPicking = true;
+
+    try {
+      final image = await ImagePickerUtil.pickImageFromGallery();
+      if (image != null) {
+        setState(() {
+          _selectedImage = image;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error al seleccionar imagen')),
+      );
+    } finally {
+      _isPicking = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,15 +70,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 context
                     .read<AuthBloc>()
                     .add(UpdateUserFromProfile(state.updatedUser));
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(state.message)),
-                  );
-                });
+
                 usernameController.clear();
                 passwordController.clear();
                 confirmPasswordController.clear();
-                _selectedImage = null;
 
                 return _buildProfileContent(state);
               } else if (state is ProfileError) {
@@ -127,32 +144,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           confirmPassword: confirmPassword,
           password: password,
           token: token,
+          image: _selectedImage,
         ));
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Datos actualizados')),
     );
-  }
-
-  bool _isPicking = false;
-
-  void _handlePickImage() async {
-    if (_isPicking) return;
-    _isPicking = true;
-
-    try {
-      final image = await ImagePickerUtil.pickImageFromGallery();
-      if (image != null) {
-        setState(() {
-          _selectedImage = image;
-        });
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error al seleccionar imagen')),
-      );
-    } finally {
-      _isPicking = false;
-    }
   }
 }

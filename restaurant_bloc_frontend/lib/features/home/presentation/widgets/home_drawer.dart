@@ -29,6 +29,7 @@ class HomeDrawer extends StatelessWidget {
   }
 
   Widget _buildDrawer(BuildContext context, AuthState state) {
+    String baseUrl = "http://10.0.2.2:3000";
     return Drawer(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       child: Column(
@@ -40,7 +41,8 @@ class HomeDrawer extends StatelessWidget {
                   CircleAvatar(
                     backgroundImage: state is Authenticated &&
                             state.user.imageUser.isNotEmpty
-                        ? NetworkImage(state.user.imageUser)
+                        ? NetworkImage(
+                            '$baseUrl/${state.user.imageUser.replaceFirst('/', '')}')
                         : const AssetImage(
                             Images.user,
                           ),

@@ -22,14 +22,16 @@ class ProfileApiServices {
         'name': username,
         'confirmPassword': confirmPassword,
         'password': password,
-        // Si la imagen está presente, agregarla al FormData
-        if (image != null) 'image': await MultipartFile.fromFile(image.path),
+        'image': await MultipartFile.fromFile(image?.path ?? 'dasds'),
       });
 
       final response = await _dio.put(
         '$baseUrl/api/v1/edit-user',
         data: formData,
-        options: Options(headers: {'Authorization': 'Bearer $token'}),
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'multipart/form-data'
+        }),
       );
 
       final data = response.data['data'];

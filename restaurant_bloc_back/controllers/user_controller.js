@@ -15,7 +15,8 @@ export const getUser = asyncHandler(async (req, res) => {
 
 
 export const editUser = asyncHandler(async (req, res) => {
-  const { name, password, confirmPassword, image } = req.body;
+  const { name, password, confirmPassword } = req.body;
+  const image = req.file;
 
   try {
     const user = await Auth.findById(req.user.id);
@@ -33,9 +34,9 @@ export const editUser = asyncHandler(async (req, res) => {
     if (name) {
       user.name = name;
     }
- 
+
     if (image) {
-      user.imageUser = image;
+      user.imageUser = `/uploads/${image.filename}`;
     }
 
     await user.save();

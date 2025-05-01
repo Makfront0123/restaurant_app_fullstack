@@ -14,7 +14,7 @@ const app = express();
 
 app.use(cors(
     {
-        origin: 'http://10.0.2.2:3000',
+        origin: process.env.ORIGIN,
         credentials: true
     },
 ));

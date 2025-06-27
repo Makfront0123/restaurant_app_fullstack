@@ -156,7 +156,6 @@ export const authResendOtp = asyncHandler(async (req, res) => {
     }
 })
 
-// 3 dígitos, recuperación de contraseña
 export const resendForgotPasswordOtp = asyncHandler(async (req, res) => {
     const { email } = req.body;
     try {
@@ -244,10 +243,9 @@ export const resetPassword = asyncHandler(async (req, res) => {
     res.status(200).json({ message: "Password successfully reset" });
 });
 
-// controllers/AuthController.js
 export const getAuthenticatedUser = async (req, res) => {
     try {
-      const user = req.user; // El middleware ya lo puso
+      const user = req.user;
   
       res.status(200).json({
         message: "User authenticated",

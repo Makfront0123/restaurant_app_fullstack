@@ -24,7 +24,6 @@ class OrderRepositoryImpl implements OrderRepository {
   Future<List<Order>> getOrderByUser(String token) async {
     final response = await api.getOrderByUser(token);
 
-    // Mapear cada OrderData a Order
     return response.map((orderData) => orderData.toDomain()).toList();
   }
 }

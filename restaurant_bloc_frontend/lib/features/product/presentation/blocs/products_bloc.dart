@@ -40,13 +40,13 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     LoadProductsByCategory event,
     Emitter<ProductsState> emit,
   ) async {
-    emit(ProductsLoading()); // Muestra carga
+    emit(ProductsLoading()); 
     try {
       final filtered = await _getProductsByCategory(
-          event.category.toLowerCase()); // Obtiene productos por categoría
+          event.category.toLowerCase());
 
       emit(ProductsLoadedByCategory(
-          products: filtered)); // Emite los productos filtrados
+          products: filtered));
     } catch (e) {
       emit(ProductsError("Error al filtrar productos"));
     }

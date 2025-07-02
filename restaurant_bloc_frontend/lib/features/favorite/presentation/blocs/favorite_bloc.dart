@@ -54,14 +54,11 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
           products: [],
         ));
       }
-
-      // Siempre emitimos `FavoritegetLoaded` incluso si está vacío
       emit(FavoritegetLoaded(
         token: token,
         products: favorites,
       ));
     } catch (e) {
-      // Solo emitimos error si es una excepción real que no se puede recuperar
       emit(FavoriteError(message: e.toString()));
     }
   }

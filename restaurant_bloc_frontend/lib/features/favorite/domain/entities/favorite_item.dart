@@ -2,7 +2,7 @@ class Favorite {
   final String id;
   final String userId;
   final List<String>
-      productIds; // Asegúrate de que este sea el campo que quieres
+      productIds; 
   final DateTime createdAt;
 
   Favorite({

@@ -82,10 +82,8 @@ class UserPayServices {
       MaterialPageRoute(
         builder: (BuildContext context) => PaypalCheckoutView(
           sandboxMode: true,
-          clientId:
-              "AZnncQH4jDYj5394u7SiQqC30hjw_8MSRM9B865er8psIw-fRnye9A55zoQ2jO5XfwmW5w3m59HHhcO4",
-          secretKey:
-              "EFsHteQo_FY7QU4UIVXtW0Jls9fWn7mrwO6kSKQKE0jMfJQtnDtsYnzZRCwiT6jz1rgdhskUbkI1keRy",
+          clientId: dotenv.env['PAYPAL_CLIENT_ID'] ?? '',
+          secretKey: dotenv.env['PAYPAL_SECRET_KEY'] ?? '',
           transactions: const [
             {
               "amount": {
@@ -113,15 +111,15 @@ class UserPayServices {
           note: "Contact us for any questions on your order.",
           onSuccess: (Map params) async {
             Navigator.pop(context);
-            completer.complete(true); // 👈 pago exitoso
+            completer.complete(true); 
           },
           onError: (error) {
             Navigator.pop(context);
-            completer.complete(false); // 👈 error en pago
+            completer.complete(false);  
           },
           onCancel: () {
             Navigator.pop(context);
-            completer.complete(false); // 👈 pago cancelado
+            completer.complete(false);  
           },
         ),
       ),

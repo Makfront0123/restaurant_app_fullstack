@@ -40,7 +40,6 @@ class PaymentFailed extends OrderState {
   PaymentFailed({required this.errorMessage});
 }
 
-// Estado para manejar el método de pago seleccionado
 class PaymentMethodSelected extends OrderState {
   final String selectedPaymentMethod;
 

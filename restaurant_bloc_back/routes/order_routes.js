@@ -8,9 +8,6 @@ router.get('/get-order/:id',authMiddleware,getOrder)
 router.get('/all-orders',getAllOrders)
 router.delete('/delete-order/:id',authMiddleware,deleteOrder)
 router.get('/get-order-by-user',authMiddleware,getOrderByUser)
-/*
- 
-router.put('/edit-order/:id',authMiddleware,editOrder)
-*/
+
 
 export default router;

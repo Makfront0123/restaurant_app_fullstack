@@ -17,7 +17,7 @@ class Cart extends Equatable {
   factory Cart.fromJson(Map<String, dynamic> json) {
     final items = (json['items'] as List)
         .map((e) => CartItem.fromJson(e as Map<String,
-            dynamic>)) // Asegúrate de que sea Map<String, dynamic>
+            dynamic>))
         .toList();
 
     return Cart(items: items);
